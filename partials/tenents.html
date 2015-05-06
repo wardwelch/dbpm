@@ -10,12 +10,18 @@
         <thead>
         <th>First Name&nbsp;</th>
         <th>Last Name&nbsp;</th>
+        <th>Deposit Paid&nbsp;</th>
+        <th>Move In&nbsp;</th>
+        <th>Balance Due&nbsp;</th>
         <th>Action&nbsp;</th>
         </thead>
         <tbody>
             <tr ng-repeat="data in tenents">
                 <td>{{data.firstname}}</td>
                 <td>{{data.lastname}}</td>
+                <td>{{data.deposit_paid}}</td>
+                <td>{{data.move_in}}</td>
+                <td>{{data.balance_due}}</td>                
                 <td><a href="#/edit-tenent/{{data.tenent_id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i>&nbsp; Edit Tenent</a></td>
             </tr>
         </tbody>

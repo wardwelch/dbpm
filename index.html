@@ -12,6 +12,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    
     <style type="text/css">
         .nav, .pagination, .carousel, .panel-title , ul>li, a{cursor: pointer;}
     </style>
@@ -27,32 +28,51 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/angular-snap.css" type="text/css" />
+    <style>
+        #drawer{
+            padding-top:70px;
+            padding-left:10px;
+        }
+        .snap-content{
+            margin-top:60px;
+        }        
+    </style>
+    
+    
     <script src="js/ie10-viewport-bug-workaround.js"></script>
     <script src="js/angular.min.js"></script>
     <script src="js/angular-route.min.js"></script>
     <script src="js/ui-bootstrap-tpls-0.12.1.min.js"></script>
+    <script src="js/snap.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/angular-snap.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="app/app.js"></script>         
   </head>
 
   <body>
+  
+  
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top" ng-controller="DropdownCtrl">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed dropdown" dropdown data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <button snap-toggle="" type="button" class="navbar-toggle collapsed dropdown" dropdown data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Dave Bentz Properties</a>
+          <a class="navbar-brand" href="/dbpm/#/dashboard">Dave Bentz Properties</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse" ng-controller="HeaderController">
           <ul class="nav navbar-nav">
-        <li ng-class="{ active: isActive('#')}"><a href="/">Dashboard</a></li>
-        <li ng-class="{ active: isActive('/buildings')}"><a href="/dbpm/#/buildings">Buildings</a></li>
-        <li ng-class="{ active: isActive('/tenets')}"><a href="/dbpm/#/tenents">Tenents</a></li>
-         <li ng-class="{ active: isActive('/wo')}"><a href="/wo">Work Orders</a></li>
+        <li ng-class="{ active: isActive('#')}"><a ng-href="/dbpm/#/dashboard" snap-close>Dashboard</a></li>
+        <li ng-class="{ active: isActive('/buildings')}"><a ng-href="/dbpm/#/buildings" snap-close>Buildings</a></li>
+        <li ng-class="{ active: isActive('/tenets')}"><a ng-href="/dbpm/#/tenents">Tenents</a></li>
+         <li ng-class="{ active: isActive('/wo')}"><a ng-href="/dbpm/#/wo">Work Orders</a></li>
+<!-- 
               <li class="dropdown" dropdown on-toggle="toggled(open)"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" dropdown-toggle>More... <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <li><a href="#">Action</a></li>
@@ -64,7 +84,7 @@
                 <li><a href="#">One more separated link</a></li>
               </ul>
             </li>
-            
+ -->
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="../navbar-static-top/">Scott</a></li>
@@ -73,30 +93,38 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-
-    <div class="container">
-      <!-- Main component for a primary marketing message or call to action -->
+    <snap-drawer id="drawer">
+    <div class="col-md-3">
+        <ul class="nav navbar-nav">
+            <li ng-class="{ active: isActive('/dbpm/#/dashboard')}"><a ng-href="/dbpm/#/dashboard" snap-close>Dashboard</a></li>
+            <li ng-class="{ active: isActive('/dbpm/#/buildings')}"><a ng-href="/dbpm/#/buildings" snap-close>Buildings</a></li>
+            <li ng-class="{ active: isActive('/dbpm/#/tenents')}"><a ng-href="/dbpm/#/edit-building-tenents/1" snap-close>Tenents</a></li>
+            <li ng-class="{ active: isActive('/dbpm/#/wo')}"><a ng-href="/dbpm/#/wo" snap-close>Work Orders</a></li>
 <!-- 
-      <div class="jumbotron">
-        <h1>Navbar example</h1>
-        <p>This example is a quick exercise to illustrate how the default, static and fixed to top navbar work. It includes the responsive CSS and HTML, so it also adapts to your viewport and device.</p>
-        <p>To see the difference between static and fixed top navbars, just scroll.</p>
-        <p>
-          <a class="btn btn-lg btn-primary" href="../../components/#navbar" role="button">View navbar docs &raquo;</a>
-        </p>
-      </div>
+            <li class="dropdown" dropdown on-toggle="toggled(open)"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" dropdown-toggle>More... <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
  -->
-
-    </div> <!-- /container -->
-    <div class="container">
-    <div ng-view="" id="ng-view" autoscroll="true"></div>
-   
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="../navbar-static-top/">Scott</a></li>
+            <li class="active"><a href="./">Sign In<span class="sr-only">(current)</span></a></li>
+        </ul> 
+    </div>   
+    </snap-drawer>
+<snap-content data-snap-ignore="true"> 
+    <div class="container" >
+            <div ng-view="" id="ng-view"></div>   
     </div>
+</snap-content>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-<!--     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   </body>
 </html>

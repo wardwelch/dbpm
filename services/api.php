@@ -62,9 +62,13 @@
 			if($this->get_request_method() != "GET"){
 				$this->response('',406);
 			}
-			$query="SELECT DISTINCT t.`firstname`, t.`lastname`, t.`tenent_id` from `tenents` t order by t.`lastname` desc";
-			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
-
+		    $id = (int)$this->_request['id'];
+		    	
+			
+			if($id > 0){				
+			    $query="SELECT * from `tenents` t where t.building_id = $id order by t.`lastname` desc";
+			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+            }
 			if($r->num_rows > 0){
 				$result = array();
 				while($row = $r->fetch_assoc()){
@@ -80,7 +84,7 @@
 			}
 			$id = (int)$this->_request['id'];
 			if($id > 0){	
-				$query="SELECT DISTINCT t.`firstname`, t.`lastname` from `tenents` t where t.tenent_id=$id";
+				$query="SELECT * from `tenents` t where t.tenent_id=$id";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				if($r->num_rows > 0) {
 					$result = $r->fetch_assoc();	
@@ -94,7 +98,7 @@
 			if($this->get_request_method() != "GET"){
 				$this->response('',406);
 			}
-			$query="SELECT * from building";
+			$query="SELECT * from buildings";
 			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 
 			if($r->num_rows > 0){
@@ -112,7 +116,7 @@
 			}
 			$id = (int)$this->_request['id'];
 			if($id > 0){	
-				$query="SELECT * from building where building_id = $id";
+				$query="SELECT * from buildings where building_id = $id";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				if($r->num_rows > 0) {
 					$result = $r->fetch_assoc();	
@@ -142,7 +146,7 @@
 				$columns = $columns.$desired_key.',';
 				$values = $values."'".$$desired_key."',";
 			}
-			$query = "INSERT INTO building(".trim($columns,',').") VALUES(".trim($values,',').")";
+			$query = "INSERT INTO buildings(".trim($columns,',').") VALUES(".trim($values,',').")";
 			if(!empty($building)){
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				$success = array('status' => "Success", "msg" => "Building Created Successfully.", "data" => $building);
@@ -169,7 +173,7 @@
 				}
 				$columns = $columns.$desired_key."='".$$desired_key."',";
 			}
-			$query = "UPDATE building SET ".trim($columns,',')." WHERE building_id=$id";
+			$query = "UPDATE buildings SET ".trim($columns,',')." WHERE building_id=$id";
 			if(!empty($building)){
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				$success = array('status' => "Success", "msg" => "Building ".$id." Updated Successfully.", "data" => $building);
@@ -184,21 +188,26 @@
 			}
 			$id = (int)$this->_request['id'];
 			if($id > 0){				
-				$query="DELETE FROM building WHERE building_id = $id";
+				$query="DELETE FROM buildings WHERE building_id = $id";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				$success = array('status' => "Success", "msg" => "Successfully deleted one record.");
 				$this->response($this->json($success),200);
 			}else
 				$this->response('',204);	// If no records "No Content" status
 		}
-// Unit
-		private function units(){	
+// units
+		private function units(){
+		    
 			if($this->get_request_method() != "GET"){
 				$this->response('',406);
 			}
-			$query="SELECT unitnum, concat(lastname,', ',firstname) tenent, `type`, u.`status` status, price from unit u,tenents t where t.tenent_id = u.tenent_id";
-			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
-
+		    $id = (int)$this->_request['id'];
+		    	
+			
+			if($id > 0){				
+			    $query="SELECT u.unit_id unit_id, unitnum, concat(lastname,', ',firstname) tenent, `type`, u.`status` status, price from units u LEFT JOIN  tenents t ON u.tenent_id = t.tenent_id where u.building_id = $id";
+			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+            }
 			if($r->num_rows > 0){
 				$result = array();
 				while($row = $r->fetch_assoc()){
@@ -214,7 +223,7 @@
 			}
 			$id = (int)$this->_request['id'];
 			if($id > 0){	
-				$query="SELECT * from unit where unit_id = $id";
+				$query="SELECT * from units where unit_id = $id";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				if($r->num_rows > 0) {
 					$result = $r->fetch_assoc();	
@@ -231,7 +240,7 @@
 			}
 
 			$unit = json_decode(file_get_contents("php://input"),true);
-			$column_names = array('code', 'name', 'owner', 'street', 'city', 'state', 'zip', 'inactive', 'units');
+			$column_names = array( 'building_id', 'tenent_id',  'unitnum', 'price', 'type', 'status');
 			$keys = array_keys($unit);
 			$columns = '';
 			$values = '';
@@ -244,7 +253,7 @@
 				$columns = $columns.$desired_key.',';
 				$values = $values."'".$$desired_key."',";
 			}
-			$query = "INSERT INTO unit(".trim($columns,',').") VALUES(".trim($values,',').")";
+			$query = "INSERT INTO units(".trim($columns,',').") VALUES(".trim($values,',').")";
 			if(!empty($unit)){
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				$success = array('status' => "Success", "msg" => "Unit Created Successfully.", "data" => $unit);
@@ -259,7 +268,7 @@
 			}
 			$unit = json_decode(file_get_contents("php://input"),true);
 			$id = (int)$unit['id'];
-			$column_names = array('code', 'name', 'owner', 'street', 'city', 'state', 'zip', 'inactive', 'units');
+			$column_names = array('unit_id', 'building_id', 'tenent_id', 'building', 'unitnum', 'price', 'type', 'status', 'total_bal_due');
 			$keys = array_keys($unit['unit']);
 			$columns = '';
 			$values = '';
@@ -271,7 +280,7 @@
 				}
 				$columns = $columns.$desired_key."='".$$desired_key."',";
 			}
-			$query = "UPDATE unit SET ".trim($columns,',')." WHERE unit_id=$id";
+			$query = "UPDATE units SET ".trim($columns,',')." WHERE unit_id=$id";
 			if(!empty($unit)){
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				$success = array('status' => "Success", "msg" => "Unit ".$id." Updated Successfully.", "data" => $unit);
@@ -286,7 +295,7 @@
 			}
 			$id = (int)$this->_request['id'];
 			if($id > 0){				
-				$query="DELETE FROM unit WHERE unit_id = $id";
+				$query="DELETE FROM units WHERE unit_id = $id";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				$success = array('status' => "Success", "msg" => "Successfully deleted one record.");
 				$this->response($this->json($success),200);
