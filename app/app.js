@@ -105,36 +105,6 @@ app.controller('listCtrlUnits', function ($scope, services, $routeParams, $rootS
     });
 });
 
-app.controller('editCtrlTenent', function ($scope, $rootScope, $location, $routeParams, services, tenent) {
-    var tenentID = ($routeParams.tenentID) ? parseInt($routeParams.tenentID) : 0;
-    var buildingID = ($routeParams.buildingID);
-    $rootScope.title = (tenentID > 0) ? 'Edit Tenent' : 'Add Tenent';
-    $scope.buttonText = (tenentID > 0) ? 'Update Tenent' : 'Add New Tenent';
-    var original = tenent.data;
-    original._id = tenentID;
-    $scope.tenent = angular.copy(original);
-      $scope.tenent._id = tenentID;
-      $scope.building_id = buildingID;
-      $scope.isClean = function() {
-        return angular.equals(original, $scope.tenent);
-      }
-
-      $scope.deleteTenent = function(tenent) {
-        $location.path('/dbpm/#/edit-building-tenents/:buildingID');
-        if(confirm("Are you sure to delete tenent number: "+$scope.tenent._id)==true)
-        services.deleteTenent(tenent.tenentNumber);
-      };
-
-      $scope.saveTenent = function(tenent) {
-        $location.path('/');
-        if (tenentID <= 0) {
-            services.insertTenent(tenent);
-        }
-        else {
-            services.updateTenent(tenentID, tenent);
-        }
-    };
-});
 app.controller('editCtrlBuilding', function ($scope, $rootScope, $location, $routeParams, services, building, $log) {
     var buildingID = ($routeParams.buildingID) ? parseInt($routeParams.buildingID) : 0;
     $rootScope.title = (buildingID > 0) ? 'Edit Building' : 'Add Building';
@@ -282,6 +252,36 @@ app.controller('editCtrlTenents', function ($scope, $rootScope, $location, $rout
         }
     };
 });
+app.controller('editCtrlTenent', function ($scope, $rootScope, $location, $routeParams, services, tenent) {
+    var tenentID = ($routeParams.tenentID) ? parseInt($routeParams.tenentID) : 0;
+    var buildingID = ($routeParams.buildingID);
+    $rootScope.title = (tenentID > 0) ? 'Edit Tenent' : 'Add Tenent';
+    $scope.buttonText = (tenentID > 0) ? 'Update Tenent' : 'Add New Tenent';
+    var original = tenent.data || {};
+    original._id = tenentID;
+    $scope.tenent = angular.copy(original);
+      $scope.tenent._id = tenentID;
+      $scope.building_id = buildingID;
+      $scope.isClean = function() {
+        return angular.equals(original, $scope.tenent);
+      }
+
+      $scope.deleteTenent = function(tenent) {
+        $location.path('/dbpm/#/edit-building-tenents/:buildingID');
+        if(confirm("Are you sure to delete tenent number: "+$scope.tenent._id)==true)
+        services.deleteTenent(tenent.tenentNumber);
+      };
+
+      $scope.saveTenent = function(tenent) {
+        $location.path('/dbpm/#/edit-building-tenents/:buildingID');
+        if (tenentID <= 0) {
+            services.insertTenent(tenent);
+        }
+        else {
+            services.updateTenent(tenentID, tenent);
+        }
+    };
+});
 app.controller('DropdownCtrl', function ($scope, $log) {
   $scope.items = [
     'The first choice!',
@@ -377,7 +377,7 @@ app.config(['$routeProvider',function($routeProvider) {
           }
         }
       })
-      .when('/edit-tenent/:tenentID', {
+      .when('/edit-tenent/:buildingID/:tenentID', {
         title: 'Edit Tenents',
         templateUrl: 'partials/edit-tenent.html',
         controller: 'editCtrlTenent',

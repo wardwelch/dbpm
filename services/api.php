@@ -303,6 +303,62 @@
 				$this->response('',204);	// If no records "No Content" status
 		}
 		
+		
+		private function insertTenent(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+
+			$column_names = array( 'building_id', 'unit_id', 'unitid', 'lastname', 'firstname', 'ssn', 'creditcard', 'cardnumber', 'unused', 'status', 'deposit_paid', 'firstmo_paid', 'lastmo_paid', 'other_paid', 'balance_due', 'move_in', 'move_out', '30_day_notice', 'other', 'drivers_license');
+			$keys = array_keys($tenent);
+			$columns = '';
+			$values = '';
+			foreach($column_names as $desired_key){ // Check the customer received. If blank insert blank into the array.
+			   if(!in_array($desired_key, $keys)) {
+			   		$$desired_key = '';
+				}else{
+					$$desired_key = $tenent[$desired_key];
+				}
+				$columns = $columns.$desired_key.',';
+				$values = $values."'".$$desired_key."',";
+			}
+			$query = "INSERT INTO tenents(".trim($columns,',').") VALUES(".trim($values,',').")";
+			if(!empty($tenent)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				$success = array('status' => "Success", "msg" => "tenent Created Successfully.", "data" => $tenent);
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	//"No Content" status
+		}
+		
+		private function updateTenent(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+			$tenent = json_decode(file_get_contents("php://input"),true);
+			$id = (int)$tenent['id'];
+			$column_names = array( 'building_id', 'unit_id', 'unitid', 'lastname', 'firstname', 'ssn', 'creditcard', 'cardnumber', 'unused', 'status', 'deposit_paid', 'firstmo_paid', 'lastmo_paid', 'other_paid', 'balance_due', 'move_in', 'move_out', '30_day_notice', 'other', 'drivers_license');
+			$keys = array_keys($tenent['tenent']);
+			$columns = '';
+			$values = '';
+			foreach($column_names as $desired_key){ // Check the unit received. If key does not exist, insert blank into the array.
+			   if(!in_array($desired_key, $keys)) {
+			   		$$desired_key = '';
+				}else{
+					$$desired_key = $tenent['tenent'][$desired_key];
+				}
+				$columns = $columns.$desired_key."='".$$desired_key."',";
+			}
+			$query = "UPDATE tenents SET ".trim($columns,',')." WHERE tenent_id=$id";
+			if(!empty($tenent)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				$success = array('status' => "Success", "msg" => "Unit ".$id." Updated Successfully.", "data" => $tenent);
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	// "No Content" status
+		}
+		
+		
 		/*
 		 *	Encode array into JSON
 		*/
