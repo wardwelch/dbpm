@@ -12,8 +12,8 @@
         <div class="row">
         <nav class= "navbar navbar-default" role= "navigation" >
         <div class= "navbar-header" >
-        <a class= "navbar-brand" href= "/dbpm/#/edit-building-tenents/{{building_id}}"><i class="glyphicon glyphicon-th-large"></i> Tenents List </a>
-        <a ng-show="tenent._id" class= "navbar-brand" href= "/dbpm/#/edit-tenent/{{building_id}}/0"><i class="glyphicon glyphicon-plus"></i> Create Tenent </a>
+        <a class= "navbar-brand" href= "/dbpm/#/edit-building-units/{{tenent.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Units List (Building: {{tenent.building_id}})</a>
+        <a ng-show="tenent._id" class= "navbar-brand" href= "/dbpm/#/edit-tenent/{{tenent.building_id}}/0"><i class="glyphicon glyphicon-plus"></i> Create Tenent </a>
         <a ng-show="tenent._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Tenent Number: {{tenent._id}}</a>
         </div>
         </nav>
@@ -23,6 +23,8 @@
         <div class="col-md-12">
 
 <form role="form" name="myForm" class="form-horizontal">
+<input type="hidden" ng-model="tenent.building_id" name="building_id" id="building_id" />
+<input type="hidden" ng-model="tenent.unit_id" name="unit_id" id="unit_id" />
 <div class="row">
 <div class= "form-group" ng-class="{error: myForm.firstname.$invalid}">
     <label class= "col-md-2"> First Name </label>
@@ -83,15 +85,8 @@
 <div class= "form-group" ng-class="{error: myForm.lastmo_paid.$invalid}">
     <label class= "col-md-2"> Last Month Paid </label>
     <div class="col-md-4">
-    <input name="lastmo_paid" ng-model="tenent.lastmo_paid" type= "text" class= "form-control" placeholder="Last Month Paid" required/>
+    <input name="lastmo_paid" ng-model="tenent.lastmo_paid" type= "text" class= "form-control" placeholder="Last Month Paid" />
     <span ng-show="myForm.lastmo_paid.$dirty && myForm.lastmo_paid.$invalid" class="help-inline">Last Month Paid</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.firstmo_paid.$invalid}">
-    <label class= "col-md-2"> First Month Paid </label>
-    <div class="col-md-4">
-    <input name="firstmo_paid" ng-model="tenent.firstmo_paid" type= "text" class= "form-control" placeholder="First Month Paid" />
-    <span ng-show="myForm.firstmo_paid.$dirty && myForm.firstmo_paid.$invalid" class="help-inline">First Month Paid</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.other_paid.$invalid}">
@@ -146,7 +141,7 @@
 <div class= "form-group">
     <label class= "col-md-2"></label>
     <div class="col-md-4">
-    <a href="/dbpm/#/edit-building-tenents/{{building_id}}" class="btn">Cancel</a>
+    <a href="/dbpm/#/edit-building-units/{{tenent.building_id}}" class="btn">Cancel</a>
         <button ng-click="saveTenent(tenent);" 
                 ng-disabled="isClean() || myForm.$invalid"
                 class="btn btn-primary">{{buttonText}}</button>

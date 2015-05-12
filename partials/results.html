@@ -1,0 +1,23 @@
+ <div class="row" >
+    <div class="col-md-12" ng-show="result.length > 0">    
+    <nav class= "navbar navbar-default" role= "navigation" >
+    <div class= "navbar-header" >
+    </div>
+    </nav>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <th>ID</i></th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="data in result">
+                    <td>{{data.id}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12" ng-show="result.length == 0">
+        <div class="col-md-12">
+            <h4>No rows found</h4>
+        </div>
+    </div>
+</div>
