@@ -3,6 +3,10 @@ app.factory("services", ['$http', function($http) {
   var serviceBase = 'services/'
     var obj = {};
     // Tenents
+    obj.getLastInsertID = function() {
+        return $http.get(serviceBase + 'lastInsertID');
+    
+    }
     obj.getTenents = function(buildingID){
         return $http.get(serviceBase + 'tenents?id=' + buildingID);
     }
@@ -79,10 +83,42 @@ app.factory("services", ['$http', function($http) {
 	        return status.data;
 	    });
 	};
+	
+    //Units	
+    obj.getRents = function(buildingID){
+        return $http.get(serviceBase + 'rents?id=' + buildingID);
+    }
+    
+    obj.getRent = function( rentID ){
+        return $http.get(serviceBase + 'rent?id=' + rentID);
+    }
+
+    obj.insertRent = function (rent) {       
+       return $http.post(serviceBase + 'insertRent', rent).then(function (results) {           
+         return results;
+        });
+	};
+
+	obj.updateRent = function (id,rent) {
+	    return $http.post(serviceBase + 'updateRent', {id:id, rent:rent}).then(function (status) {
+	        return status.data;
+	    });
+	};
+
+	obj.deleteRent = function (id) {
+	    return $http.delete(serviceBase + 'deleteRent?id=' + id).then(function (status) {
+	        return status.data;
+	    });
+	};
 
     return obj;   
 }]);
 
+app.controller('listCtrl', function ($scope, services) {
+    services.getLastInsertID().then(function(data){
+        $scope.result = data.data;
+    });
+});
 app.controller('listCtrlTenents', function ($scope, services) {
     services.getTenents().then(function(data){
         $scope.tenents = data.data;
@@ -184,6 +220,73 @@ app.controller('editCtrlUnit', function ($scope, $rootScope, $location, $routePa
         }
     };
 });
+app.controller('editCtrlRents', function ($scope, $rootScope, $location, $routeParams, services, building, $log) {
+    var buildingID = ($routeParams.buildingID) ? parseInt($routeParams.buildingID) : 0;
+    $rootScope.title = (buildingID > 0) ? 'Edit Rents' : 'Add Rents';
+    $scope.buttonText = (buildingID > 0) ? 'Update Rents' : 'Add New Rents';
+      var original = building.data;
+      original._id = buildingID;
+      $scope.building = angular.copy(original);
+      $scope.building._id = buildingID;
+
+    $scope.months = [
+        { label: 'January', value: 'Jan'},
+        { label: 'February', value: 'Feb'},
+        { label: 'March', value: 'Mar'},
+        { label: 'April', value: 'Apr'},
+        { label: 'May', value: 'May'},
+        { label: 'June', value: 'Jun'},
+        { label: 'July', value: 'Jul'},
+        { label: 'August', value: 'Aug'},
+        { label: 'September', value: 'Sept'},
+        { label: 'October', value: 'Oct'},
+        { label: 'November', value: 'Nov'},
+        { label: 'December', value: 'Dec'}
+    ];
+    
+var d = new Date();
+$scope.m = d.getMonth();    
+    
+var yearStart = 1996;
+var yearEnd = 2025;
+var current = d.getFullYear();
+var years = [];
+var i = 0;
+while(yearStart < yearEnd+1){ 
+   var year  = yearStart++;
+   if(current == year) $scope.y = i;
+   i++;
+   years.push({label: year, value: year});
+}
+
+$scope.years = years;
+
+    
+    services.getRents(buildingID).then(function(data){
+        $scope.rents = data.data;
+    });
+    
+      $scope.isClean = function() {
+        return angular.equals(original, $scope.building);
+      }
+    
+      $scope.deleteBuilding = function(building) {
+        $location.path('/buildings');
+        if(confirm("Are you sure to delete building name: "+$scope.building._id)==true)
+        services.deleteBuilding(building.building_id);
+      };
+
+      $scope.saveBuilding = function(building) {
+        $location.path('/buildings');
+        if (buildingID <= 0) {
+            $log.log("save building");
+            services.insertBuilding(building);
+        }
+        else {
+            services.updateBuilding(buildingID, building);
+        }
+    };
+});
 app.controller('editCtrlUnits', function ($scope, $rootScope, $location, $routeParams, services, building, $log) {
     var buildingID = ($routeParams.buildingID) ? parseInt($routeParams.buildingID) : 0;
     $rootScope.title = (buildingID > 0) ? 'Edit Units' : 'Add Units';
@@ -253,27 +356,30 @@ app.controller('editCtrlTenents', function ($scope, $rootScope, $location, $rout
     };
 });
 app.controller('editCtrlTenent', function ($scope, $rootScope, $location, $routeParams, services, tenent) {
-    var tenentID = ($routeParams.tenentID) ? parseInt($routeParams.tenentID) : 0;
+    var tenentID = ($routeParams.tenentID) ? parseInt($routeParams.tenentID) : 0;    
     var buildingID = ($routeParams.buildingID);
+    var unitID = ($routeParams.unitID);
     $rootScope.title = (tenentID > 0) ? 'Edit Tenent' : 'Add Tenent';
     $scope.buttonText = (tenentID > 0) ? 'Update Tenent' : 'Add New Tenent';
     var original = tenent.data || {};
     original._id = tenentID;
     $scope.tenent = angular.copy(original);
       $scope.tenent._id = tenentID;
-      $scope.building_id = buildingID;
+      $scope.tenent.building_id = buildingID;
+      $scope.tenent.unit_id = unitID;
+      
       $scope.isClean = function() {
         return angular.equals(original, $scope.tenent);
       }
 
       $scope.deleteTenent = function(tenent) {
-        $location.path('/dbpm/#/edit-building-tenents/:buildingID');
+        $location.path('/dbpm/#/edit-building-units/:buildingID');
         if(confirm("Are you sure to delete tenent number: "+$scope.tenent._id)==true)
-        services.deleteTenent(tenent.tenentNumber);
+        services.deleteTenent(tenentID);
       };
 
       $scope.saveTenent = function(tenent) {
-        $location.path('/dbpm/#/edit-building-tenents/:buildingID');
+        $location.path('/dbpm/#/edit-building-units/:buildingID');
         if (tenentID <= 0) {
             services.insertTenent(tenent);
         }
@@ -328,6 +434,11 @@ app.config(['$routeProvider',function($routeProvider) {
         templateUrl: 'partials/tenents.html',
         controller: 'listCtrlTenents'
       })      
+      .when('/lastInsertID', {
+        title: 'last insert ID',
+        templateUrl: 'partials/results.html',
+        controller: 'listCtrl'
+      })      
       .when('/units/:buildingID', {
         title: 'Units',
         templateUrl: 'partials/units.html',
@@ -348,6 +459,17 @@ app.config(['$routeProvider',function($routeProvider) {
         title: 'Edit Units',
         templateUrl: 'partials/edit-building-units.html',
         controller: 'editCtrlUnits',
+        resolve: {
+          building: function(services, $route){
+            var buildingID = $route.current.params.buildingID;
+            return services.getBuilding(buildingID);
+          }
+        }
+      })
+      .when('/edit-building-rents/:buildingID', {
+        title: 'Edit Rents',
+        templateUrl: 'partials/edit-building-rents.html',
+        controller: 'editCtrlRents',
         resolve: {
           building: function(services, $route){
             var buildingID = $route.current.params.buildingID;
@@ -377,7 +499,7 @@ app.config(['$routeProvider',function($routeProvider) {
           }
         }
       })
-      .when('/edit-tenent/:buildingID/:tenentID', {
+      .when('/edit-tenent/:buildingID/:unitID/:tenentID', {
         title: 'Edit Tenents',
         templateUrl: 'partials/edit-tenent.html',
         controller: 'editCtrlTenent',

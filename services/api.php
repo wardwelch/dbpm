@@ -195,6 +195,113 @@
 			}else
 				$this->response('',204);	// If no records "No Content" status
 		}
+// rents
+		private function rents(){
+		    
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+		    $id = (int)$this->_request['id'];
+		    	
+			
+			if($id > 0){				
+			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenent from rents r LEFT JOIN  tenents t ON r.tenent_id = t.tenent_id where r.building_id = $id";
+			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+            }
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+		private function rent(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+			$id = (int)$this->_request['id'];
+			if($id > 0){	
+				$query="SELECT * from rents where rent_id = $id";
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				if($r->num_rows > 0) {
+					$result = $r->fetch_assoc();	
+					$this->response($this->json($result), 200); // send user details
+				}
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+		
+		
+		private function insertRent(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+
+			$rent = json_decode(file_get_contents("php://input"),true);
+			$column_names = array( 'building_id', 'tenent_id',  'rentnum', 'price', 'type', 'status');
+			$keys = array_keys($rent);
+			$columns = '';
+			$values = '';
+			foreach($column_names as $desired_key){ // Check the customer received. If blank insert blank into the array.
+			   if(!in_array($desired_key, $keys)) {
+			   		$$desired_key = '';
+				}else{
+					$$desired_key = $rent[$desired_key];
+				}
+				$columns = $columns.$desired_key.',';
+				$values = $values."'".$$desired_key."',";
+			}
+			$query = "INSERT INTO rents(".trim($columns,',').") VALUES(".trim($values,',').")";
+			if(!empty($rent)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				$success = array('status' => "Success", "msg" => "Rent Created Successfully.", "data" => $rent);
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	//"No Content" status
+		}
+		
+		private function updateRent(){
+			if($this->get_request_method() != "POST"){
+				$this->response('',406);
+			}
+			$rent = json_decode(file_get_contents("php://input"),true);
+			$id = (int)$rent['id'];
+			$column_names = array('rent_id', 'building_id', 'tenent_id', 'building', 'rentnum', 'price', 'type', 'status', 'total_bal_due');
+			$keys = array_keys($rent['rent']);
+			$columns = '';
+			$values = '';
+			foreach($column_names as $desired_key){ // Check the rent received. If key does not exist, insert blank into the array.
+			   if(!in_array($desired_key, $keys)) {
+			   		$$desired_key = '';
+				}else{
+					$$desired_key = $rent['rent'][$desired_key];
+				}
+				$columns = $columns.$desired_key."='".$$desired_key."',";
+			}
+			$query = "UPDATE rents SET ".trim($columns,',')." WHERE rent_id=$id";
+			if(!empty($rent)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				$success = array('status' => "Success", "msg" => "Rent ".$id." Updated Successfully.", "data" => $rent);
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	// "No Content" status
+		}
+		
+		private function deleteRent(){
+			if($this->get_request_method() != "DELETE"){
+				$this->response('',406);
+			}
+			$id = (int)$this->_request['id'];
+			if($id > 0){				
+				$query="DELETE FROM rents WHERE rent_id = $id";
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				$success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	// If no records "No Content" status
+		}
 // units
 		private function units(){
 		    
@@ -205,7 +312,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT u.unit_id unit_id, unitnum, concat(lastname,', ',firstname) tenent, `type`, u.`status` status, price from units u LEFT JOIN  tenents t ON u.tenent_id = t.tenent_id where u.building_id = $id";
+			    $query="SELECT u.unit_id unit_id, unitnum, t.tenent_id, concat(lastname,', ',firstname) tenent, `type`, u.`status` status, price from units u LEFT JOIN  tenents t ON u.tenent_id = t.tenent_id where u.building_id = $id";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -308,7 +415,7 @@
 			if($this->get_request_method() != "POST"){
 				$this->response('',406);
 			}
-
+			$tenent = json_decode(file_get_contents("php://input"),true);
 			$column_names = array( 'building_id', 'unit_id', 'unitid', 'lastname', 'firstname', 'ssn', 'creditcard', 'cardnumber', 'unused', 'status', 'deposit_paid', 'firstmo_paid', 'lastmo_paid', 'other_paid', 'balance_due', 'move_in', 'move_out', '30_day_notice', 'other', 'drivers_license');
 			$keys = array_keys($tenent);
 			$columns = '';
@@ -325,10 +432,33 @@
 			$query = "INSERT INTO tenents(".trim($columns,',').") VALUES(".trim($values,',').")";
 			if(!empty($tenent)){
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				$tenent['tenent_id'] = $this->mysqli->insert_id;
+				$tid = (int)$tenent['tenent_id'];
+				$uid = (int)$tenent['unit_id'];
+                $query = "update units set tenent_id = $tid, status = 'Occupied' where unit_id = $uid";
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);				
 				$success = array('status' => "Success", "msg" => "tenent Created Successfully.", "data" => $tenent);
+				
 				$this->response($this->json($success),200);
 			}else
 				$this->response('',204);	//"No Content" status
+		}
+		private function lastInsertID(){
+		    
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}		    	
+			
+            $query="SELECT last_insert_id() id";
+            $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
 		}
 		
 		private function updateTenent(){
