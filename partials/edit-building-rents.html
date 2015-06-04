@@ -6,20 +6,30 @@
   .form-horizontal input.ng-valid.ng-dirty {
     border-color: #78FA89;
   }
-  #
 </style>
 <div class="view">
     <div class="container">
         <div class="row">
+<!-- 
             <nav class= "navbar navbar-default hidden-xs" role="navigation">
                 <div class="navbar-header" style="padding:5px" >
                     <a class= "navbar-brand" href= "/dbpm/#/buildings"><i class="glyphicon glyphicon-th-large"></i> Buildings List </a>
-                    <a ng-show="building._id" class= "navbar-brand hidden" href= "#/edit-building/0"><i class="glyphicon glyphicon-plus"></i> Create Building </a>
-                    <a ng-show="building._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Building Number: {{building._id}}</a>
+                    <a ng-show="building._id" class= "navbar-brand" href= "#/edit-building/0"><i class="glyphicon glyphicon-plus"></i> Add Building </a>
+                    <a ng-show="building._id" class= "navbar-brand" href= "#/edit-building-units/{{building.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Units </a>
                 </div>
             </nav>
+ -->
             <header>
-                <h4>Building</h4>
+                <h4 ng-controller="DropdownCtrl">                
+                    <span class="dropdown" dropdown on-toggle="toggled(open)">
+                        <a href class="dropdown-toggle" dropdown-toggle>Building<span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li ng-repeat="choice in list">
+                          <a href="#/edit-building-rents/{{choice.id}}">{{choice.name}}</a>
+                        </li>
+                      </ul>
+                    </span>
+                </h4>
                 <div class="col-sm-2 pull-left">
                      <strong style="display:initial">Id:</strong> <br/>
                      <strong style="display:initial">Code:</strong> <br/>
@@ -27,7 +37,7 @@
                      <strong style="display:initial">Owner:</strong> <br/>   
                      <strong style="display:initial">Units:</strong> <br/>  
                </div>
-                 <div class="col-sm-4 pull-left">
+                <div class="col-sm-4 pull-left">
                       <span style="display:initial">&nbsp;{{building.building_id}}</span><br/>
                       <span style="display:initial">&nbsp;{{building.code}}</span><br/>
                       <span style="display:initial">&nbsp;{{building.name}}</span><br/>                    
@@ -48,66 +58,62 @@
                       <span>&nbsp;{{building.zip}}</span><br/> 
                       <span>&nbsp;{{building.inactive}}</span><br/>                        
                 </div>
-            </div>
-             </header>
-                <hr />
-                <div class="row">
-                     <div class="col-md-4 pull-left">
-                        {{title}}
-                    </div>
-                       <label class="hidden-xs col-md-3">Now Showing:</label>
-                        <Label class="col-md-3">
-                            <i class="glyphicon glyphicon-triangle-left"></i>
-                            <select ng-init="month = months[m]" ng-model="month" ng-options="month.label for month in months" ></select>
-                            <i class="glyphicon glyphicon-triangle-right"></i>
-                        </label>
-                         <label  class="col-md-2">
-                         <i class="glyphicon glyphicon-triangle-left"></i>
-                            <select  ng-init="year = years[y]" ng-model="year" ng-options="year.value for year in years" ></select>
-                            <i class="glyphicon glyphicon-triangle-right"></i>
-                        </label>
-                         <span class="pull-right">
-                            <a class="btn-link" href="#/edit-rent/{{building.building_id}}/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add new unit</a>
-                        </span>
-                  </div>
-                </div>
-             <div class="row">
-                <div class="col-md-12" ng-show="rents.length > 0">
-                    <table class="table table-striped table-bordered">
-                    <thead>
-                    <th>Unit&nbsp;</th>
-                    <th>Tenent&nbsp;</th>
-                    <th class="hidden-xs">Receipts&nbsp;</th>
-                    <th>Date&nbsp;</th>
-                    <th>Rent&nbsp;</th>
-                    <th>D&nbsp;</th>
-                    <th>Paid&nbsp;</th>
-                    <th>Due&nbsp;</th>
-                    <th>Action&nbsp;</th>
-                    </thead>
-                    <tbody>
-                    
-                    
-                        <tr ng-repeat="data in rents | filter: month.value + '/' + year.value ">
-                            <td>{{data.unitid}}</td>
-                            <td>{{data.tenent}}</td>
-                             <td class="hidden-xs">{{data.receipt}}</td>
-                            <td>{{data.date_paid}}</td>
-                            <td>{{data.rent_owed}}</td>
-                            <td>{{data.deposit}}</td>
-                            <td>{{data.rent_paid}}</td>
-                            <td>{{data.due_this_mo}}</td>
-                            <td></td>                            
-                        </tr>
-                    </tbody>
-                    </table>
-                </div>
-                <div class="col-md-12" ng-show="rents.length == 0">
-                    <div class="col-md-12">
-                        <h4>No units found</h4>
-                    </div>
-                </div>
-            </div>
+            </header>
         </div>
+        <hr />
+        <tabset ng-init="tab.active = true">
+            <tab heading="Rents" active="tab.active">
+                <div class="row" style="padding:10px">
+                   <strong class="col-md-2 pull-left">
+                        {{title}}
+                    </strong>
+                    <label class="hidden-xs col-md-2">Now Showing:</label>
+                    <month-year></month-year>                  
+                    <span class="col-md-2">
+                        <button style="padding:inherit" ng-click="addRents(building.building_id,month.value,year.value)" class="btn btn-link"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Rents</button>
+                    </span>
+                    <span class="pull-right col-md-2">
+                        <a style="padding:inherit" class="btn btn-link" href="#/edit-rent/{{building.building_id}}/0/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add receipt</a>
+                    </span>
+                </div>
+                <div class="row">
+                    <div class="col-md-12" ng-show="rents.length > 0">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <th>Unit&nbsp;</th>
+                                <th>Tenent&nbsp;</th>
+                                <th class="hidden-xs">Receipts&nbsp;</th>
+                                <th>Date&nbsp;</th>
+                                <th>Rent&nbsp;</th>
+                                <th>D&nbsp;</th>
+                                <th>Paid&nbsp;</th>
+                                <th>Due&nbsp;</th>
+                                <th>Action&nbsp;</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="data in rents | filter: month.value + '/' + year.value ">
+                                    <td>{{data.unitid}}</td>
+                                    <td>{{data.tenant}}</td>
+                                     <td class="hidden-xs">{{data.receipt}}</td>
+                                    <td>{{data.date_paid}}</td>
+                                    <td>{{data.rent_owed}}</td>
+                                    <td>{{data.deposit}}</td>
+                                    <td>{{data.rent_paid}}</td>
+                                    <td>{{data.due_this_mo}}</td>
+                                    <td><a href="#/edit-rent/{{building.building_id}}/{{data.unit_id}}/{{data.rent_id}}" class="btn" title="Edit Receipt">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Receipt</span></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12" ng-show="rents.length == 0">
+                        <div class="col-md-12">
+                            <h4>No units found</h4>
+                        </div>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="Units" select="switchToUnits(building.building_id)"></tab>
+            <tab heading="Tenants" select="switchToTenants(building.building_id)"></tab>
+        </tabset>
     </div>
-    </div>
+</div>

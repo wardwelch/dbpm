@@ -8,149 +8,175 @@
   }
 </style>
 <div class="view">
-    <div class="container">
+	<div class="container">
+		<div class="row">
+			<nav class="navbar navbar-default" role="navigation"> 
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/dbpm/#/edit-building-units/{{tenent.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Units List (Building: {{tenent.building_id}})</a> <a ng-show="tenent._id" class="navbar-brand" href="/dbpm/#/edit-tenent/{{tenent.building_id}}/0"><i class="glyphicon glyphicon-plus"></i> Create Tenent </a> <a ng-show="tenent._id" class="navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Tenent Number: {{tenent._id}}</a> 
+                </div>
+			</nav> 
+			<div class="clearfix"></div>
+			<hr />
+		</div>
         <div class="row">
-        <nav class= "navbar navbar-default" role= "navigation" >
-        <div class= "navbar-header" >
-        <a class= "navbar-brand" href= "/dbpm/#/edit-building-units/{{tenent.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Units List (Building: {{tenent.building_id}})</a>
-        <a ng-show="tenent._id" class= "navbar-brand" href= "/dbpm/#/edit-tenent/{{tenent.building_id}}/0"><i class="glyphicon glyphicon-plus"></i> Create Tenent </a>
-        <a ng-show="tenent._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Tenent Number: {{tenent._id}}</a>
+            <accordion close-others="oneAtATime">
+                <!-- building -->
+                <accordion-group id="building-group"> 
+                    <accordion-heading> 
+                        Building:<span class="acrdn-data">&nbsp;{{building.name}}</span> 
+                    </accordion-heading> 
+                    <div class="col-sm-2 pull-left">
+                        <strong style="display:initial">Id:</strong> <br />
+                        <strong style="display:initial">Code:</strong> <br />
+                        <strong style="display:initial">Name:</strong> <br />
+                        <strong style="display:initial">Owner:</strong> <br />
+                        <strong style="display:initial">Units:</strong> <br />
+                    </div>
+                    <div class="col-sm-4 pull-left">
+                        <span style="display:initial">&nbsp;{{building.building_id}}</span><br />
+                        <span style="display:initial">&nbsp;{{building.code}}</span><br />
+                        <span style="display:initial">&nbsp;{{building.name}}</span><br />
+                        <span style="display:initial">&nbsp;{{building.owner}}</span><br />
+                        <span style="display:initial">&nbsp;{{building.units}}</span><br />
+                    </div>
+                    <div class="col-sm-2 pull-left">
+                        <strong style="display:initial">Street:</strong> <br />
+                        <strong style="display:initial">City:</strong> <br />
+                        <strong style="display:initial">State:</strong> <br />
+                        <strong style="display:initial">Zip:</strong> <br />
+                        <strong style="display:initial">Inactive</strong> <br />
+                    </div>
+                    <div class="col-sm-4 pull-left">
+                        <span>&nbsp;{{building.street}}</span><br />
+                        <span>&nbsp;{{building.city}}</span><br />
+                        <span>&nbsp;{{building.state}}</span><br />
+                        <span>&nbsp;{{building.zip}}</span><br />
+                        <span>&nbsp;{{building.inactive}}</span><br />
+                    </div>
+            </accordion-group>
+                <!-- unit  -->
+                <accordion-group id="unit-group"> 
+                    <accordion-heading>
+                         Unit: <span class="acrdn-data">{{unit.unit_id}}</span> 
+                    </accordion-heading> 
+                    <div class="col-sm-2 pull-left">
+                        <strong style="display:initial">Building:</strong> <br />
+                        <strong style="display:initial">UnitNum:</strong> <br />
+                        <strong style="display:initial">Price:</strong> <br />
+                        <strong style="display:initial">Type:</strong> <br />
+                        <strong style="display:initial">Unit ID:</strong> <br />
+                        <strong style="display:initial">Status:</strong> <br />
+                    </div>
+                    <div class="col-sm-4 pull-left">
+                        <span style="display:initial">&nbsp;{{unit.building}}</span><br />
+                        <span style="display:initial">&nbsp;{{unit.unitnum}}</span><br />
+                        <span style="display:initial">&nbsp;{{unit.price}}</span><br />
+                        <span style="display:initial">&nbsp;{{unit.type}}</span><br />
+                        <span style="display:initial">&nbsp;{{unit.unitis}}</span><br />
+                        <span style="display:initial">&nbsp;{{unit.status}}</span><br />
+                    </div>
+                    <div class="col-sm-2 pull-left">
+                        <strong style="display:initial">Type:</strong> <br />
+                        <strong style="display:initial">Status:</strong> <br />
+                    </div>
+                    <div class="col-sm-4 pull-left">
+                        <span>&nbsp;{{unit.type}}</span><br />
+                        <span>&nbsp;{{unit.status}}</span><br />
+                    </div>
+                </accordion-group>
+                <!-- tenant -->
+                <accordion-group id="tenant-group"> 
+                    <accordion-heading> 
+                        Tenent: <span class="acrdn-data">{{(tenent._id)?tenent.firstname + ' ' + tenent.lastname:'Vacant'}}</span> 
+                    </accordion-heading> 
+                    <div class="col-sm-6">
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="#/add-tenent/{{tenent.building_id}}/{{tenent.unit_id}}/{{tenent.tenent_id}}" class="btn btn-primary">{{buttonText}}</a> <a class="btn btn-primary">Move In</a> <a class="btn btn-primary">Move Out</a> 
+                    </div>
+                    <div class="clearFix">
+                        &nbsp;
+                    </div>
+                    <div class="col-sm-2 pull-left">
+                        <strong style="display:initial">First Name</strong> <br />
+                        <strong style="display:initial">Last Name:</strong> <br />
+                        <strong style="display:initial">Status:</strong> <br />
+                        <strong style="display:initial">SSN:</strong> <br />
+                        <strong style="display:initial">Drivers License</strong> <br />
+                        <strong style="display:initial">Credit Card</strong> <br />
+                        <strong style="display:initial">Card Number:</strong> <br />
+                        <strong style="display:initial">Deposit Paid</strong> <br />
+                    </div>
+                    <div class="col-sm-4 pull-left">
+                        <span style="display:initial">&nbsp;{{tenent.firstname}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenent.lastname}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenent.status}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenent.ssn}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenent.driver_license}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenent.creditcard}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenent.cardnumber}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenent.deposit_paid}}</span><br />
+                    </div>
+                    <div class="col-sm-2 pull-left">
+                        <strong style="display:initial">First Month Paid</strong> <br />
+                        <strong style="display:initial">Last Month Paid</strong> <br />
+                        <strong style="display:initial">Other Paid</strong> <br />
+                        <strong style="display:initial">Balance Due</strong> <br />
+                        <strong style="display:initial">30 Day Notice</strong> <br />
+                        <strong style="display:initial">Other</strong> <br />
+                        <strong style="display:initial">Move In</strong> <br />
+                        <strong style="display:initial">Move Out</strong> <br />
+                    </div>
+                    <div class="col-sm-4 pull-left">
+                        <span >&nbsp;{{tenent.firstmo_paid}}</span><br />
+                        <span >&nbsp;{{tenent.lastmo_paid}}</span><br />
+                        <span >&nbsp;{{tenent.other_paid}}</span><br />
+                        <span >&nbsp;{{tenent.balance_due}}</span><br />
+                        <span >&nbsp;{{tenent.30_day_notice}}</span><br />
+                        <span >&nbsp;{{tenent.other_paid}</span><br />
+                        <span >&nbsp;{{tenent.move_in}}</span><br />
+                        <span >&nbsp;{{tenent.move_out}}</span><br />
+                    </div>
+                </accordion-group>
+                <!--rent -->
+                <accordion-group id="rent-group">
+                    <accordion-heading> Rents: </accordion-heading> 
+                    <div class="row">
+                        <month-year></month-year> 
+                        <div class="col-md-12" ng-show="rents.length > 0">
+                            <table class="table table-striped table-bordered">
+                            <thead>
+                                <th class="hidden-xs">Receipts&nbsp;</th>
+                                <th>Date&nbsp;</th>
+                                <th>Rent&nbsp;</th>
+                                <th>D&nbsp;</th>
+                                <th>Paid&nbsp;</th>
+                                <th>Due&nbsp;</th>
+                                <th>Action&nbsp;</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="rent in rents | filter: month.value + '/' + year.value ">
+                                    <td>{{rent.receipt}}</td>
+                                    <td>{{rent.date_paid}}</td>
+                                    <td>{{rent.rent_owed}}</td>
+                                    <td>{{rent.deposit}}</td>
+                                    <td>{{rent.rent_paid}}</td>
+                                    <td>{{rent.due_this_mo}}</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-12" ng-show="rents.length == 0">
+                            <div class="col-md-12">
+                                <h4>
+                                    No units found 
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+            </accordion-group>
+        </accordion> 
         </div>
-        </nav>
-        <header>
-            <h3>{{title}}</h3>
-        </header>
-        <div class="col-md-12">
-
-<form role="form" name="myForm" class="form-horizontal">
-<input type="hidden" ng-model="tenent.building_id" name="building_id" id="building_id" />
-<input type="hidden" ng-model="tenent.unit_id" name="unit_id" id="unit_id" />
-<div class="row">
-<div class= "form-group" ng-class="{error: myForm.firstname.$invalid}">
-    <label class= "col-md-2"> First Name </label>
-    <div class="col-md-4">
-    <input name="firstname" ng-model="tenent.firstname" type= "text" class= "form-control" placeholder="First Name" required/>
-    <span ng-show="myForm.firstname.$dirty && myForm.firstname.$invalid" class="help-inline">Name Required</span>
     </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.lastname.$invalid}">
-    <label class= "col-md-2"> Last Name </label>
-    <div class="col-md-4">
-    <input name="lastname" ng-model="tenent.lastname" type= "text" class= "form-control" placeholder="Last Name" required/>
-    <span ng-show="myForm.lastname.$dirty && myForm.lastname.$invalid" class="help-inline">Name Required</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.ssn.$invalid}">
-    <label class= "col-md-2"> SSN </label>
-    <div class="col-md-4">
-    <input name="ssn" ng-model="tenent.ssn" type= "text" class= "form-control" placeholder="SSN" />
-    <span ng-show="myForm.ssn.$dirty && myForm.ssn.$invalid" class="help-inline">SSN</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.creditcard.$invalid}">
-    <label class= "col-md-2"> Credit Card </label>
-    <div class="col-md-4">
-    <input name="creditcard" ng-model="tenent.creditcard" type= "text" class= "form-control" placeholder="Credit Card" />
-    <span ng-show="myForm.creditcard.$dirty && myForm.creditcard.$invalid" class="help-inline">Credit Card</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.cardnumber.$invalid}">
-    <label class= "col-md-2"> Card Number </label>
-    <div class="col-md-4">
-    <input name="cardnumber" ng-model="tenent.cardnumber" type= "text" class= "form-control" placeholder="Card Number" />
-    <span ng-show="myForm.cardnumber.$dirty && myForm.cardnumber.$invalid" class="help-inline">Card Number</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.status.$invalid}">
-    <label class= "col-md-2"> Status </label>
-    <div class="col-md-4">
-    <input name="status" ng-model="tenent.status" type= "text" class= "form-control" placeholder="Status" />
-    <span ng-show="myForm.status.$dirty && myForm.status.$invalid" class="help-inline">Status</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.deposit_paid.$invalid}">
-    <label class= "col-md-2"> Deposit Paid </label>
-    <div class="col-md-4">
-    <input name="deposit_paid" ng-model="tenent.deposit_paid" type= "text" class= "form-control" placeholder="Deposit Paid" />
-    <span ng-show="myForm.deposit_paid.$dirty && myForm.deposit_paid.$invalid" class="help-inline">Deposit Paid</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.firstmo_paid.$invalid}">
-    <label class= "col-md-2"> First Month Paid </label>
-    <div class="col-md-4">
-    <input name="firstmo_paid" ng-model="tenent.firstmo_paid" type= "text" class= "form-control" placeholder="First Month Paid" />
-    <span ng-show="myForm.firstmo_paid.$dirty && myForm.firstmo_paid.$invalid" class="help-inline">First Month Paid</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.lastmo_paid.$invalid}">
-    <label class= "col-md-2"> Last Month Paid </label>
-    <div class="col-md-4">
-    <input name="lastmo_paid" ng-model="tenent.lastmo_paid" type= "text" class= "form-control" placeholder="Last Month Paid" />
-    <span ng-show="myForm.lastmo_paid.$dirty && myForm.lastmo_paid.$invalid" class="help-inline">Last Month Paid</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.other_paid.$invalid}">
-    <label class= "col-md-2"> Other Paid </label>
-    <div class="col-md-4">
-    <input name="other_paid" ng-model="tenent.other_paid" type= "text" class= "form-control" placeholder="Other Paid" />
-    <span ng-show="myForm.other_paid.$dirty && myForm.other_paid.$invalid" class="help-inline">Other Paid</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.balance_due.$invalid}">
-    <label class= "col-md-2"> Balance Due </label>
-    <div class="col-md-4">
-    <input name="balance_due" ng-model="tenent.balance_due" type= "text" class= "form-control" placeholder="Balance Due" />
-    <span ng-show="myForm.balance_due.$dirty && myForm.balance_due.$invalid" class="help-inline">Balance Due</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.move_in.$invalid}">
-    <label class= "col-md-2"> Move In </label>
-    <div class="col-md-4">
-    <input name="move_in" ng-model="tenent.move_in" type= "text" class= "form-control" placeholder="Move In" />
-    <span ng-show="myForm.move_in.$dirty && myForm.move_in.$invalid" class="help-inline">Move In</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.move_out.$invalid}">
-    <label class= "col-md-2"> Move Out </label>
-    <div class="col-md-4">
-    <input name="move_out" ng-model="tenent.move_out" type= "text" class= "form-control" placeholder="Move Out" />
-    <span ng-show="myForm.move_out.$dirty && myForm.move_out.$invalid" class="help-inline">Move Out</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.30_day_notice.$invalid}">
-    <label class= "col-md-2"> 30 Day Notice </label>
-    <div class="col-md-4">
-    <input name="30_day_notice" ng-model="tenent.30_day_notice" type= "text" class= "form-control" placeholder="30 Day Notice" />
-    <span ng-show="myForm.30_day_notice.$dirty && myForm.30_day_notice.$invalid" class="help-inline">30 Day Notice</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.other.$invalid}">
-    <label class= "col-md-2"> Other </label>
-    <div class="col-md-4">
-    <input name="other" ng-model="tenent.other" type= "text" class= "form-control" placeholder="Other" />
-    <span ng-show="myForm.other.$dirty && myForm.other.$invalid" class="help-inline">Other</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.drivers_license.$invalid}">
-    <label class= "col-md-2"> Drivers License </label>
-    <div class="col-md-4">
-    <input name="drivers_license" ng-model="tenent.drivers_license" type= "text" class= "form-control" placeholder="Drivers License" />
-    <span ng-show="myForm.drivers_license.$dirty && myForm.drivers_license.$invalid" class="help-inline">Drivers License</span>
-    </div>
-</div>
-<div class= "form-group">
-    <label class= "col-md-2"></label>
-    <div class="col-md-4">
-    <a href="/dbpm/#/edit-building-units/{{tenent.building_id}}" class="btn">Cancel</a>
-        <button ng-click="saveTenent(tenent);" 
-                ng-disabled="isClean() || myForm.$invalid"
-                class="btn btn-primary">{{buttonText}}</button>
-        <button ng-click="deleteTenent(tenentID)"
-                ng-show="tenent._id" class="btn btn-warning">Delete</button>
-    </div>
-</div>
-</div>
-</form>
-        </div></div>
-    </div>
-</div>
+</div><!-- view -->
