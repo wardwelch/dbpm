@@ -1,4 +1,4 @@
-﻿<style type="text/css">
+<style type="text/css">
   .form-horizontal input.ng-invalid.ng-dirty {
     border-color: #FA787E;
   }
@@ -12,14 +12,16 @@
 		<div class="row">
 			<nav class="navbar navbar-default" role="navigation"> 
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="/dbpm/#/edit-building-units/{{tenent.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Units List (Building: {{tenent.building_id}})</a> <a ng-show="tenent._id" class="navbar-brand" href="/dbpm/#/edit-tenent/{{tenent.building_id}}/0"><i class="glyphicon glyphicon-plus"></i> Create Tenent </a> <a ng-show="tenent._id" class="navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Tenent Number: {{tenent._id}}</a> 
+                    <a class="navbar-brand" href="/dbpm/#/edit-building-units/{{tenent.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Units List (Building: {{tenent.building_id}})</a> 
+                    <a ng-show="tenent._id" class="navbar-brand" href="/dbpm/#/edit-tenent/{{tenent.building_id}}/0"><i class="glyphicon glyphicon-plus"></i> Create Tenent </a> 
+                    <a ng-show="tenent._id" class="hidden-xs navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Tenent Number: {{tenent._id}}</a> 
                 </div>
 			</nav> 
 			<div class="clearfix"></div>
 			<hr />
 		</div>
         <div class="row">
-            <accordion close-others="oneAtATime">
+            <accordion close-others="oneAtATime" ng-init="isOpen=true">
                 <!-- building -->
                 <accordion-group id="building-group"> 
                     <accordion-heading> 
@@ -85,19 +87,19 @@
                     </div>
                 </accordion-group>
                 <!-- tenant -->
-                <accordion-group id="tenant-group"> 
+                <accordion-group id="tenant-group" is-open="isOpen"> 
                     <accordion-heading> 
                         Tenent: <span class="acrdn-data">{{(tenent._id)?tenent.firstname + ' ' + tenent.lastname:'Vacant'}}</span> 
                     </accordion-heading> 
                     <div class="col-sm-6">
                     </div>
                     <div class="col-sm-6">
-                        <a href="#/add-tenent/{{tenent.building_id}}/{{tenent.unit_id}}/{{tenent.tenent_id}}" class="btn btn-primary">{{buttonText}}</a> <a class="btn btn-primary">Move In</a> <a class="btn btn-primary">Move Out</a> 
+                        <a href="#/add-tenent/{{tenent.building_id}}/{{tenent.unit_id}}/{{tenent._id}}" class="btn btn-primary">Edit Tenant</a> <a class="btn btn-primary" ng-click="moveIn()">Move In</a> <a class="btn btn-primary" ng-click="moveOut()">Move Out</a> 
                     </div>
                     <div class="clearFix">
                         &nbsp;
                     </div>
-                    <div class="col-sm-2 pull-left">
+                    <div class="col-xs-6 col-sm-2 pull-left">
                         <strong style="display:initial">First Name</strong> <br />
                         <strong style="display:initial">Last Name:</strong> <br />
                         <strong style="display:initial">Status:</strong> <br />
@@ -107,33 +109,31 @@
                         <strong style="display:initial">Card Number:</strong> <br />
                         <strong style="display:initial">Deposit Paid</strong> <br />
                     </div>
-                    <div class="col-sm-4 pull-left">
+                    <div class="col-xs-6 col-sm-4 pull-left">
                         <span style="display:initial">&nbsp;{{tenent.firstname}}</span><br />
                         <span style="display:initial">&nbsp;{{tenent.lastname}}</span><br />
                         <span style="display:initial">&nbsp;{{tenent.status}}</span><br />
                         <span style="display:initial">&nbsp;{{tenent.ssn}}</span><br />
-                        <span style="display:initial">&nbsp;{{tenent.driver_license}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenent.drivers_license}}</span><br />
                         <span style="display:initial">&nbsp;{{tenent.creditcard}}</span><br />
                         <span style="display:initial">&nbsp;{{tenent.cardnumber}}</span><br />
                         <span style="display:initial">&nbsp;{{tenent.deposit_paid}}</span><br />
                     </div>
-                    <div class="col-sm-2 pull-left">
+                    <div class="col-xs-6 col-sm-2 pull-left">
                         <strong style="display:initial">First Month Paid</strong> <br />
                         <strong style="display:initial">Last Month Paid</strong> <br />
                         <strong style="display:initial">Other Paid</strong> <br />
                         <strong style="display:initial">Balance Due</strong> <br />
-                        <strong style="display:initial">30 Day Notice</strong> <br />
                         <strong style="display:initial">Other</strong> <br />
                         <strong style="display:initial">Move In</strong> <br />
                         <strong style="display:initial">Move Out</strong> <br />
                     </div>
-                    <div class="col-sm-4 pull-left">
+                    <div class="col-xs-6 col-sm-4 pull-left">
                         <span >&nbsp;{{tenent.firstmo_paid}}</span><br />
                         <span >&nbsp;{{tenent.lastmo_paid}}</span><br />
                         <span >&nbsp;{{tenent.other_paid}}</span><br />
                         <span >&nbsp;{{tenent.balance_due}}</span><br />
-                        <span >&nbsp;{{tenent.30_day_notice}}</span><br />
-                        <span >&nbsp;{{tenent.other_paid}</span><br />
+                        <span >&nbsp;{{tenent.other_paid}}</span><br />
                         <span >&nbsp;{{tenent.move_in}}</span><br />
                         <span >&nbsp;{{tenent.move_out}}</span><br />
                     </div>

@@ -8,6 +8,7 @@ app.factory("services", ['$http', function($http) {
         return $http.get(serviceBase + 'lastInsertID');
     
     }
+    
     obj.getFirstYear = function() {
         return $http.get(serviceBase + 'firstYear');
     
@@ -77,7 +78,6 @@ app.factory("services", ['$http', function($http) {
     obj.getUnit = function( unitID ){
         return $http.get(serviceBase + 'unit?id=' + unitID);
     }
-
     obj.insertUnit = function (unit) {       
        return $http.post(serviceBase + 'insertUnit', unit).then(function (results) {           
          return results;
@@ -96,7 +96,7 @@ app.factory("services", ['$http', function($http) {
 	    });
 	};
 	
-    //Units	
+    //Rents	
     obj.getRents = function(buildingID){
         return $http.get(serviceBase + 'rents?id=' + buildingID);
     }
@@ -105,6 +105,9 @@ app.factory("services", ['$http', function($http) {
     }
     obj.getRentsByUnit = function(unitID){
         return $http.get(serviceBase + 'unit_rents?uid=' + unitID);
+    }
+    obj.getRentsRange = function(buildingID){
+        return $http.get(serviceBase + 'getRentsRange?id=' + buildingID);
     }
     
     obj.getRent = function( rentID ){
@@ -134,7 +137,36 @@ app.factory("services", ['$http', function($http) {
 	        return status.data;
 	    });
 	};
+	
+	
+    //prices
+    obj.getPrices = function( unitid ){
+        return $http.get(serviceBase + 'prices?id=' + unitid);
+    }
+    
+    obj.getPrice = function( priceID ){
+        return $http.get(serviceBase + 'price?id=' + priceID);
+    }
+    
+    obj.insertPrice = function (price) {       
+       return $http.post(serviceBase + 'insertPrice', price)
+       .then(function (results) {           
+         return results;
+        });
+	};
+    
+	obj.updatePrice = function (id,price) {
+	    return $http.post(serviceBase + 'updatePrice', {id:id, price:price}).then(function (status) {
+	        return status.data;
+	    });
+	};
 
+	obj.deletePrice = function (id) {
+	    return $http.delete(serviceBase + 'deletePrice?id=' + id).then(function (status) {
+	        return status.data;
+	    });
+	};
+	
     return obj;   
 }]);
 
@@ -146,6 +178,7 @@ app.controller('listCtrl', function ($scope, services) {
         $scope.result = data.data;
     });
 });
+
 app.controller('listCtrlTenents', function ($scope, services) {
     services.getTenents().then(function(data){
         $scope.tenents = data.data;
@@ -215,6 +248,13 @@ app.controller('listCtrlUnits', function ($scope, services, $routeParams, $rootS
         });
     
 });
+app.controller('listCtrlPrices', function ($scope, services, $routeParams, $rootScope) {
+    var unitid = ($routeParams.unitid) ? ($routeParams.unitid) : '%';
+    services.getPrices(unitid).then(function(data){
+            $scope.prices = data.data;
+        });
+    $scope.search = unitid;   
+});
 
 
 app.directive('monthYear', monthYearDirective)
@@ -253,7 +293,7 @@ app.directive('monthYear', monthYearDirective)
 
         var d = new Date(),
             m = d.getMonth(),   
-            yearStart = 1996,
+            yearStart = 1991,
             yearEnd = 2015,
             current = d.getFullYear(),
             years = [{ label: 'All', value: ''}],
@@ -291,11 +331,22 @@ app.controller('editCtrlBuilding', function ($scope, $rootScope, $location, $rou
       original._id = buildingID;
       $scope.building = angular.copy(original);
       $scope.building._id = buildingID;
-
+      
       $scope.isClean = function() {
         return angular.equals(original, $scope.building);
       }
-
+      
+      $scope.changeInactive = function(val) {
+        if(val == 1) {
+            if(confirm("Are you sure you want to deactivate : "+$scope.building.name)==true){
+                $scope.building.inactive = '1';
+            }else{
+                $scope.building.inactive = '0';
+            }
+        }
+      };
+      
+      
       $scope.deleteBuilding = function(building) {
         $location.path('/buildings');
         if(confirm("Are you sure to delete building name: "+$scope.building._id)==true)
@@ -318,7 +369,7 @@ app.controller('editCtrlBuilding', function ($scope, $rootScope, $location, $rou
 
 
 
-app.controller('editCtrlUnit', function ($scope, $rootScope, $location, $routeParams, services, unit, $log) {
+app.controller('editCtrlUnit', function ($scope, $rootScope, $location, $routeParams, services, unit, $log, $window) {
     var buildingID = ($routeParams.buildingID);
     var unitID = ($routeParams.unitID) ? parseInt($routeParams.unitID) : 0;
     var building = {};
@@ -336,6 +387,9 @@ app.controller('editCtrlUnit', function ($scope, $rootScope, $location, $routePa
         $scope.unit.building = building.name;
     });
      
+    services.getUnits(buildingID).then(function(data){
+        $scope.unitsList = data.data;
+    });
       
     $scope.options = [
         { label: '1 Bedroom', value: '1 Bedroom'},
@@ -356,7 +410,17 @@ app.controller('editCtrlUnit', function ($scope, $rootScope, $location, $routePa
         if(confirm("Are you sure to delete unit name: "+$scope.unit._id)==true)
         services.deleteUnit(unit.unit_id);
       };
-
+      $scope.nextUnit = function(unit) {
+        if(confirm("Do you want to save your changes: "+$scope.unit._id)==true)
+        services.updateUnit(unitID, unit);
+      };
+      
+      $scope.addTenant = function(unitD) {
+        setTimeout(function() {
+          $window.location.href="#/add-tenent/"+buildingID+"/"+unitID+"/0";
+        });
+      };
+        
       $scope.saveUnit = function(unit) {
         $location.path('/edit-building-units/'+ buildingID ); 
         if (unitID <= 0) {
@@ -365,6 +429,43 @@ app.controller('editCtrlUnit', function ($scope, $rootScope, $location, $routePa
         else {
             services.updateUnit(unitID, unit);
         }
+                
+        
+    };
+});
+app.controller('editCtrlPrice', function ($scope, $rootScope, $location, $routeParams, services, price, $log, $window) {
+    var priceID = ($routeParams.priceID) ? parseInt($routeParams.priceID) : 0;
+    var buildingID = ($routeParams.buildingID);
+    var unitID = ($routeParams.unitID);
+    $rootScope.title = (priceID > 0) ? 'Edit Price' : 'Add Price';
+    $scope.buttonText = (priceID > 0) ? 'Edit Price' : 'Add Price';   
+    var original = price.data || {};
+    original._id = priceID;
+    $scope.price = angular.copy(original);
+    $scope.price._id = priceID;
+    $scope.price.building_id = buildingID;
+    $scope.price.unit_id = unitID;
+    
+      $scope.isClean = function() {
+        return angular.equals(original, $scope.price);
+      }
+
+      $scope.deletePrice = function(price) {
+        $location.path('/edit-price/' + unitID );
+        if(confirm("Are you sure to delete price name: "+$scope.price._id)==true)
+        services.deletePrice(price.price_id);
+      };
+        
+      $scope.savePrice = function(price) {
+        $location.path('/prices/'+buildingID + '/' + unitID ); 
+        if (priceID <= 0) {
+            services.insertPrice(price);
+        }
+        else {
+            services.updatePrice(priceID, price);
+        }
+                
+        
     };
 });
 app.controller('editCtrlRents', function ($scope, $rootScope, $location, $routeParams, services, building, $log, $window) {
@@ -382,7 +483,16 @@ app.controller('editCtrlRents', function ($scope, $rootScope, $location, $routeP
         $scope.list = data.data;
     });
 
-    services.getRents(buildingID).then(function(data){
+    
+    services
+    .getRentsRange(buildingID)
+    .then(function(data){
+        $scope.age = data.data;
+    });
+
+    
+    services.getRents(buildingID)
+    .then(function(data){
         $scope.rents = data.data;
     });
     
@@ -390,10 +500,12 @@ app.controller('editCtrlRents', function ($scope, $rootScope, $location, $routeP
         return angular.equals(original, $scope.building);
       }
     
-      $scope.addRents = function(building) {
+      $scope.addRents = function(building, month, year) {
+      	var month = month;
+      	var year = year;
        $location.path('/edit-building-rents/' + buildingID);
-        if(confirm("We will now create rents for Building:" + buildingID + "/" + $scope.month.value+"/"+$scope.year.value)==true){
-            services.addRents(buildingID,$scope.month.value,$scope.year.value)
+        if(confirm("We will now create rents for Building:" + buildingID + "/" + month+"/"+year)==true){
+            services.addRents(buildingID,month,year)
             .then(function(){  
             $window.location.reload()
             });
@@ -409,7 +521,6 @@ app.controller('editCtrlRents', function ($scope, $rootScope, $location, $routeP
       $scope.saveBuilding = function(building) {
         $location.path('/buildings');
         if (buildingID <= 0) {
-            $log.log("save building");
             services.insertBuilding(building);
         }
         else {
@@ -524,6 +635,15 @@ app.controller('editCtrlTenent', function ($scope, $rootScope, $location, $route
       $scope.isClean = function() {
         return angular.equals(original, $scope.tenent);
       }
+      
+      $scope.moveIn = function() {
+        alert("coming soon");  
+      }
+      
+       $scope.moveOut = function() {
+        alert("coming soon");  
+      }
+     
 
       $scope.deleteTenent = function(tenentID) {
         $location.path('/edit-tenent/'+buildingID+'/'+unitID+'/'+tenentID);
@@ -555,6 +675,9 @@ app.controller('editCtrlRent', function ($scope, $rootScope, $location, $routePa
     $scope.rent.unit_id = unitID;
     $scope.rent.building_id = buildingID;
 
+    $scope.calcDue = function() { 
+        $scope.rent.due_this_mo = $scope.rent.rent_owed - $scope.rent.rent_paid - $scope.rent.adjustment;
+    }
     
     services.getBuilding(buildingID).then(function(data){
         $scope.building = data.data;
@@ -656,11 +779,11 @@ app.controller('DropdownCtrl', function ($scope, $log) {
     isopen: false
   };
 
-  $scope.toggled = function(open) {  
-    $log.log('Dropdown is now: ', open);
-  };
+//   $scope.toggled = function(open) {  
+//     $log.log('Dropdown is now: ', open);
+//   };
 
-  $scope.toggleDropdown = function($event) {
+    $scope.toggleDropdown = function($event) {
     $event.preventDefault();
     $event.stopPropagation();
     $scope.status.isopen = !$scope.status.isopen;
@@ -685,7 +808,7 @@ app.config(['$routeProvider',function($routeProvider) {
         templateUrl: 'partials/dashboard.html',
         controller: 'listCtrl'
       })      
-      .when('/tenents', {
+      .when('/tenents/:buildingID', {
         title: 'Tenents',
         templateUrl: 'partials/tenents.html',
         controller: 'listCtrlTenents'
@@ -699,6 +822,11 @@ app.config(['$routeProvider',function($routeProvider) {
         title: 'Units',
         templateUrl: 'partials/units.html',
         controller: 'listCtrlUnits'
+      })      
+      .when('/prices/:unitid', {
+        title: 'prices',
+        templateUrl: 'partials/prices.html',
+        controller: 'listCtrlPrices'
       })      
       .when('/edit-building/:buildingID', {
         title: 'Edit Buildings',
@@ -741,6 +869,17 @@ app.config(['$routeProvider',function($routeProvider) {
           unit: function(services, $route){
             var unitID = $route.current.params.unitID;
             return services.getUnit(unitID);
+          }
+        }
+      })
+      .when('/edit-price/:buildingID/:unitID/:priceID', {
+        title: 'Edit Price',
+        templateUrl: 'partials/edit-price.html',
+        controller: 'editCtrlPrice',
+        resolve: {
+          price: function(services, $route){
+            var priceID = $route.current.params.priceID;
+            return services.getPrice(priceID);
           }
         }
       })

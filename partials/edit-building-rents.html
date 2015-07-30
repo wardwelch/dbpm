@@ -22,7 +22,7 @@
             <header>
                 <h4 ng-controller="DropdownCtrl">                
                     <span class="dropdown" dropdown on-toggle="toggled(open)">
-                        <a href class="dropdown-toggle" dropdown-toggle>Building<span class="caret"></span></a>
+                        <a href class="dropdown-toggle" dropdown-toggle>Building<span class="caret"></span></a><div class="pull-right">Since: {{age[0].first}} - {{age[0].last}}</div>
                       <ul class="dropdown-menu">
                         <li ng-repeat="choice in list">
                           <a href="#/edit-building-rents/{{choice.id}}">{{choice.name}}</a>
@@ -49,15 +49,15 @@
                      <strong style="display:initial">City:</strong> <br/>
                      <strong style="display:initial">State:</strong> <br/>  
                      <strong style="display:initial">Zip:</strong> <br/>
-                     <strong style="display:initial">Inactive</strong> <br/>
+                     <strong style="display:initial">Inactive:</strong> <br/>
                </div>
                 <div class="col-sm-4 pull-left">
                       <span>&nbsp;{{building.street}}</span><br/>
                       <span>&nbsp;{{building.city}}</span><br/>
                       <span>&nbsp;{{building.state}}</span><br/>  
                       <span>&nbsp;{{building.zip}}</span><br/> 
-                      <span>&nbsp;{{building.inactive}}</span><br/>                        
-                </div>
+                      <span>&nbsp;<input type="checkbox" ng-model="building.inactive" ng-true-value="1" ng-false-value="0"/></span> <br/> 
+               </div>
             </header>
         </div>
         <hr />
@@ -95,7 +95,7 @@
                                     <td>{{data.unitid}}</td>
                                     <td>{{data.tenant}}</td>
                                      <td class="hidden-xs">{{data.receipt}}</td>
-                                    <td>{{data.date_paid}}</td>
+                                    <td>{{data.date_paid | date:'M/d/y'}}</td>
                                     <td>{{data.rent_owed}}</td>
                                     <td>{{data.deposit}}</td>
                                     <td>{{data.rent_paid}}</td>

@@ -1,4 +1,4 @@
-﻿<style type="text/css">
+<style type="text/css">
   .form-horizontal input.ng-invalid.ng-dirty {
     border-color: #FA787E;
   }
@@ -14,7 +14,7 @@
         <div class= "navbar-header" >
         <a class= "navbar-brand" href= "/dbpm/#/edit-building-units/{{tenent.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Units List (Building: {{tenent.building_id}})</a>
         <a ng-show="tenent._id" class= "navbar-brand" href= "/dbpm/#/edit-tenent/{{tenent.building_id}}/0"><i class="glyphicon glyphicon-plus"></i> Create Tenent </a>
-        <a ng-show="tenent._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Tenent Number: {{tenent._id}}</a>
+        <a ng-show="tenent._id" class= "hidden-xs navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Tenent Number: {{tenent._id}}</a>
         </div>
         </nav>
         <header>
@@ -45,6 +45,13 @@
     <div class="col-md-4">
     <input name="ssn" ng-model="tenent.ssn" type= "text" class= "form-control" placeholder="SSN" />
     <span ng-show="myForm.ssn.$dirty && myForm.ssn.$invalid" class="help-inline">SSN</span>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.drivers_license.$invalid}">
+    <label class= "col-md-2"> Drivers License </label>
+    <div class="col-md-4">
+    <input name="drivers_license" ng-model="tenent.drivers_license" type= "text" class= "form-control" placeholder="Drivers License" />
+    <span ng-show="myForm.drivers_license.$dirty && myForm.drivers_license.$invalid" class="help-inline">Drivers License</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.creditcard.$invalid}">
@@ -113,35 +120,49 @@
 <div class= "form-group" ng-class="{error: myForm.move_out.$invalid}">
     <label class= "col-md-2"> Move Out </label>
     <div class="col-md-4">
-        <input name="move_out" ng-model="tenent.move_out" type="date" class="form-control" datepicker-popup ng-model="dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+        <input name="move_out" ng-model="tenent.move_out" type="date" class="form-control" placeholder="Move Out"/>
         <span ng-show="myForm.move_out.$dirty && myForm.move_out.$invalid" class="help-inline">Move Out</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.30_day_notice.$invalid}">
     <label class= "col-md-2"> 30 Day Notice </label>
     <div class="col-md-4">
-    <input name="30_day_notice" ng-model="tenent.30_day_nsotice" type= "date" class= "form-control" placeholder="30 Day Notice" />
+    <input name="30_day_notice" ng-model="tenent.30_day_notice" type= "date" class= "form-control" placeholder="30 Day Notice" />
     <span ng-show="myForm.30_day_notice.$dirty && myForm.30_day_notice.$invalid" class="help-inline">30 Day Notice</span>
     </div>
 </div>
-<div class= "form-group" ng-class="{error: myForm.other.$invalid}">
-    <label class= "col-md-2"> Other </label>
-    <div class="col-md-4">
-    <input name="other" ng-model="tenent.other" type= "text" class= "form-control" placeholder="Other" />
-    <span ng-show="myForm.other.$dirty && myForm.other.$invalid" class="help-inline">Other</span>
+<!-- 
+
+<script>
+   angular.module('dateInputExample', [])
+     .controller('DateController', ['$scope', function($scope) {
+       $scope.example = {
+         value: new Date(2013, 9, 22)
+       };
+     }]);
+</script>
+<form name="myForm" ng-controller="DateController as dateCtrl">
+   <label for="exampleInput">Pick a date in 2013:</label>
+   <input type="date" id="exampleInput" name="input" ng-model="example.value"
+       placeholder="yyyy-MM-dd" min="2013-01-01" max="2013-12-31" required />
+   <div role="alert">
+     <span class="error" ng-show="myForm.input.$error.required">
+         Required!</span>
+     <span class="error" ng-show="myForm.input.$error.date">
+         Not a valid date!</span>
     </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.drivers_license.$invalid}">
-    <label class= "col-md-2"> Drivers License </label>
-    <div class="col-md-4">
-    <input name="drivers_license" ng-model="tenent.drivers_license" type= "text" class= "form-control" placeholder="Drivers License" />
-    <span ng-show="myForm.drivers_license.$dirty && myForm.drivers_license.$invalid" class="help-inline">Drivers License</span>
-    </div>
-</div>
+    <tt>value = {{example.value | date: "yyyy-MM-dd"}}</tt><br/>
+    <tt>myForm.input.$valid = {{myForm.input.$valid}}</tt><br/>
+    <tt>myForm.input.$error = {{myForm.input.$error}}</tt><br/>
+    <tt>myForm.$valid = {{myForm.$valid}}</tt><br/>
+    <tt>myForm.$error.required = {{!!myForm.$error.required}}</tt><br/>
+</form>
+
+ -->
 <div class= "form-group">
     <label class= "col-md-2"></label>
     <div class="col-md-4">
-    <a href="/dbpm/#/edit-building-units/{{tenent.building_id}}" class="btn">Cancel</a>
+    <a href="/dbpm/#/edit-building-tenents/{{tenent.building_id}}" class="btn">Cancel</a>
         <button ng-click="saveTenent(tenent);" 
                 ng-disabled="isClean() || myForm.$invalid"
                 class="btn btn-primary">{{buttonText}}</button>
