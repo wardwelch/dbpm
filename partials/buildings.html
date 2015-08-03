@@ -1,10 +1,75 @@
- <div class="row" >
-    <div class="col-md-12" ng-show="buildings.length > 0">    
+<!-- 
+<div class="row" >
     <nav class= "navbar navbar-default" role= "navigation" >
-    <div class= "navbar-header" >
-    <a class="btn btn-lg btn-success" href="#/edit-building/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add new Building</a>
-    </div>
+        <div class= "navbar-header" >
+            <a class="btn btn-lg btn-success" href="#/edit-building/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add new Building</a>
+        </div>
     </nav>
+    <div class="col-md-12" ng-show="buildings.length > 0">    
+ -->
+<!-- 
+            <accordion>
+                <accordion-group  ng-repeat="building in buildings" is-open="building.open">
+                    <accordion-heading>
+                        Name: {{building.name}}
+                    </accordion-heading>
+                    <accordion>
+                        <accordion-group ng-repeat="unit in units" is-open="unit.open"> 
+                            <accordion-heading>
+                                <a class="btn">{{unit.unit_id}}</a> {{unit.tenant}}
+                            </accordion-heading> 
+                            <div ng-repeat="rent in rents">
+                                {{rent.receipt}}
+                            </div>
+                       </accordion-group>
+                    </accordion>
+                </accordion-group>
+            </accordion> 
+ -->
+<!-- 
+            <accordion>
+                <accordion-group  ng-repeat="building in buildings">
+                    <accordion-heading>
+                        <span ng-click="getUnitsByBuilding(building.building_id)"><a class="btn">{{building.name}}</a></span>
+                    </accordion-heading>
+                    <accordion>
+                        <accordion-group ng-repeat="unit in units"> 
+                            <accordion-heading>
+                                <span ng-click="getRentsByUnit(unit.unit_id)"><a class="btn">{{unit.unit_id}}</a> {{unit.tenant}}
+                            </accordion-heading> 
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <th>Month</th>
+                                    <th>Receipt</th>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="rent in rents | filter: 2011">
+                                    <td>{{rent.month}}</td>
+                                    <td>{{rent.receipt}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                       </accordion-group>
+                    </accordion>
+                </accordion-group>
+            </accordion> 
+ -->
+<!-- 
+    </div>
+    <div class="col-md-12" ng-show="buildings.length == 0">
+        <div class="col-md-12">
+            <h4>No buildings found</h4>
+        </div>
+    </div>
+</div>
+ -->
+<div class="row" >
+    <nav class= "navbar navbar-default" role= "navigation" >
+        <div class= "navbar-header" >
+                <a class="btn btn-sm btn-success btn-right10" href="#/edit-building/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add New Building</a>
+        </div>
+    </nav>
+    <div class="col-md-12" ng-show="buildings.length > 0">    
         <table class="table table-striped table-bordered">
             <thead>
                 <th><i class="glyphicon glyphicon-ok"></i></th>

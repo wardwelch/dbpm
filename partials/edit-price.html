@@ -1,0 +1,99 @@
+﻿<style type="text/css">
+  .form-horizontal input.ng-invalid.ng-dirty {
+    border-color: #FA787E;
+  }
+
+  .form-horizontal input.ng-valid.ng-dirty {
+    border-color: #78FA89;
+  }
+</style>
+<div class="view">
+    <div class="container">
+        <div class="row">
+            <nav class= "navbar navbar-default  hidden-xs" role= "navigation" >
+                <div class= "navbar-header" >
+                    <a class= "navbar-brand" href= "/dbpm/#/prices/{{price.building_id}}{{price.unit_id}}"><i class="glyphicon glyphicon-th-large"></i> Prices List </a>
+                    <a ng-show="price._id" class= "navbar-brand" href= "/dbpm/#/edit-price/{{buidlingID}}/{{unit_id}}/0"><i class="glyphicon glyphicon-plus"></i> Create Price </a>
+                    <a ng-show="price._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Price Number: {{price._id}}</a>
+                </div>
+            </nav>
+        <div class="col-md-12">
+            <div class="clearfix"></div>
+            <form role="form" name="myForm" class="form-horizontal">
+                <div class="row">
+                    <!-- 
+                    <div class= "form-group" ng-class="{error: myForm.unitnum.$invalid}">
+                        <label class= "col-md-2"> 
+                         <h4 ng-controller="DropdownCtrl">                
+                            <span class="dropdown" dropdown on-toggle="toggled(open)">
+                                <a href class="dropdown-toggle" dropdown-toggle>Unit<span class="caret"></span></a>
+                              <ul class="dropdown-menu" ng-init="reverse=true">
+                                <li ng-repeat="choice in unitsList | orderBy:'-choice.unitnum' : 'reverse'">
+                                  <a ng-click="nextUnit(unit);" href="#/edit-unit/{{unit.building_id}}/{{choice.unit_id}}">{{choice.unitnum}}</a>
+                                </li>
+                              </ul>
+                            </span>
+                        </h4>
+  
+                        </label>
+                    </div>
+                     -->
+                    <div class= "form-group">
+                        <label class= "col-md-2">Building </label>
+                        <div class="col-md-4">
+                        <input ng-model="price.building_id" type= "text" class= "form-control" placeholder= "Building" disabled/>
+                        </div>
+                    </div>
+                    <div class= "form-group">
+                        <label class= "col-md-2">Unit </label>
+                        <div class="col-md-4">
+                        <input ng-model="price.unit_id" type= "text" class= "form-control" placeholder= "Unit" disabled/>
+                        </div>
+                    </div>
+                    <div class= "form-group">
+                        <label class= "col-md-2">Unit Number </label>
+                        <div class="col-md-4">
+                        <input ng-model="price.unitnum" type= "text" class= "form-control" placeholder= "Unit Number" disabled/>
+                        </div>
+                    </div>
+                    <div class= "form-group">
+                        <label class= "col-md-2">Price </label>
+                        <div class="col-md-1">
+                        <input ng-model="price.rent" type= "text" class= "form-control" placeholder= "Price"/>
+                        </div>
+                    </div>
+                    <div class= "form-group">
+                        <label class= "col-md-2">Begins </label>
+                        <div class="col-md-4">
+                        <input ng-model="price.begin_date" type="date" class="form-control"  />
+                        </div>
+                    </div>
+                    <div class= "form-group">
+                        <label class= "col-md-2">Ends </label>
+                        <div class="col-md-4">
+                        <input ng-model="price.end_date" type="date" class="form-control"  />
+                        </div>
+                    </div>
+                    <div class= "form-group">
+                        <label class= "col-md-2">Active</label>
+                        <div  class="col-md-4">
+                            <span>&nbsp;<input type="checkbox" ng-model="price.active" ng-true-value="1" ng-false-value="0" ng-disabled="price.active == '1'"/></span> <br/> 
+                        </div>
+                    </div>
+                    <div class= "form-group">
+                        <label class= "col-md-2"></label>1
+                        <div class="col-md-4">
+                        <a href="/dbpm/#/prices/{{price.building_id}}/{{price.unit_id}}" class="btn">Cancel</a>
+                            <button ng-click="savePrice(price);" 
+                                    ng-disabled="isClean() || myForm.$invalid"
+                                    class="btn btn-primary">{{buttonText}}</button>
+                            <button ng-click="deletePrice(price)"
+                                    ng-show="price._id" class="btn btn-warning">Delete</button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

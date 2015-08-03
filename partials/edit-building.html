@@ -25,7 +25,7 @@
                 <div class="row">
                     <form role="form" name="myForm" class="form-horizontal">
                         <div class= "form-group" ng-class="{error: myForm.name.$invalid}">
-                            <label class= "col-md-2"> Code </label>
+                            <label class= "col-md-2"> Code time </label>
                             <div class="col-md-4">
                             <input name="code" ng-model="building.code" type= "text" class= "form-control" placeholder="Code" required/>
                             <span ng-show="myForm.code.$dirty && myForm.code.$invalid" class="help-inline">Code Required</span>
@@ -79,7 +79,7 @@
                         <div class= "form-group">
                             <label class= "col-md-2">Inactive </label>
                             <div class="col-md-1">
-                                <input type="checkbox" ng-model="building.inactive" ng-true-value="1" ng-false-value="0" class="form-control"/>
+                                <input type="checkbox" ng-model="building.inactive" ng-true-value="1" ng-false-value="0" ng-change="changeInactive(building.inactive)" class="form-control"/>
                             </div>
                         </div>
                         <div class= "form-group">

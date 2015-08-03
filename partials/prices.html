@@ -1,0 +1,42 @@
+ <div class="row">
+    <div class="col-md-12" ng-show="prices.length > 0">
+    
+    <nav class= "navbar navbar-default" role= "navigation" >
+        <div class= "navbar-header" >
+            <a class="btn btn-lg btn-success" href="#/edit-price/{{buildingID}}/{{unitID}}/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add New Price</a>
+        </div>
+    </nav>
+        <input id='search' name='search' ng-model='search' type='text' />
+        <table class="table table-striped table-bordered">
+        <thead>
+            <th>ID&nbsp;</th>
+            <th>Building ID&nbsp;</th>
+            <th>Unit ID&nbsp;</th>
+            <th>Unitid&nbsp;</th>            
+            <th>Begin Date&nbsp;</th>
+            <th>End Date&nbsp;</th>
+            <th>Rent&nbsp;</th>
+            <th>Active&nbsp;</th>            
+            <th>Action&nbsp;</th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="data in prices | filter : search">
+                <td>{{data.id}}</td>
+                <td>{{data.building_id}}</td>
+                <td>{{data.unit_id}}</td>
+                <td>{{data.unitid}}</td>
+                <td>{{data.begin_date}}</td>
+                <td>{{data.end_date}}</td> 
+                <td>{{data.rent}}</td>  
+                <td>{{data.active}}</td>                               
+                <td><a href="#/edit-price/{{data.building_id}}/{{data.unit_id}}/{{data.id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i>&nbsp; Edit Price</a></td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+    <div class="col-md-12" ng-show="prices.length == 0">
+        <div class="col-md-12">
+            <h4>No tenents found</h4>
+        </div>
+    </div>
+</div>

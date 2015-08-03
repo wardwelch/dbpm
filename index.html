@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html ng-app="myApp" ng-app lang="en">
+<html ng-app="myApp" ng-app lang="en" ng-controller="MainCtrl">
   <head>
+  
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Dave Bentz Properties</title>
+    <title>Dave Bentz</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -38,7 +39,54 @@
         }
         .snap-content{
             margin-top:60px;
-        }        
+        } 
+        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+             padding: 2px;
+        } 
+        .panel-heading {
+          padding: 5px 10px;
+          border-bottom: 1px solid transparent;
+          border-top-left-radius: 3px;
+          border-top-right-radius: 3px;
+        } 
+        .acrdn-data{
+            font-weight: 300;
+        } 
+        .btn-right10{
+            margin:10px;
+            float: right;
+        } 
+        .form-group {
+            margin-bottom: 4px;
+        } 
+                   
+        .form-control {
+          display: block;
+          width: 100%;
+          height: 34px;
+          padding: 6px 12px;
+          font-size: 14px;
+          line-height: 1.42857143;
+          color: #555;
+          background-color: #fff;
+          background-image: none;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+          -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+          -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        }
+                        
+        .nav-tabs>li>a {
+          margin-right: 2px;
+          font-weight: bold;
+          line-height: 1.42857143;
+          border: 1px solid transparent;
+          border-radius: 4px 4px 0 0;
+        }              
+
     </style>
     
     
@@ -48,6 +96,8 @@
     <script src="js/ui-bootstrap-tpls-0.12.1.min.js"></script>
     <script src="js/snap.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/angular-snap.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/angular-cookies.js"></script>
+    <script src="js/lodash.min.js"></script>
     <script src="app/app.js"></script>         
   </head>
 
@@ -64,32 +114,21 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/dbpm/#/dashboard">Dave Bentz Properties</a>
+          <a class="navbar-brand" href="/dbpm/#/dashboard">Dave Bentz</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse" ng-controller="HeaderController">
-          <ul class="nav navbar-nav">
-        <li ng-class="{ active: isActive('#')}"><a ng-href="/dbpm/#/dashboard" snap-close>Dashboard</a></li>
-        <li ng-class="{ active: isActive('/buildings')}"><a ng-href="/dbpm/#/buildings" snap-close>Buildings</a></li>
-        <li ng-class="{ active: isActive('/tenets')}"><a ng-href="/dbpm/#/tenents">Tenents</a></li>
-         <li ng-class="{ active: isActive('/wo')}"><a ng-href="/dbpm/#/wo">Work Orders</a></li>
+            <ul class="nav navbar-nav">
+                <li ng-class="{ active: isActive('#')}"><a ng-href="/dbpm/#/dashboard" snap-close>Dashboard</a></li>
+                <li ng-class="{ active: isActive('/buildings')}"><a ng-href="/dbpm/#/buildings" snap-close>Buildings</a></li>
 <!-- 
-              <li class="dropdown" dropdown on-toggle="toggled(open)"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" dropdown-toggle>More... <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
+                <li ng-class="{ active: isActive('/tenets')}"><a ng-href="/dbpm/#/tenents">Tenents</a></li>
  -->
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="../navbar-static-top/">Scott</a></li>
-            <li class="active"><a href="./">Sign In<span class="sr-only">(current)</span></a></li>
-          </ul>
+                <li ng-class="{ active: isActive('/wo')}"><a ng-href="/dbpm/#/wo">Work Orders</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="../navbar-static-top/">Scott</a></li>
+                <li class="active"><a href="./">Sign In<span class="sr-only">(current)</span></a></li>
+            </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -100,19 +139,6 @@
             <li ng-class="{ active: isActive('/dbpm/#/buildings')}"><a ng-href="/dbpm/#/buildings" snap-close>Buildings</a></li>
             <li ng-class="{ active: isActive('/dbpm/#/tenents')}"><a ng-href="/dbpm/#/edit-building-tenents/1" snap-close>Tenents</a></li>
             <li ng-class="{ active: isActive('/dbpm/#/wo')}"><a ng-href="/dbpm/#/wo" snap-close>Work Orders</a></li>
-<!-- 
-            <li class="dropdown" dropdown on-toggle="toggled(open)"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" dropdown-toggle>More... <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
- -->
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="../navbar-static-top/">Scott</a></li>
