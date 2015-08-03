@@ -468,7 +468,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT u.unit_id unit_id, unitnum, t.tenent_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, price from units u LEFT JOIN  tenents t ON u.tenent_id = t.tenent_id where u.building_id = $id";
+			    $query="SELECT u.unit_id unit_id, unitnum, t.tenent_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, price, u.unitid from units u LEFT JOIN  tenents t ON u.tenent_id = t.tenent_id where u.building_id = $id order by unitnum asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -602,42 +602,7 @@
 				$query="update unit_prices set active = 0 where active != 0";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 		}
-
-// 		private function insertUnit(){
-// 
-//             $unit = array( 
-//                 "building" =>"123MAIN",
-//                 "building_id" =>"40",
-//                 "price" =>"123",
-//                 "status" =>"Vacant",
-//                 "tenent_id" =>0,
-//                 "type" => "1 Bedroom",
-//                 "unitid" => "123MAIN/1",
-//                 "total_bal_due" => "1.00",
-//                 "unitnum" => "1"
-//             );
-// 			//$unit = json_decode(file_get_contents("php://input"),true);
-// 			$column_names = array( 'building_id', 'tenent_id', 'building', 'unitnum', 'price', 'type', 'status', 'unitid','total_bal_due');
-// 			$keys = array_keys($unit);
-// 			$columns = '';
-// 			$values = '';
-// 			foreach($column_names as $desired_key){ // Check the customer received. If blank insert blank into the array.
-// 			   if(!in_array($desired_key, $keys)) {
-// 			   		$$desired_key = '';
-// 				}else{
-// 					$$desired_key = $unit[$desired_key];
-// 				} 
-// 				$columns = $columns.$desired_key.',';
-// 				$values = $values."'".$$desired_key."',";
-// 			}
-// 			$query = "INSERT INTO units(".trim($columns,',').") VALUES(".trim($values,',').")";
-// 			if(!empty($unit)){
-// 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
-// 				$success = array('status' => "Success", "msg" => "Unit Created Successfully.", "data" => $unit);
-// 				$this->response($this->json($success),200);
-// 			}else
-// 				$this->response('',204);	//"No Content" status
-// 		}
+		
 
 		private function insertUnit(){
 			if($this->get_request_method() != "POST"){
@@ -708,6 +673,19 @@
 				$this->response('',204);	// If no records "No Content" status
 		}
 		
+		private function deleteTenent(){
+			if($this->get_request_method() != "DELETE"){
+				$this->response('',406);
+			}
+			$id = (int)$this->_request['id'];
+			if($id > 0){				
+				$query="DELETE FROM tenents WHERE tenent_id = $id";
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				$success = array('status' => "Success", "msg" => "Successfully deleted one record.");
+				$this->response($this->json($success),200);
+			}else
+				$this->response('',204);	// If no records "No Content" status
+		}
 		
 		private function insertTenent(){
 			if($this->get_request_method() != "POST"){

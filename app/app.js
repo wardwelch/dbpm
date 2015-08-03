@@ -246,6 +246,11 @@ app.controller('listCtrlUnits', function ($scope, services, $routeParams, $rootS
         .then(function(data){
             $scope.rents = data.data;
         });
+        
+      $scope.deleteUnit = function(unit) {
+        if(confirm("Are you sure to delete Unit: " + unit.unitid)==true)
+            services.deleteUnit(unit);
+      };
     
 });
 app.controller('listCtrlPrices', function ($scope, services, $routeParams, $rootScope) {
@@ -374,23 +379,22 @@ app.controller('editCtrlUnit', function ($scope, $rootScope, $location, $routePa
     var unitID = ($routeParams.unitID) ? parseInt($routeParams.unitID) : 0;
     var building = {};
     $rootScope.title = (unitID > 0) ? 'Edit Unit' : 'Add Unit';
-    $scope.buttonText = (unitID > 0) ? 'Update Unit' : 'Add New Unit';
-      var original = unit.data || {};
-      original._id = unitID;
-      $scope.unit = angular.copy(original);
-      $scope.unit._id = unitID;
-      $scope.unit.building_id = buildingID;
-      $scope.unit.tenent_id = (unit.data.tenent_id > 0) ? unit.data.tenent_id : 0 ;
-      
-     services.getBuilding(buildingID).then(function(data){
+    $scope.buttonText = (unitID > 0) ? 'Update Unit' : 'Add Unit';
+    var original = unit.data || {};
+    original._id = unitID;
+    $scope.unit = angular.copy(original);
+    $scope.unit._id = unitID;
+    $scope.unit.building_id = buildingID;
+
+    services.getBuilding(buildingID).then(function(data){
         building = data.data;
         $scope.unit.building = building.name;
     });
-     
-    services.getUnits(buildingID).then(function(data){
-        $scope.unitsList = data.data;
+    services.getBuilding(buildingID).then(function(data){
+        building = data.data;
+        $scope.unit.building = building.name;
     });
-      
+    
     $scope.options = [
         { label: '1 Bedroom', value: '1 Bedroom'},
         { label: '2 Bedroom', value: '2 Bedroom'}
@@ -399,20 +403,49 @@ app.controller('editCtrlUnit', function ($scope, $rootScope, $location, $routePa
         { label: 'Vacant', value: 'Vacant'},
         { label: 'Occupied', value: 'Occupied'}
     ];
-    
-    
+   
+    services.getUnits(buildingID).then(function(data){
+        $scope.unitsList = data.data;
+        if(unitID == 0) {
+            if($scope.unitsList.length){
+                var tmp = (_.max($scope.unitsList,'unitnum')).unitnum;
+                $scope.unit.unitnum = parseInt(tmp) + 1;
+            }
+            else{
+                $scope.unit.unitnum = 1;
+            }
+            $scope.unit.unitid = $scope.unit.building+"/"+$scope.unit.unitnum;
+            $scope.unit.price = $rootScope.price || 0;
+            $scope.unit.tenent_id =  0  ;
+            $scope.unit.total_bal_due = 0;
+            $scope.unit.type = $scope.options[0].value;
+            $scope.unit.status = $scope.items[0].value;
+        }
+    });
+        
       $scope.isClean = function() {
         return angular.equals(original, $scope.unit);
       }
 
       $scope.deleteUnit = function(unit) {
         $location.path('/edit-building-units/' + buildingID );
-        if(confirm("Are you sure to delete unit name: "+$scope.unit._id)==true)
-        services.deleteUnit(unit.unit_id);
+        if(confirm("Are you sure you want to delete unit name: "+$scope.unit._id)==true)
+            services.deleteUnit(unit.unit_id);
       };
-      $scope.nextUnit = function(unit) {
-        if(confirm("Do you want to save your changes: "+$scope.unit._id)==true)
-        services.updateUnit(unitID, unit);
+      
+      $scope.nextUnit = function(unit, event) {
+        if(unitID > 0) {
+            if(confirm("Do you want to save your changes: "+$scope.unit.unitid)==true)
+                services.updateUnit(unitID, unit);
+                        setTimeout(function() {
+                        //$window.location.href="#/edit-unit/"+buildingID+"/"+unitID;                        
+            });
+        }
+        else
+        {
+            event.preventDefault();
+        }
+        
       };
       
       $scope.addTenant = function(unitD) {
@@ -420,17 +453,26 @@ app.controller('editCtrlUnit', function ($scope, $rootScope, $location, $routePa
           $window.location.href="#/add-tenent/"+buildingID+"/"+unitID+"/0";
         });
       };
-        
-      $scope.saveUnit = function(unit) {
-        $location.path('/edit-building-units/'+ buildingID ); 
+
+
+            
+      $scope.saveUnit = function(unit, event) {
         if (unitID <= 0) {
+            var d = new Date();
+            if(event.target.id == 'add'){
+                $location.path('/edit-unit/' + buildingID + '/0?time=' +  d.getMilliseconds() ); 
+            }else
+            {
+                $location.path('/edit-building-units/' + buildingID ); 
+            }
+            $rootScope.price = $scope.unit.price;
             services.insertUnit(unit);
         }
         else {
-            services.updateUnit(unitID, unit);
+           $location.path('/edit-building-units/' + buildingID ); 
+           $rootScope.price = $scope.unit.price;
+           services.updateUnit(unitID, unit);
         }
-                
-        
     };
 });
 app.controller('editCtrlPrice', function ($scope, $rootScope, $location, $routeParams, services, price, $log, $window) {
@@ -542,6 +584,7 @@ app.controller('editCtrlUnits', function ($scope, $rootScope, $location, $routeP
     services.getUnits(buildingID).then(function(data){
         $scope.units = data.data;
     });
+    
     services
     .getBuildingsList()
     .then(function(data){
@@ -552,10 +595,16 @@ app.controller('editCtrlUnits', function ($scope, $rootScope, $location, $routeP
         return angular.equals(original, $scope.building);
       }
     
-      $scope.deleteBuilding = function(building) {
-        $location.path('#');
-        if(confirm("Are you sure to delete building name: "+$scope.building._id)==true)
-        services.deleteBuilding(building.building_id);
+      $scope.deleteUnit = function(unit) {
+        if(unit.tenent_id == null) {
+            $location.path('#');
+            if(confirm("Are you sure want to delete Unit name: "+unit.unitid)==true){
+                services.deleteUnit(unit.unit_id);
+            }
+        }
+        else{
+            alert("You cannot delete a unit that has tenents. Delete the Tenents first.");
+        }
       };
 
       $scope.saveBuilding = function(building) {
@@ -640,19 +689,22 @@ app.controller('editCtrlTenent', function ($scope, $rootScope, $location, $route
         alert("coming soon");  
       }
       
-       $scope.moveOut = function() {
-        alert("coming soon");  
-      }
-     
+      $scope.moveOut = function(unit) {
+          if(confirm("Move this tenent out?: #"+unit.tenent_id)==true) {
+            unit.tenent_id = 0;
+            unit.tenent = 'Vacant';
+            services.updateUnit(unit.unit_id, unit);
+        }
+      };
 
       $scope.deleteTenent = function(tenentID) {
-        $location.path('/edit-tenent/'+buildingID+'/'+unitID+'/'+tenentID);
+        $location.path('/edit-building-units/'+buildingID);
         if(confirm("Are you sure to delete tenent number: "+tenentID)==true)
-        services.deleteTenent(tenentID);
+            services.deleteTenent(tenentID);
       };
 
       $scope.saveTenent = function(tenent) {
-        $location.path('/edit-tenent/'+buildingID+'/'+unitID+'/'+tenentID);
+        $location.path('/edit-building-units/'+buildingID);
         if (tenentID <= 0) {
             services.insertTenent(tenent);
         }

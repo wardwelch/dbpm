@@ -92,7 +92,10 @@
                                         <td>{{data.type}}</td>
                                         <td>{{data.status}}</td>
                                         <td>{{data.price}}</td>
-                                        <td><a href="#/edit-unit/{{building.building_id}}/{{data.unit_id}}" class="btn" title="Edit Unit">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Unit</span></a></td>
+                                        <td>
+                                            <a href="#/edit-unit/{{building.building_id}}/{{data.unit_id}}" class="btn" title="Edit Unit">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Unit</span></a>
+                                            <a href="#/edit-building-units/{{building.building_id}}" class="btn" title="Delete Unit" ng-click="deleteUnit(data)">&nbsp;<i class="glyphicon glyphicon-remove-circle"></i><span class="hidden-xs">&nbsp; Delete Unit</span></a>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
