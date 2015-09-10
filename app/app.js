@@ -935,7 +935,8 @@ app.controller('HeaderController',function HeaderController($scope, $location)
 { 
     $scope.isActive = function (viewLocation) { 
         return viewLocation === $location.path();
-    };
+    };    
+    
 });
 app.config(['$routeProvider',function($routeProvider) {
     $routeProvider.
@@ -950,7 +951,7 @@ app.config(['$routeProvider',function($routeProvider) {
         controller: 'listCtrl'
       })      
       .when('/tenants/:buildingID', {
-        title: 'tenants',
+        title: 'Tenants',
         templateUrl: 'app/tenants/tenants.html',
         controller: 'listCtrlTenants'
       })      
@@ -965,12 +966,12 @@ app.config(['$routeProvider',function($routeProvider) {
         controller: 'listCtrlUnits'
       })      
       .when('/prices/:unitid', {
-        title: 'prices',
+        title: 'Prices',
         templateUrl: 'app/prices/prices.html',
         controller: 'listCtrlPrices'
       })      
       .when('/edit-building/:buildingID', {
-        title: 'Edit Buildings',
+        title: 'Edit Buildisng',
         templateUrl: 'app/buildings/edit-building.html',
         controller: 'editCtrlBuilding',
         resolve: {
@@ -981,7 +982,7 @@ app.config(['$routeProvider',function($routeProvider) {
         }
       })
       .when('/edit-building-units/:buildingID', {
-        title: 'Edit Units',
+        title: 'Building Units',
         templateUrl: 'app/units/edit-building-units.html',
         controller: 'editCtrlUnits',
         resolve: {
@@ -992,7 +993,7 @@ app.config(['$routeProvider',function($routeProvider) {
         }
       })
       .when('/edit-building-rents/:buildingID', {
-        title: 'Edit Rents',
+        title: 'Building Rents',
         templateUrl: 'app/rents/edit-building-rents.html',
         controller: 'editCtrlRents',
         resolve: {
@@ -1003,7 +1004,7 @@ app.config(['$routeProvider',function($routeProvider) {
         }
       })
       .when('/edit-unit/:buildingID/:unitID', {
-        title: 'Edit Units',
+        title: 'Edit Unit',
         templateUrl: 'app/units/edit-unit.html',
         controller: 'editCtrlUnit',
         resolve: {
@@ -1025,7 +1026,7 @@ app.config(['$routeProvider',function($routeProvider) {
         }
       })
       .when('/edit-building-tenants/:buildingID', {
-        title: 'Edit tenants',
+        title: 'Building Tenants',
         templateUrl: 'app/tenants/edit-building-tenants.html',
         controller: 'editCtrlTenants',
         resolve: {
@@ -1036,7 +1037,7 @@ app.config(['$routeProvider',function($routeProvider) {
         }
       })
       .when('/edit-unit-rents/:buildingID/:unitID', {
-        title: 'Edit Rents',
+        title: 'Unit Rents',
         templateUrl: 'app/units/edit-unit-rents.html',
         controller: 'editCtrlUnitRents',
         resolve: {
@@ -1047,7 +1048,7 @@ app.config(['$routeProvider',function($routeProvider) {
         }
       })
       .when('/edit-tenant/:buildingID/:unitID/:tenantID', {
-        title: 'Edit tenants',
+        title: 'Edit Tenant',
         templateUrl: 'app/tenants/edit-tenant.html',
         controller: 'editCtrlTenant',
         resolve: {
@@ -1058,7 +1059,7 @@ app.config(['$routeProvider',function($routeProvider) {
         }
       })
       .when('/add-tenant/:buildingID/:unitID/:tenantID', {
-        title: 'Edit tenants',
+        title: 'Add Tenant',
         templateUrl: 'app/tenants/add-tenant.html',
         controller: 'editCtrlTenant',
         resolve: {
@@ -1079,6 +1080,17 @@ app.config(['$routeProvider',function($routeProvider) {
           }
         }
       })
+      .when('/edit-unit-rent/:buildingID/:unitID/:rentID', {
+        title: 'Edit Unit Rent',
+        templateUrl: 'app/rents/edit-rent.html',
+        controller: 'editCtrlUnitRent',
+        resolve: {
+          rent: function(services, $route){
+            var rentID = $route.current.params.rentID;
+            return services.getRent(rentID);
+          }
+        }
+      })
       .otherwise({
         redirectTo: '/'
       });
@@ -1087,4 +1099,5 @@ app.run(['$location', '$rootScope', function($location, $rootScope) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         $rootScope.title = current.$$route.title;
     });
+    
 }]);

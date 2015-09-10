@@ -86,15 +86,15 @@
                                 <th>Action&nbsp;</th>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="d in tenants track by d.lastname">
+                                <tr ng-repeat="d in tenants track by d.unit_id">
                                     <td>{{d.tenant_id}}</td>
                                     <td>{{d.firstname}}</td>
                                     <td>{{d.lastname}}</td>
                                     <td>{{d.unit_id}}</td>                
-                                    <td>{{d.deposit_paid}}</td>
-                                    <td>{{d.move_in}}</td>
-                                    <td>{{d.balance_due}}</td>                
-                                    <td><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{d.unit_id}}/{{d.tenant_id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit tenant</span></a></td>
+                                    <td>{{d.deposit_paid | currency}}</td>
+                                    <td>{{d.move_in | date:'M/d/y'}}</td>
+                                    <td>{{d.balance_due | currency}}</td>                
+                                    <td><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{d.unit_id}}/{{d.tenant_id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Tenant</span></a></td>
                                 </tr>
                             </tbody>
                         </table>

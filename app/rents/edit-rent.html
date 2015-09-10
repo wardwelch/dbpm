@@ -15,6 +15,7 @@
         <a class= "navbar-brand" href= "/dbpm/#/edit-building-rents/{{building.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Rents List </a>
         <a ng-show="tenant._id" class= "navbar-brand" href= "/dbpm/#/edit-tenant/{{building.building_id}}/0"><i class="glyphicon glyphicon-plus"></i> Create Rent </a>
         <a ng-show="tenant._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Rent Number: {{rent._id}}</a>
+
         </div>
         </nav>
         <header>
@@ -142,7 +143,10 @@
 <div class= "form-group">
     <label class= "col-md-2"></label>
     <div class="col-md-4">
-    <a href="/dbpm/#/edit-building-rents/{{building.building_id}}" class="btn">Cancel</a>
+<!-- 
+    <a href="/dbpm/#/edit-building-rents/{{unit.building_id}}">Cancel</a>
+ -->
+    <a href="{{cancelText}}" >Cancel</a>
         <button ng-click="saveRent(rent);" 
                 ng-disabled="isClean() || myForm.$invalid"
                 class="btn btn-primary">{{buttonText}}</button>

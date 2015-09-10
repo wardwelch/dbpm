@@ -291,7 +291,7 @@
 		    	
 			
 			if($uid > 0){				
-			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.unit_id = $uid order by r.sort_month desc";
+			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.unit_id = $uid order by r.sort_month asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){

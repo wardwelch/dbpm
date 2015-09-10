@@ -171,11 +171,11 @@ app.controller('editCtrlUnitRents', function ($scope, $rootScope, $location, $ro
         building = data.data;
         $scope.unit.building = building.name;
     });
-    
+
     services
-    .getTenantsList(unitID)
+    .getRentsByUnit(unitID)
     .then(function(data){
-        $scope.list = data.data;
+        $scope.rents = data.data;
     });
     
     $scope.options = [
@@ -187,24 +187,6 @@ app.controller('editCtrlUnitRents', function ($scope, $rootScope, $location, $ro
         { label: 'Occupied', value: 'Occupied'}
     ];
    
-    services.getUnits(buildingID).then(function(data){
-        $scope.unitsList = data.data;
-        if(unitID == 0) {
-            if($scope.unitsList.length){
-                var tmp = (_.max($scope.unitsList,'unitnum')).unitnum;
-                $scope.unit.unitnum = parseInt(tmp) + 1;
-            }
-            else{
-                $scope.unit.unitnum = 1;
-            }
-            $scope.unit.unitid = $scope.unit.building+"/"+$scope.unit.unitnum;
-            $scope.unit.price = $rootScope.price || 0;
-            $scope.unit.tenant_id =  0  ;
-            $scope.unit.total_bal_due = 0;
-            $scope.unit.type = $scope.options[0].value;
-            $scope.unit.status = $scope.items[0].value;
-        }
-    });
         
       $scope.isClean = function() {
         return angular.equals(original, $scope.unit);

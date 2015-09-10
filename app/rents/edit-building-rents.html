@@ -72,9 +72,11 @@
                     <span class="col-md-2">
                         <button style="padding:inherit" ng-click="addRents(building.building_id,month.value,year.value)" class="btn btn-link"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Rents</button>
                     </span>
+<!-- 
                     <span class="pull-right col-md-2">
                         <a style="padding:inherit" class="btn btn-link" href="#/edit-rent/{{building.building_id}}/0/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add receipt</a>
                     </span>
+ -->
                 </div>
                 <div class="row">
                     <div class="col-md-12" ng-show="rents.length > 0">
@@ -96,10 +98,10 @@
                                     <td>{{data.tenant}}</td>
                                     <td class="hidden-xs">{{data.receipt}}</td>
                                     <td>{{data.date_paid | date:'M/d/y'}}</td>
-                                    <td align="right">{{data.rent_owed}}</td>
-                                    <td align="right">{{data.deposit_paid}}</td>
-                                    <td align="right">{{data.rent_paid}}</td>
-                                    <td align="right">{{data.due_this_mo}}</td>
+                                    <td align="right">{{data.rent_owed | currency}}</td>
+                                    <td align="right">{{data.deposit_paid | currency}}</td>
+                                    <td align="right">{{data.rent_paid | currency}}</td>
+                                    <td align="right">{{data.due_this_mo | currency}}</td>
                                     <td><a href="#/edit-rent/{{building.building_id}}/{{data.unit_id}}/{{data.rent_id}}" class="btn" title="Edit Receipt">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Receipt</span></a></td>
                                     
                                 </tr>
@@ -107,10 +109,10 @@
                             <tfoot>
                                 <tr align="right">
                                     <td colspan="4" >Subtotals:</td>
-                                    <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_owed'}}</td>
-                                    <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'deposit_paid'}}</td>
-                                    <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_paid'}}</td>
-                                    <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'due_this_mo'}}</td>
+                                    <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_owed' | currency}}</td>
+                                    <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'deposit_paid' | currency}}</td>
+                                    <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_paid' | currency}}</td>
+                                    <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'due_this_mo' | currency}}</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
