@@ -1,0 +1,182 @@
+<style type="text/css">
+  .form-horizontal input.ng-invalid.ng-dirty {
+    border-color: #FA787E;
+  }
+
+  .form-horizontal input.ng-valid.ng-dirty {
+    border-color: #78FA89;
+  }
+</style>
+<div class="view">
+	<div class="container">
+		<div class="row">
+			<nav class="navbar navbar-default" role="navigation"> 
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/dbpm/#/edit-building-units/{{tenant.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Units List (Building: {{tenant.building_id}})</a> 
+                    <a ng-show="tenant._id" class="navbar-brand" href="/dbpm/#/edit-tenant/{{tenant.building_id}}/0"><i class="glyphicon glyphicon-plus"></i> Create tenant </a> 
+                    <a ng-show="tenant._id" class="hidden-xs navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing tenant Number: {{tenant._id}}</a> 
+                </div>
+			</nav> 
+			<div class="clearfix"></div>
+			<hr />
+		</div>
+        <div class="row">
+            <accordion close-others="oneAtATime" ng-init="isOpen=true">
+                <!-- building -->
+                <accordion-group id="building-group"> 
+                    <accordion-heading> 
+                        Building:<span class="acrdn-data">&nbsp;{{building.name}}</span> 
+                    </accordion-heading> 
+                    <div class="col-sm-2 pull-left">
+                        <strong style="display:initial">Id:</strong> <br />
+                        <strong style="display:initial">Code:</strong> <br />
+                        <strong style="display:initial">Name:</strong> <br />
+                        <strong style="display:initial">Owner:</strong> <br />
+                        <strong style="display:initial">Units:</strong> <br />
+                    </div>
+                    <div class="col-sm-4 pull-left">
+                        <span style="display:initial">&nbsp;{{building.building_id}}</span><br />
+                        <span style="display:initial">&nbsp;{{building.code}}</span><br />
+                        <span style="display:initial">&nbsp;{{building.name}}</span><br />
+                        <span style="display:initial">&nbsp;{{building.owner}}</span><br />
+                        <span style="display:initial">&nbsp;{{building.units}}</span><br />
+                    </div>
+                    <div class="col-sm-2 pull-left">
+                        <strong style="display:initial">Street:</strong> <br />
+                        <strong style="display:initial">City:</strong> <br />
+                        <strong style="display:initial">State:</strong> <br />
+                        <strong style="display:initial">Zip:</strong> <br />
+                        <strong style="display:initial">Inactive</strong> <br />
+                    </div>
+                    <div class="col-sm-4 pull-left">
+                        <span>&nbsp;{{building.street}}</span><br />
+                        <span>&nbsp;{{building.city}}</span><br />
+                        <span>&nbsp;{{building.state}}</span><br />
+                        <span>&nbsp;{{building.zip}}</span><br />
+                        <span>&nbsp;{{building.inactive}}</span><br />
+                    </div>
+            </accordion-group>
+                <!-- unit  -->
+                <accordion-group id="unit-group"> 
+                    <accordion-heading>
+                         Unit: <span class="acrdn-data">{{unit.unit_id}}</span> 
+                    </accordion-heading> 
+                    <div class="col-sm-2 pull-left">
+                        <strong style="display:initial">Building:</strong> <br />
+                        <strong style="display:initial">UnitNum:</strong> <br />
+                        <strong style="display:initial">Price:</strong> <br />
+                        <strong style="display:initial">Type:</strong> <br />
+                        <strong style="display:initial">Unit ID:</strong> <br />
+                        <strong style="display:initial">Status:</strong> <br />
+                    </div>
+                    <div class="col-sm-4 pull-left">
+                        <span style="display:initial">&nbsp;{{unit.building}}</span><br />
+                        <span style="display:initial">&nbsp;{{unit.unitnum}}</span><br />
+                        <span style="display:initial">&nbsp;{{unit.price}}</span><br />
+                        <span style="display:initial">&nbsp;{{unit.type}}</span><br />
+                        <span style="display:initial">&nbsp;{{unit.unitis}}</span><br />
+                        <span style="display:initial">&nbsp;{{unit.status}}</span><br />
+                    </div>
+                    <div class="col-sm-2 pull-left">
+                        <strong style="display:initial">Type:</strong> <br />
+                        <strong style="display:initial">Status:</strong> <br />
+                    </div>
+                    <div class="col-sm-4 pull-left">
+                        <span>&nbsp;{{unit.type}}</span><br />
+                        <span>&nbsp;{{unit.status}}</span><br />
+                    </div>
+                </accordion-group>
+                <!-- tenant -->
+                <accordion-group id="tenant-group" is-open="isOpen"> 
+                    <accordion-heading> 
+                        tenant: <span class="acrdn-data">{{(tenant._id)?tenant.firstname + ' ' + tenant.lastname:'Vacant'}}</span> 
+                    </accordion-heading> 
+                    <div class="col-sm-6">
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="#/add-tenant/{{tenant.building_id}}/{{tenant.unit_id}}/{{tenant._id}}" class="btn btn-primary">Edit Tenant</a> <a class="btn btn-primary" ng-click="moveIn()">Move In</a> <a class="btn btn-primary" ng-click="moveOut()">Move Out</a> 
+                    </div>
+                    <div class="clearFix">
+                        &nbsp;
+                    </div>
+                    <div class="col-xs-6 col-sm-2 pull-left">
+                        <strong style="display:initial">First Name</strong> <br />
+                        <strong style="display:initial">Last Name:</strong> <br />
+                        <strong style="display:initial">Status:</strong> <br />
+                        <strong style="display:initial">SSN:</strong> <br />
+                        <strong style="display:initial">Drivers License</strong> <br />
+                        <strong style="display:initial">Credit Card</strong> <br />
+                        <strong style="display:initial">Card Number:</strong> <br />
+                        <strong style="display:initial">Deposit Paid</strong> <br />
+                    </div>
+                    <div class="col-xs-6 col-sm-4 pull-left">
+                        <span style="display:initial">&nbsp;{{tenant.firstname}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenant.lastname}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenant.status}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenant.ssn}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenant.drivers_license}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenant.creditcard}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenant.cardnumber}}</span><br />
+                        <span style="display:initial">&nbsp;{{tenant.deposit_paid}}</span><br />
+                    </div>
+                    <div class="col-xs-6 col-sm-2 pull-left">
+                        <strong style="display:initial">First Month Paid</strong> <br />
+                        <strong style="display:initial">Last Month Paid</strong> <br />
+                        <strong style="display:initial">Other Paid</strong> <br />
+                        <strong style="display:initial">Balance Due</strong> <br />
+                        <strong style="display:initial">Other</strong> <br />
+                        <strong style="display:initial">Move In</strong> <br />
+                        <strong style="display:initial">Move Out</strong> <br />
+                    </div>
+                    <div class="col-xs-6 col-sm-4 pull-left">
+                        <span >&nbsp;{{tenant.firstmo_paid}}</span><br />
+                        <span >&nbsp;{{tenant.lastmo_paid}}</span><br />
+                        <span >&nbsp;{{tenant.other_paid}}</span><br />
+                        <span >&nbsp;{{tenant.balance_due}}</span><br />
+                        <span >&nbsp;{{tenant.other_paid}}</span><br />
+                        <span >&nbsp;{{tenant.move_in}}</span><br />
+                        <span >&nbsp;{{tenant.move_out}}</span><br />
+                    </div>
+                </accordion-group>
+                <!--rent -->
+                <accordion-group id="rent-group">
+                    <accordion-heading> Rents: </accordion-heading> 
+                    <div class="row">
+                        <month-year></month-year> 
+                        <div class="col-md-12" ng-show="rents.length > 0">
+                            <table class="table table-striped table-bordered">
+                            <thead>
+                                <th class="hidden-xs">Receipts&nbsp;</th>
+                                <th>Date&nbsp;</th>
+                                <th>Rent&nbsp;</th>
+                                <th>D&nbsp;</th>
+                                <th>Paid&nbsp;</th>
+                                <th>Due&nbsp;</th>
+                                <th>Action&nbsp;</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="rent in rents | filter: month.value + '/' + year.value ">
+                                    <td>{{rent.receipt}}</td>
+                                    <td>{{rent.date_paid}}</td>
+                                    <td>{{rent.rent_owed}}</td>
+                                    <td>{{rent.deposit}}</td>
+                                    <td>{{rent.rent_paid}}</td>
+                                    <td>{{rent.due_this_mo}}</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-12" ng-show="rents.length == 0">
+                            <div class="col-md-12">
+                                <h4>
+                                    No units found 
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+            </accordion-group>
+        </accordion> 
+        </div>
+    </div>
+</div><!-- view -->

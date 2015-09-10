@@ -1,0 +1,109 @@
+<style type="text/css">
+  .form-horizontal input.ng-invalid.ng-dirty {
+    border-color: #FA787E;
+  }
+
+  .form-horizontal input.ng-valid.ng-dirty {
+    border-color: #78FA89;
+  }
+  #
+</style>
+<div class="view">
+    <div class="container">
+        <div class="row">
+<!-- 
+            <nav class= "navbar navbar-default hidden-xs" role="navigation">
+                    <a class= "navbar-brand" href= "/dbpm/#/buildings"><i class="glyphicon glyphicon-th-large"></i> Buildings List </a>
+                    <a ng-show="building._id" class= "navbar-brand hidden" href="/dbpm/#/edit-tenant/{{building._id}}/0"><i class="glyphicon glyphicon-plus"></i> Create tenant </a>
+                    <a ng-show="building._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Building Number: {{building._id}}</a>
+            </nav>
+ -->
+            <header>
+                <h4 ng-controller="DropdownCtrl">                
+                    <span class="dropdown" dropdown on-toggle="toggled(open)">
+                        <a href class="dropdown-toggle" dropdown-toggle>Building<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="choice in list">
+                                <a href="#/edit-building-tenants/{{choice.id}}">{{choice.name}}</a>
+                            </li>
+                        </ul>
+                    </span>
+                </h4>
+                <div class="col-sm-2 pull-left">
+                     <strong style="display:initial">Id:</strong> <br />
+                     <strong style="display:initial">Code:</strong> <br />
+                     <strong style="display:initial">Name:</strong> <br />  
+                     <strong style="display:initial">Owner:</strong> <br />   
+                     <strong style="display:initial">Units:</strong> <br />  
+                </div>
+                <div class="col-sm-4 pull-left">
+                      <span style="display:initial">&nbsp;{{building.building_id}}</span><br />
+                      <span style="display:initial">&nbsp;{{building.code}}</span><br />
+                      <span style="display:initial">&nbsp;{{building.name}}</span><br />                    
+                      <span style="display:initial">&nbsp;{{building.owner}}</span><br />                    
+                      <span style="display:initial">&nbsp;{{building.units}}</span><br />                    
+                </div>
+                <div class="col-sm-2 pull-left">
+                     <strong style="display:initial">Street:</strong><br />
+                     <strong style="display:initial">City:</strong> <br />
+                     <strong style="display:initial">State:</strong> <br />  
+                     <strong style="display:initial">Zip:</strong> <br />
+                     <strong style="display:initial">Inactive</strong> <br />
+                </div>
+                <div class="col-sm-4 pull-left">
+                      <span>&nbsp;{{building.street}}</span><br />
+                      <span>&nbsp;{{building.city}}</span><br />
+                      <span>&nbsp;{{building.state}}</span><br />  
+                      <span>&nbsp;{{building.zip}}</span><br /> 
+                      <span>&nbsp;{{building.inactive}}</span><br />                        
+                </div>
+            </header>
+        </div>
+        <hr />
+        <tabset ng-init="tab.active = true">
+            <tab heading="Rents" select="switchToRents(building.building_id)"></tab>
+            <tab heading="Units" select="switchToUnits(building.building_id)"></tab>
+            <tab heading="Tenants" active="tab.active">
+                <div class="row" style="padding:10px">
+                    <strong class="col-md-2 pull-left strong">
+                        {{title}}
+                    </strong>
+                    <span class="pull-right col-md-2">
+                        <a style="padding:inherit" class="btn btn-link" href="#/edit-tenant/{{building.building_id}}/0/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Tenant</a>
+                    </span>
+                </div>
+               <div class="row">
+                    <div class="col-md-12" ng-show="tenants.length > 0">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <th>ID</th>
+                                <th>First<span class="hidden-xs"> Name</span>&nbsp;</th>
+                                <th>Last<span class="hidden-xs"> Name</span>&nbsp;</th>
+                                <th>Unit ID&nbsp;</th>
+                                <th>Deposit Paid&nbsp;</th>
+                                <th>Move In&nbsp;</th>
+                                <th>Balance Due&nbsp;</th>
+                                <th>Action&nbsp;</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="d in tenants track by d.unit_id">
+                                    <td>{{d.tenant_id}}</td>
+                                    <td>{{d.firstname}}</td>
+                                    <td>{{d.lastname}}</td>
+                                    <td>{{d.unit_id}}</td>                
+                                    <td>{{d.deposit_paid | currency}}</td>
+                                    <td>{{d.move_in | date:'M/d/y'}}</td>
+                                    <td>{{d.balance_due | currency}}</td>                
+                                    <td><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{d.unit_id}}/{{d.tenant_id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Tenant</span></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12" ng-show="tenants.length == 0">
+                        <h4>No tenants found</h4>
+                    </div>
+                </div>
+            </tab>
+        </tabset>
+    </div>
+</div>

@@ -32,6 +32,7 @@
     
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/angular-snap.css" type="text/css" />
+    <link href="css/xeditable.css" rel="stylesheet">
     <style>
         #drawer{
             padding-top:70px;
@@ -98,7 +99,15 @@
     <script src="js/angular-snap.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/angular-cookies.js"></script>
     <script src="js/lodash.min.js"></script>
-    <script src="app/app.js"></script>         
+    <script src="js/xeditable.min.js"></script>        
+    <script src="app/app.js"></script>
+
+    <script src="app/buildings/buildings.js"></script>
+    <script src="app/units/units.js"></script>
+    <script src="app/tenants/tenants.js"></script>
+    <script src="app/rents/rents.js"></script>
+    
+    
   </head>
 
   <body>
@@ -121,7 +130,7 @@
                 <li ng-class="{ active: isActive('#')}"><a ng-href="/dbpm/#/dashboard" snap-close>Dashboard</a></li>
                 <li ng-class="{ active: isActive('/buildings')}"><a ng-href="/dbpm/#/buildings" snap-close>Buildings</a></li>
 <!-- 
-                <li ng-class="{ active: isActive('/tenets')}"><a ng-href="/dbpm/#/tenents">Tenents</a></li>
+                <li ng-class="{ active: isActive('/tenets')}"><a ng-href="/dbpm/#/tenants">tenants</a></li>
  -->
                 <li ng-class="{ active: isActive('/wo')}"><a ng-href="/dbpm/#/wo">Work Orders</a></li>
             </ul>
@@ -137,7 +146,7 @@
         <ul class="nav navbar-nav">
             <li ng-class="{ active: isActive('/dbpm/#/dashboard')}"><a ng-href="/dbpm/#/dashboard" snap-close>Dashboard</a></li>
             <li ng-class="{ active: isActive('/dbpm/#/buildings')}"><a ng-href="/dbpm/#/buildings" snap-close>Buildings</a></li>
-            <li ng-class="{ active: isActive('/dbpm/#/tenents')}"><a ng-href="/dbpm/#/edit-building-tenents/1" snap-close>Tenents</a></li>
+            <li ng-class="{ active: isActive('/dbpm/#/tenants')}"><a ng-href="/dbpm/#/edit-building-tenants/1" snap-close>tenants</a></li>
             <li ng-class="{ active: isActive('/dbpm/#/wo')}"><a ng-href="/dbpm/#/wo" snap-close>Work Orders</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">

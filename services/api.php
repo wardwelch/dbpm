@@ -56,46 +56,10 @@
 			$error = array('status' => "Failed", "msg" => "Invalid Email address or Password");
 			$this->response($this->json($error), 400);
 		}
-		
-		
 
-		private function tenents(){	
-			if($this->get_request_method() != "GET"){
-				$this->response('',406);
-			}
-		    $id = (int)$this->_request['id'];
-		    	
-			
-			if($id > 0){				
-			    $query="SELECT * from tenents t where t.building_id = $id order by t.`lastname` desc";
-			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
-            }
-			if($r->num_rows > 0){
-				$result = array();
-				while($row = $r->fetch_assoc()){
-					$result[] = $row;
-				}
-				$this->response($this->json($result), 200); // send user details
-			}
-			$this->response('',204);	// If no records "No Content" status
-		}
-		private function tenent(){	
-			if($this->get_request_method() != "GET"){
-				$this->response('',406);
-			}
-			$id = (int)$this->_request['id'];
-			if($id > 0){	
-				$query="SELECT * from tenents t where t.tenent_id=$id";
-				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
-				if($r->num_rows > 0) {
-					$result = $r->fetch_assoc();	
-					$this->response($this->json($result), 200); // send user details
-				}
-			}
-			$this->response('',204);	// If no records "No Content" status
-		}
-// Building
 
+//buildings	
+	
 		private function buildings(){	
 			if($this->get_request_method() != "GET"){
 				$this->response('',406);
@@ -213,6 +177,65 @@
 			}else
 				$this->response('',204);	// If no records "No Content" status
 		}
+
+//tenants
+
+		private function tenants(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+		    $id = (int)$this->_request['id'];
+		    	
+			
+			if($id > 0){				
+			    $query="SELECT * from tenants t where t.building_id = $id order by t.`lastname` desc";
+			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+            }
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+		
+		private function tenant(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+			$id = (int)$this->_request['id'];
+			if($id > 0){	
+				$query="SELECT * from tenants t where t.tenant_id=$id";
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				if($r->num_rows > 0) {
+					$result = $r->fetch_assoc();	
+					$this->response($this->json($result), 200); // send user details
+				}
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+		
+		private function tenantsList(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+		    $id = (int)$this->_request['id'];
+			$query="SELECT tenant_id, firstname, lastname from tenants where unit_id = $id order by lastname asc";
+			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+		
+
 // rents
 		private function rents(){
 		    
@@ -223,7 +246,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenents t ON r.tenent_id = t.tenent_id where r.building_id = $id";
+			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.building_id = $id order by unitid asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -236,7 +259,7 @@
 			$this->response('',204);	// If no records "No Content" status
 		}
 
-		private function tenent_rents(){
+		private function tenant_rents(){
 		    
 			if($this->get_request_method() != "GET"){
 				$this->response('',406);
@@ -245,7 +268,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenents t ON r.tenent_id = t.tenent_id where r.tenent_id = $id order by r.sort_month desc";
+			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.tenant_id = $id order by r.sort_month desc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -268,7 +291,7 @@
 		    	
 			
 			if($uid > 0){				
-			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenents t ON r.tenent_id = t.tenent_id where r.unit_id = $uid order by r.sort_month desc";
+			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.unit_id = $uid order by r.sort_month asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -303,7 +326,7 @@
 			}
 
 			$rent = json_decode(file_get_contents("php://input"),true);
-			$column_names = array( `building_id`, `unit_id`, `tenent_id`, `unitid`, `month`, `date_paid`, `receipt`, `rent_paid`, `due_this_mo`, `tenant_name`, `deposit_paid`, `comments`, `rent_owed`, `sort_month`, `adjustment`);
+			$column_names = array( `building_id`, `unit_id`, `tenant_id`, `unitid`, `month`, `date_paid`, `receipt`, `rent_paid`, `due_this_mo`, `tenant_name`, `deposit_paid`, `comments`, `rent_owed`, `sort_month`, `adjustment`);
 			$keys = array_keys($rent);
 			$columns = '';
 			$values = '';
@@ -327,6 +350,14 @@
 				$this->response('',204);	//"No Content" status
 		}
 		
+		
+		private function isDup($row) {
+
+		    $r = $this->mysqli->query("select * from rents where unit_id = '".$row['unit_id']."' and month = '".$row['month']."'") or die($this->mysqli->error.__LINE__);
+		   if($r->num_rows > 0)
+		    return true;
+		}
+		
 		private function addRents(){
 			if($this->get_request_method() != "GET"){
 				$this->response('',406);
@@ -341,7 +372,7 @@
             $lastMonth ="$m/$y";
             $thisMonth = strtoupper(substr($this->_request['m'],0,3))."/".$this->_request['y'];
 			if($bid > 0 ){				
-                $query = "SELECT  u.*, concat(lastname,', ',firstname) tenant_name from units u LEFT JOIN  tenents t ON u.tenent_id = t.tenent_id where u.building_id = $bid and u.tenent_id != 0"; 
+                $query = "SELECT  u.*, concat(lastname,', ',firstname) tenant_name from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $bid and u.tenant_id != 0"; 
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -352,11 +383,10 @@
 				    $row['comments'] = "auto added";
 				    $row['due_this_mo'] = $row['price'];
 				    $row['rent_owed'] = $row['price'];
-				    $row['tenent_name'] = $row['tenent_name'];
+				    $row['tenant_name'] = $row['tenant_name'];
 					$result[] = $row;
-				    $this->addRent($row);
+					if(!$this->isDup($row)) $this->addRent($row);
 				}
-				print_r($result);exit;
 				$this->response($this->json($result), 200); // send user details
 			}
 			$this->response('',204);	// If no records "No Content" status
@@ -367,7 +397,7 @@
 			$column_names = array(
                             'building_id', 
                             'unit_id', 
-                            'tenent_id', 
+                            'tenant_id', 
                             'unitid', 
                             'month', 
                             'date_paid', 
@@ -393,8 +423,8 @@
 				$columns = $columns.$desired_key.',';
 				$values = $values."'".$$desired_key."',";
 			}
-            
 			$query = "INSERT INTO rents(".trim($columns,',').") VALUES(".trim($values,',').")";
+			print_r($columns);exit;
 			if(!empty($rent)){
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 			}else
@@ -410,7 +440,7 @@
 			$column_names = array(
                             'building_id', 
                             'unit_id', 
-                            'tenent_id', 
+                            'tenant_id', 
                             'unitid', 
                             'month', 
                             'date_paid', 
@@ -468,7 +498,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT u.unit_id unit_id, unitnum, t.tenent_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, price, u.unitid from units u LEFT JOIN  tenents t ON u.tenent_id = t.tenent_id where u.building_id = $id order by unitnum asc";
+			    $query="SELECT u.unit_id unit_id, unitnum, t.tenant_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, price, u.unitid from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $id order by unitnum asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -486,7 +516,7 @@
 			}
 			$id = (int)$this->_request['id'];
 			if($id > 0){	
-			    $query="SELECT u.*, concat(lastname,', ',firstname) tenant from units u LEFT JOIN  tenents t ON u.tenent_id = t.tenent_id where u.unit_id = $id";
+			    $query="SELECT u.*, concat(lastname,', ',firstname) tenant from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.unit_id = $id";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				if($r->num_rows > 0) {
 					$result = $r->fetch_assoc();	
@@ -495,6 +525,8 @@
 			}
 			$this->response('',204);	// If no records "No Content" status
 		}
+		
+//prices
 		private function prices(){
 		    
 			if($this->get_request_method() != "GET"){
@@ -603,14 +635,14 @@
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 		}
 		
-
+//units
 		private function insertUnit(){
 			if($this->get_request_method() != "POST"){
 				$this->response('',406);
 			}
 
 			$unit = json_decode(file_get_contents("php://input"),true);
-			$column_names = array( 'building_id', 'tenent_id', 'building', 'unitnum', 'price', 'type', 'status', 'unitid','total_bal_due');
+			$column_names = array( 'building_id', 'tenant_id', 'building', 'unitnum', 'price', 'type', 'status', 'unitid','total_bal_due');
 			$keys = array_keys($unit);
 			$columns = '';
 			$values = '';
@@ -638,7 +670,7 @@
 			}
 			$unit = json_decode(file_get_contents("php://input"),true);
 			$id = (int)$unit['id'];
-			$column_names = array('unit_id', 'building_id', 'tenent_id', 'building', 'unitnum', 'price', 'type', 'status', 'total_bal_due');
+			$column_names = array('unit_id', 'building_id', 'tenant_id', 'building', 'unitnum', 'price', 'type', 'status', 'total_bal_due');
 			$keys = array_keys($unit['unit']);
 			$columns = '';
 			$values = '';
@@ -673,13 +705,13 @@
 				$this->response('',204);	// If no records "No Content" status
 		}
 		
-		private function deleteTenent(){
+		private function deleteTenant(){
 			if($this->get_request_method() != "DELETE"){
 				$this->response('',406);
 			}
 			$id = (int)$this->_request['id'];
 			if($id > 0){				
-				$query="DELETE FROM tenents WHERE tenent_id = $id";
+				$query="DELETE FROM tenants WHERE tenant_id = $id";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				$success = array('status' => "Success", "msg" => "Successfully deleted one record.");
 				$this->response($this->json($success),200);
@@ -687,38 +719,39 @@
 				$this->response('',204);	// If no records "No Content" status
 		}
 		
-		private function insertTenent(){
+		private function insertTenant(){
 			if($this->get_request_method() != "POST"){
 				$this->response('',406);
 			}
-			$tenent = json_decode(file_get_contents("php://input"),true);
+			$tenant = json_decode(file_get_contents("php://input"),true);
 			$column_names = array( 'building_id', 'unit_id', 'unitid', 'lastname', 'firstname', 'ssn', 'creditcard', 'cardnumber', 'unused', 'status', 'deposit_paid', 'firstmo_paid', 'lastmo_paid', 'other_paid', 'balance_due', 'move_in', 'move_out', '30_day_notice', 'other', 'drivers_license');
-			$keys = array_keys($tenent);
+			$keys = array_keys($tenant);
 			$columns = '';
 			$values = '';
 			foreach($column_names as $desired_key){ // Check the customer received. If blank insert blank into the array.
 			   if(!in_array($desired_key, $keys)) {
 			   		$$desired_key = '';
 				}else{
-					$$desired_key = $tenent[$desired_key];
+					$$desired_key = $tenant[$desired_key];
 				}
 				$columns = $columns.$desired_key.',';
 				$values = $values."'".$$desired_key."',";
 			}
-			$query = "INSERT INTO tenents(".trim($columns,',').") VALUES(".trim($values,',').")";
-			if(!empty($tenent)){
+			$query = "INSERT INTO tenants(".trim($columns,',').") VALUES(".trim($values,',').")";
+			if(!empty($tenant)){
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
-				$tenent['tenent_id'] = $this->mysqli->insert_id;
-				$tid = (int)$tenent['tenent_id'];
-				$uid = (int)$tenent['unit_id'];
-                $query = "update units set tenent_id = $tid, status = 'Occupied' where unit_id = $uid";
+				$tenant['tenant_id'] = $this->mysqli->insert_id;
+				$tid = (int)$tenant['tenant_id'];
+				$uid = (int)$tenant['unit_id'];
+                $query = "update units set tenant_id = $tid, status = 'Occupied' where unit_id = $uid";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);				
-				$success = array('status' => "Success", "msg" => "tenent Created Successfully.", "data" => $tenent);
+				$success = array('status' => "Success", "msg" => "tenant Created Successfully.", "data" => $tenant);
 				
 				$this->response($this->json($success),200);
 			}else
 				$this->response('',204);	//"No Content" status
 		}
+
 		private function lastInsertID(){
 		    
 			if($this->get_request_method() != "GET"){
@@ -796,28 +829,28 @@
 			$this->response('',204);	// If no records "No Content" status
 		}
 		
-		private function updateTenent(){
+		private function updateTenant(){
 			if($this->get_request_method() != "POST"){
 				$this->response('',406);
 			}
-			$tenent = json_decode(file_get_contents("php://input"),true);
-			$id = (int)$tenent['id'];
+			$tenant = json_decode(file_get_contents("php://input"),true);
+			$id = (int)$tenant['id'];
 			$column_names = array( 'building_id', 'unit_id', 'unitid', 'lastname', 'firstname', 'ssn', 'creditcard', 'cardnumber', 'unused', 'status', 'deposit_paid', 'firstmo_paid', 'lastmo_paid', 'other_paid', 'balance_due', 'move_in', 'move_out', '30_day_notice', 'other', 'drivers_license');
-			$keys = array_keys($tenent['tenent']);
+			$keys = array_keys($tenant['tenant']);
 			$columns = '';
 			$values = '';
 			foreach($column_names as $desired_key){ // Check the unit received. If key does not exist, insert blank into the array.
 			   if(!in_array($desired_key, $keys)) {
 			   		$$desired_key = '';
 				}else{
-					$$desired_key = $tenent['tenent'][$desired_key];
+					$$desired_key = $tenant['tenant'][$desired_key];
 				}
 				$columns = $columns.$desired_key."='".$$desired_key."',";
 			}
-			$query = "UPDATE tenents SET ".trim($columns,',')." WHERE tenent_id=$id";
-			if(!empty($tenent)){
+			$query = "UPDATE tenants SET ".trim($columns,',')." WHERE tenant_id=$id";
+			if(!empty($tenant)){
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
-				$success = array('status' => "Success", "msg" => "Tenent ".$id." Updated Successfully.", "data" => $tenent);
+				$success = array('status' => "Success", "msg" => "tenant ".$id." Updated Successfully.", "data" => $tenant);
 				$this->response($this->json($success),200);
 			}else
 				$this->response('',204);	// "No Content" status
