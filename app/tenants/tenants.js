@@ -1,3 +1,53 @@
+app.config(['$routeProvider',function($routeProvider) {
+    $routeProvider
+      .when('/tenants/:buildingID', {
+        title: 'Tenants',
+        templateUrl: 'app/tenants/tenants.html',
+        controller: 'listCtrlTenants'
+      }) 
+      .when('/edit-tenant/:buildingID/:unitID/:tenantID', {
+        title: 'Edit Tenant',
+        templateUrl: 'app/tenants/edit-tenant.html',
+        controller: 'editCtrlTenant',
+        resolve: {
+          tenant: function(services, $route){
+            var tenantID = $route.current.params.tenantID;
+            return services.getTenant(tenantID);
+          }
+        }
+      })
+      .when('/add-tenant/:buildingID/:unitID/:tenantID', {
+        title: 'Add Tenant',
+        templateUrl: 'app/tenants/add-tenant.html',
+        controller: 'editCtrlTenant',
+        resolve: {
+          tenant: function(services, $route){
+            var tenantID = $route.current.params.tenantID;
+            return services.getTenant(tenantID);
+          }
+        }
+      })
+      .when('/edit-building-tenants/:buildingID', {
+        title: 'Building Tenants',
+        templateUrl: 'app/tenants/edit-building-tenants.html',
+        controller: 'editCtrlTenants',
+        resolve: {
+          building: function(services, $route){
+            var buildingID = $route.current.params.buildingID;
+            return services.getBuilding(buildingID);
+          }
+        }
+      })
+}]);
+
+
+app.controller('listCtrlTenants', function ($scope, services) {
+    services.getTenants().then(function(data){
+        $scope.tenants = data.data;
+    });
+});
+
+
 app.controller('editCtrlTenants', function ($scope, $rootScope, $location, $routeParams, services, building, $log) {
     var buildingID = ($routeParams.buildingID) ? parseInt($routeParams.buildingID) : 0;
     $rootScope.title = (buildingID > 0) ? 'Edit tenants' : 'Add tenants';
@@ -77,15 +127,17 @@ app.controller('editCtrlTenant', function ($scope, $rootScope, $location, $route
             services.updateUnit(unit.unit_id, unit);
         }
       };
+      
+      $scope.cancelText = '/dbpm/#/edit-building-tenants/' + buildingID ;
 
       $scope.deleteTenant = function(tenantID) {
-        $location.path('/edit-building-units/'+buildingID);
+        $location.path('/edit-building-tenants/'+buildingID);
         if(confirm("Are you sure to delete tenant number: "+tenantID)==true)
             services.deleteTenant(tenantID);
       };
 
       $scope.saveTenant = function(tenant) {
-        $location.path('/edit-building-units/'+buildingID);
+        $location.path('/edit-building-tenants/'+buildingID);
         if (tenantID <= 0) {
             services.insertTenant(tenant);
         }

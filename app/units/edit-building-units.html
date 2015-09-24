@@ -6,7 +6,6 @@
   .form-horizontal input.ng-valid.ng-dirty {
     border-color: #78FA89;
   }
-  #
 </style>
 <div class="view">
     <div class="container">
@@ -81,16 +80,18 @@
                                     <th>Current Tenant&nbsp;</th>
                                     <th>Type&nbsp;</th>
                                     <th>Status&nbsp;</th>
+                                    <th>Move Out&nbsp;</th>
                                     <th>Price&nbsp;</th>
                                     <th>Action&nbsp;</th>
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="data in units">
-                                        <td>{{data.unitnum}}</td>
+                                        <td>{{data.unit_id}}</td>
                                         <td ng-show="data.tenant"><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{data.unit_id}}/{{data.tenant_id}}" class="btn btn-link" title="Edit Tenant"><i class="glyphicon glyphicon-edit"></i>&nbsp;&nbsp;{{data.tenant}}</a></td>
                                         <td ng-hide="data.tenant"><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{data.unit_id}}/0" class="btn btn-link" title="Add Tenant"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Vacant</a></td>
                                         <td>{{data.type}}</td>
                                         <td>{{data.status}}</td>
+                                        <td>{{data.move_out}}</td>                                        
                                         <td align="right">{{data.price | currency}}</td>
                                         <td>
                                             <a href="#/edit-unit/{{building.building_id}}/{{data.unit_id}}" class="btn" title="Edit Unit">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Unit</span></a>

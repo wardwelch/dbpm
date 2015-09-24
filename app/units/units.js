@@ -1,3 +1,60 @@
+app.config(['$routeProvider',function($routeProvider) {
+    $routeProvider
+      .when('/edit-unit/:buildingID/:unitID', {
+        title: 'Edit Unit',
+        templateUrl: 'app/units/edit-unit.html',
+        controller: 'editCtrlUnit',
+        resolve: {
+          unit: function(services, $route){
+            var unitID = $route.current.params.unitID;
+            return services.getUnit(unitID);
+          }
+        }
+      })
+      .when('/edit-building-units/:buildingID', {
+        title: 'Building Units',
+        templateUrl: 'app/units/edit-building-units.html',
+        controller: 'editCtrlUnits',
+        resolve: {
+          building: function(services, $route){
+            var buildingID = $route.current.params.buildingID;
+            return services.getBuilding(buildingID);
+          }
+        }
+      }) 
+      .when('/units/:buildingID', {
+        title: 'Units',
+        templateUrl: 'app/units/units.html',
+        controller: 'listCtrlUnits'
+      })      
+}]);
+
+
+app.controller('listCtrlUnits', function ($scope, services, $routeParams, $rootScope) {
+    var buildingID = ($routeParams.buildingID) ? parseInt($routeParams.buildingID) : 0;
+
+     services.getBuilding(buildingID).then(function(data){
+        $scope.building = data.data;
+    });
+
+    services.getUnits(buildingID).then(function(data){
+        $scope.units = data.data;
+    });
+    
+    services
+        .getRents(unitID)
+        .then(function(data){
+            $scope.rents = data.data;
+        });
+        
+      $scope.deleteUnit = function(unit) {
+        if(confirm("Are you sure to delete Unit: " + unit.unitid)==true)
+            services.deleteUnit(unit);
+      };
+    
+});
+
+
 app.controller('editCtrlUnit', function ($scope, $rootScope, $location, $routeParams, services, unit, $log, $window) {
     var buildingID = ($routeParams.buildingID);
     var unitID = ($routeParams.unitID) ? parseInt($routeParams.unitID) : 0;

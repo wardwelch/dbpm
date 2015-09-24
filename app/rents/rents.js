@@ -1,3 +1,53 @@
+app.config(['$routeProvider',function($routeProvider) {
+    $routeProvider
+      .when('/edit-rent/:buildingID/:unitID/:rentID', {
+        title: 'Edit Rent',
+        templateUrl: 'app/rents/edit-rent.html',
+        controller: 'editCtrlRent',
+        resolve: {
+          rent: function(services, $route){
+            var rentID = $route.current.params.rentID;
+            return services.getRent(rentID);
+          }
+        }
+      })
+      .when('/edit-unit-rents/:buildingID/:unitID', {
+        title: 'Unit Rents',
+        templateUrl: 'app/units/edit-unit-rents.html',
+        controller: 'editCtrlUnitRents',
+        resolve: {
+          unit: function(services, $route){
+            var unitID = $route.current.params.unitID;
+            return services.getUnit(unitID);
+          }
+        }
+      })
+      .when('/edit-unit-rent/:buildingID/:unitID/:rentID', {
+        title: 'Edit Unit Rent',
+        templateUrl: 'app/rents/edit-rent.html',
+        controller: 'editCtrlUnitRent',
+        resolve: {
+          rent: function(services, $route){
+            var rentID = $route.current.params.rentID;
+            return services.getRent(rentID);
+          }
+        }
+      })
+      .when('/edit-building-rents/:buildingID', {
+        title: 'Building Rents',
+        templateUrl: 'app/rents/edit-building-rents.html',
+        controller: 'editCtrlRents',
+        resolve: {
+          building: function(services, $route){
+            var buildingID = $route.current.params.buildingID;
+            return services.getBuilding(buildingID);
+          }
+        }
+      })
+}]);
+
+
+
 app.controller('editCtrlRent', function ($scope, $rootScope, $http, $location, $log, $routeParams, services, rent) {
     var rentID = ($routeParams.rentID) ? parseInt($routeParams.rentID) : 0;    
     var buildingID = ($routeParams.buildingID);
@@ -35,7 +85,9 @@ app.controller('editCtrlRent', function ($scope, $rootScope, $http, $location, $
              $scope.unit.price = data;
              services.updateUnit($scope.unit.unit_id, $scope.unit);
         };
-
+        
+      $scope.cancelText = '#/edit-building-rents/' + buildingID;
+      
       $scope.saveRent = function(rent) {
         $location.path('/edit-building-rents/' + buildingID);
         if (rentID <= 0) {

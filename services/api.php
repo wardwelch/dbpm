@@ -109,6 +109,41 @@
 		}
 		
 		
+		private function addBuilding($arr){
+			$building = array(
+			"building_id"=> 1,
+			"code"=> 10,
+			"name"=> "1749 10th Street",
+			"street"=> "1749 10th Street",
+			"city"=> "Santa Monica",
+			"state"=> "",
+			"zip"=> "27516",
+			"owner"=> "CRAIG & DAVE BENTZ",
+			"units"=> 9,
+			"inactive"=> 0
+		);
+
+			$column_names = array('code', 'name', 'owner', 'street', 'city', 'state', 'zip', 'inactive', 'units');
+			$keys = array_keys($building);
+			$columns = '';
+			$values = '';
+			foreach($column_names as $desired_key){ // Check the customer received. If blank insert blank into the array.
+			   if(!in_array($desired_key, $keys)) {
+			   		$$desired_key = '';
+				}else{
+					$$desired_key = $this->mysqli->real_escape_string($building[$desired_key]);
+				}
+				$columns = $columns.$desired_key.',';
+				$values = $values."'".$$desired_key."',";
+			}
+			$query = "INSERT INTO buildings(".trim($columns,',').") VALUES(".trim($values,',').")";
+			if(!empty($rent)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+			}else
+				$this->response('',204);	//"No Content" status
+		}
+		
+		
 		private function insertBuilding(){
 			if($this->get_request_method() != "POST"){
 				$this->response('',406);
@@ -188,7 +223,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT * from tenants t where t.building_id = $id order by t.`lastname` desc";
+			    $query="SELECT * from tenants t where t.building_id = $id and move_out = '' order by t.`lastname` asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -363,7 +398,7 @@
 				$this->response('',406);
 			}
 			$bid = (int)$this->_request['id'];
-            $tmp = (int)date_parse($this->_request['m']);
+            $tmp = date_parse($this->_request['m']);
             $n =$tmp['month']; 
             $date = date_create();
             date_date_set($date, $this->_request['y'], $n-1, 01);
@@ -372,7 +407,7 @@
             $lastMonth ="$m/$y";
             $thisMonth = strtoupper(substr($this->_request['m'],0,3))."/".$this->_request['y'];
 			if($bid > 0 ){				
-                $query = "SELECT  u.*, concat(lastname,', ',firstname) tenant_name from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $bid and u.tenant_id != 0"; 
+                $query = "SELECT  u.*, concat(lastname,', ',firstname) tenant_name from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $bid and u.tenant_id != 0  and move_out = '' "; 
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -382,6 +417,9 @@
 				    $row['sort_month'] = $this->_request['y']."-".str_pad($n,2,'0',STR_PAD_LEFT)."-01";
 				    $row['comments'] = "auto added";
 				    $row['due_this_mo'] = $row['price'];
+				    $row['adjustment'] = 0;
+				    $row['rent_paid'] = 0;
+				    $row['deposit_paid'] = 0;
 				    $row['rent_owed'] = $row['price'];
 				    $row['tenant_name'] = $row['tenant_name'];
 					$result[] = $row;
@@ -424,7 +462,6 @@
 				$values = $values."'".$$desired_key."',";
 			}
 			$query = "INSERT INTO rents(".trim($columns,',').") VALUES(".trim($values,',').")";
-			print_r($columns);exit;
 			if(!empty($rent)){
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 			}else
@@ -498,7 +535,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT u.unit_id unit_id, unitnum, t.tenant_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, price, u.unitid from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $id order by unitnum asc";
+			    $query="SELECT u.unit_id unit_id, unitnum, t.tenant_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, t.move_out, price, u.unitid from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $id order by unitnum asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
