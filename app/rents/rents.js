@@ -1,3 +1,4 @@
+
 app.config(['$routeProvider',function($routeProvider) {
     $routeProvider
       .when('/edit-rent/:buildingID/:unitID/:rentID', {
@@ -46,9 +47,116 @@ app.config(['$routeProvider',function($routeProvider) {
       })
 }]);
 
+app.controller('ModalCtrl', function ($scope, $modal, $log) {
 
+  $scope.animationsEnabled = true;
 
-app.controller('editCtrlRent', function ($scope, $rootScope, $http, $location, $log, $routeParams, services, rent) {
+  $scope.open = function (rent) {
+   
+    var modalInstance = $modal.open({
+      animation: $scope.animationsEnabled,
+      templateUrl: 'app/rents/modal.html',
+      controller: 'ModalInstanceCtrl',
+      size: 'md',
+      resolve: {
+        rent: function () {
+          return rent;
+        }
+      }
+    });
+
+    modalInstance.result.then(function (rent) {
+      $scope.rent = rent;
+    }, function () {
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+  };
+
+  $scope.toggleAnimation = function () {
+    $scope.animationsEnabled = !$scope.animationsEnabled;
+  };
+
+});
+
+// Please note that $modalInstance represents a modal window (instance) dependency.
+// It is not the same as the $modal service used above.
+
+app.controller('ModalInstanceCtrl', function ($scope, $modalInstance, $log, services, rent) {
+
+  $scope.rent = rent;
+  
+    services.getRentsByRent(rent)
+    .then(function(data){    
+        $scope.rents = data.data;
+        
+
+      $scope.isFirst = function(rent) {
+        var first = 0;
+        var current = _.findIndex($scope.rents, 'rent_id', rent.rent_id);
+        return current == first;
+      }
+
+      $scope.isLast = function(rent) {
+        var last = ($scope.rents.length)-1;
+        var current = _.findIndex($scope.rents, 'rent_id', rent.rent_id);
+        return current == last;
+      }
+
+      $scope.triggerClick = function () {
+      setTimeout(function() {
+        jQuery('#myForm').trigger('click');
+      }, 100);
+    };                                         
+          
+      $scope.nextRent = function(rent, event) {
+        if(rent.rent_id > 0) {
+                services.updateRent(rent.rent_id, rent);
+                setTimeout(function() {
+                    var next = $scope.rents[_.findIndex($scope.rents, 'rent_id', rent.rent_id)+1];                        
+                    $scope.rent = next;
+                    $scope.triggerClick();
+                });
+        }else
+        {
+            event.preventDefault();
+        }
+      };
+      
+      
+      $scope.prevRent = function(rent, event) {
+        if(rent.rent_id > 0) {
+                services.updateRent(rent.rent_id, rent);
+                setTimeout(function() {
+                    var prev = $scope.rents[_.findIndex($scope.rents, 'rent_id', rent.rent_id)-1];                        
+                    $scope.rent = prev;
+                    $scope.triggerClick();
+                });
+        }else
+        {
+            event.preventDefault();
+        }
+      };
+   });
+  
+  
+     $scope.calcDue = function() { 
+        $scope.rent.due_this_mo = $scope.rent.rent_owed - $scope.rent.rent_paid - $scope.rent.adjustment;
+    }
+ 
+
+  $scope.ok = function () {
+  
+        services.updateRent($scope.rent.rent_id, $scope.rent); 
+         
+        $modalInstance.close($scope.rent);
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+});
+
+app.controller('editCtrlRent', function ($scope, $rootScope, $http, $location, $log,$window, $routeParams, services, rent) {
     var rentID = ($routeParams.rentID) ? parseInt($routeParams.rentID) : 0;    
     var buildingID = ($routeParams.buildingID);
     var unitID = ($routeParams.unitID);    
@@ -61,6 +169,7 @@ app.controller('editCtrlRent', function ($scope, $rootScope, $http, $location, $
     $scope.rent.unit_id = unitID;
     $scope.rent.building_id = buildingID;
 
+      
     $scope.calcDue = function() { 
         $scope.rent.due_this_mo = $scope.rent.rent_owed - $scope.rent.rent_paid - $scope.rent.adjustment;
     }
@@ -72,9 +181,70 @@ app.controller('editCtrlRent', function ($scope, $rootScope, $http, $location, $
         $scope.unit = data.data;
     });
     
+    services.getRentsByRent(rent)
+    .then(function(data){    
+        $scope.rents = data.data;
+        
+
+      $scope.isFirst = function(rent) {
+        var first = 0;
+        var current = _.findIndex($scope.rents, 'rent_id', rent.rent_id);
+        return current == first;
+      }
+
+      $scope.isLast = function(rent) {
+        var last = ($scope.rents.length)-1;
+        var current = _.findIndex($scope.rents, 'rent_id', rent.rent_id);
+        return current == last;
+      }
+
+            
+      $scope.nextRent = function(rent, event) {
+        if(rentID > 0) {
+                services.updateRent(rentID, rent);
+                setTimeout(function() {
+                    var next = $scope.rents[_.findIndex($scope.rents, 'rent_id', rent.rent_id)+1];                        
+                    $window.location.href='#/edit-rent/' + next.building_id + '/' + next.unit_id + '/' + next.rent_id;                      
+                });
+        }else
+        {
+            event.preventDefault();
+        }
+      };
+      
+      
+//     $scope.nextRent = function(rent){
+//         services.
+//         updateRent(rent.rent_id, rent);
+//         var next = $scope.rents[_.findIndex($scope.rents, 'rent_id', rent.rent_id)+1];
+//         setTimeout(function() {
+//             $location.path('/edit-rent/' + next.building_id + '/' + next.unit_id + '/' + next.rent_id);  
+//         });    
+//     
+//     }    
+    $scope.prevRent = function(rent){
+        services.updateRent(rent.rent_id, rent);
+        var prev = $scope.rents[_.findIndex($scope.rents, 'rent_id', rent.rent_id)-1];
+        $location.path('/edit-rent/' + prev.building_id + '/' + prev.unit_id + '/' + prev.rent_id);       
+    
+    }    
+      
+      
+   });
+    
       $scope.isClean = function() {
         return angular.equals(original, $scope.rent);
       }
+//       $scope.isFirst = function(rent) {
+//         var first = 0;
+//         var current = _.findIndex($scope.rents, 'rent_id', rent.rent_id);
+//         return current == first;
+//       }
+//       $scope.isLast = function(rent) {
+//         var last = ($scope.rents.length)-1;
+//         var current = _.findIndex($scope.rents, 'rent_id', rent.rent_id);
+//         return current == last;
+//       }
 
         $scope.deleteRent = function(rent) {
             $location.path('/edit-building-rents/' + buildingID);
@@ -97,14 +267,12 @@ app.controller('editCtrlRent', function ($scope, $rootScope, $http, $location, $
             services.updateRent(rentID, rent);
         }
         
-        
     };
 });
 app.controller('editCtrlUnitRent', function ($scope, $rootScope, $http, $location, $log, $routeParams, services, rent) {
     var rentID = ($routeParams.rentID) ? parseInt($routeParams.rentID) : 0;    
     var buildingID = ($routeParams.buildingID);
     var unitID = ($routeParams.unitID);
-    
     
     $rootScope.title = (rentID > 0) ? 'Edit Rent' : 'Add Rent';
     $scope.buttonText = (rentID > 0) ? 'Update Rent' : 'Add New Rent';
@@ -130,7 +298,7 @@ app.controller('editCtrlUnitRent', function ($scope, $rootScope, $http, $locatio
         return angular.equals(original, $scope.rent);
       }
       
-      $scope.cancelText = '/dbpm/#/edit-unit-rents/' + buildingID + '/' + unitID;
+      $scope.cancelText = '#/edit-unit-rents/' + buildingID + '/' + unitID;
 
         $scope.deleteRent = function(rent) {
             $location.path('/edit-unit-rents/' + buildingID + '/' + unitID);
@@ -226,6 +394,119 @@ app.controller('editCtrlRents', function ($scope, $rootScope, $location, $routeP
             services.updateBuilding(buildingID, building);
         }
     };
+});    
+app.controller('EditableTableCtrl', function($scope, $filter, $http, $q, $log, services) {
+/*
+  $scope.users = [
+    {id: 1, name: 'awesome user1', status: 2, group: 4, groupName: 'admin'},
+    {id: 2, name: 'awesome user2', status: undefined, group: 3, groupName: 'vip'},
+    {id: 3, name: 'awesome user3', status: 2, group: null}
+  ]; 
 
-    
+  $scope.statuses = [
+    {value: 1, text: 'status1'},
+    {value: 2, text: 'status2'},
+    {value: 3, text: 'status3'},
+    {value: 4, text: 'status4'}
+  ]; 
+
+  $scope.groups = [];
+  $scope.loadGroups = function() {
+    return $scope.groups.length ? null : $http.get('/groups').success(function(data) {
+      $scope.groups = data;
+    });
+  };
+
+  $scope.showGroup = function(user) {
+    if(user.group && $scope.groups.length) {
+      var selected = $filter('filter')($scope.groups, {id: user.group});
+      return selected.length ? selected[0].text : 'Not set';
+    } else {
+      return user.groupName || 'Not set';
+    }
+  };
+
+  $scope.showStatus = function(user) {
+    var selected = [];
+    if(user.status) {
+      selected = $filter('filter')($scope.statuses, {value: user.status});
+    }
+    return selected.length ? selected[0].text : 'Not set';
+  };
+
+
+  // filter users to show
+  $scope.filterUser = function(user) {
+    return user.isDeleted !== true;
+  };
+
+  // mark user as deleted
+  $scope.deleteUser = function(id) {
+    var filtered = $filter('filter')($scope.users, {id: id});
+    if (filtered.length) {
+      filtered[0].isDeleted = true;
+    }
+  };
+  */
+
+  // add user
+  $scope.addRent = function() {
+    $scope.rents.push({
+      id: $scope.rents.length+1,
+      name: '',
+      status: null,
+      group: null,
+      isNew: true
+    });
+  };
+  
+
+  // cancel all changes
+  $scope.cancel = function() {
+    for (var i = $scope.rents.length; i--;) {
+      var rent = $scope.rents[i];    
+      // undelete
+      if (rent.isDeleted) {
+        delete rent.isDeleted;
+      }
+      // remove new 
+      if (rent.isNew) {
+        $scope.rents.splice(i, 1);
+      }      
+    };
+  };
+  
+  $scope.changePaid = function(data, id){
+       $scope.rents[id].due_this_mo = $scope.rents[id].rent_owed - data;
+  }
+  
+  // save edits
+  $scope.saveTable = function() {
+    var results = [];
+    for (var i = $scope.rents.length; i--;) {
+      var rent = $scope.rents[i];
+      // actually delete user
+      if (rent.isDeleted) {
+        $scope.rents.splice(i, 1);
+      }
+      // mark as not new 
+      if (rent.isNew) {
+        rent.isNew = false;
+      }
+
+      // send on server
+    //results.push($http.post('services/updateRent', {id:rent.rent_id, rent:rent})); 
+    results.push(services.updateRent(rent.rent_id, rent));        
+    }
+
+    return $q.all(results);
+  };
+
 });
+
+app.run(function(editableOptions, editableThemes) {
+  editableThemes.bs3.inputClass = 'input-sm';
+  editableThemes.bs3.buttonsClass = 'btn-sm';
+  editableOptions.theme = 'bs3';
+});    
+

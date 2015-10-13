@@ -86,7 +86,7 @@ app.controller('editCtrlTenants', function ($scope, $rootScope, $location, $rout
         }
     };
 });
-app.controller('editCtrlTenant', function ($scope, $rootScope, $location, $routeParams, services, tenant) {
+app.controller('editCtrlTenant', function ($scope, $rootScope, $location, $routeParams, $log, services, tenant) {
     var tenantID = ($routeParams.tenantID) ? parseInt($routeParams.tenantID) : 0;    
     var buildingID = ($routeParams.buildingID);
     var unitID = ($routeParams.unitID);
@@ -98,7 +98,6 @@ app.controller('editCtrlTenant', function ($scope, $rootScope, $location, $route
     $scope.tenant._id = tenantID;
     $scope.tenant.building_id = buildingID;
     $scope.tenant.unit_id = unitID;
-
 
     services.getBuilding(buildingID).then(function(data){
         $scope.building = data.data;

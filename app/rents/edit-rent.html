@@ -52,7 +52,7 @@
          <hr/>
          
 <div class="col-md-12">
-<form role="form" name="myForm" class="form-horizontal">
+<form role="form" id="myform" name="myForm" class="form-horizontal">
 <input type="hidden" ng-model="rent.building_id" name="building_id" id="building_id" />
 <input type="hidden" ng-model="rent.unit_id" name="unit_id" id="unit_id" />
 <div class="row">
@@ -80,14 +80,14 @@
 <div class= "form-group" ng-class="{error: myForm.date_paid.$invalid}">
     <label class= "col-md-2"> Date Paid </label>
     <div class="col-md-4">
-        <input name="date_paid" ng-model="rent.date_paid" type="date" class="form-control" placeholder="date_paid" />
+        <input name="date_paid" ng-model="rent.date_paid" type="date" class="form-control" placeholder="date_paid" focus-me="{{true}}" />
         <span ng-show="myForm.date_paid.$dirty && myForm.date_paid.$invalid" class="help-inline">Date Paid</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.receipt.$invalid}">
     <label class= "col-md-2"> Receipt </label>
     <div class="col-md-4">
-    <input name="receipt" ng-model="rent.receipt" type= "text" class= "form-control" placeholder="receipt" />
+    <input name="receipt" ng-model="rent.receipt" type= "text" class= "form-control" placeholder="receipt"  />
     <span ng-show="myForm.receipt.$dirty && myForm.receipt.$invalid" class="help-inline">Receipt</span>
     </div>
 </div>
@@ -147,10 +147,16 @@
     <a href="/dbpm/#/edit-building-rents/{{unit.building_id}}">Cancel</a>
  -->
     <a href="{{cancelText}}" >Cancel</a>
-        <button ng-click="saveRent(rent);" 
+        <button id="prev" ng-click="prevRent(rent);" 
+                ng-disabled="isFirst(rent) || myForm.$invalid"
+                class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></button>
+        <button id="save" ng-click="saveRent(rent);" 
                 ng-disabled="isClean() || myForm.$invalid"
-                class="btn btn-primary">{{buttonText}}</button>
-        <button ng-click="deleteRent(rent)"
+                class="btn btn-primary">Save</button>
+        <button id="next" ng-click="nextRent(rent);"
+                ng-disabled="isLast(rent) || myForm.$invalid"
+                class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
+        <button id="delete" ng-click="deleteRent(rent)"
                 ng-show="rent._id" class="btn btn-warning">Delete</button>
     </div>
 </div>

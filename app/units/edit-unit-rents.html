@@ -7,9 +7,6 @@
     border-color: #78FA89;
   }
   
-  #months{
-    display:none;
-  }
 </style>
 <div class="view">
     <div class="container">
@@ -25,14 +22,14 @@
                 <div class="clearfix"></div>
         <header>
             <h4>{{title}}</h4>
-                <div class="col-sm-2 pull-left">
+                <div class="col-sm-2 pull-left" ng-controller="ModalSearchCtrl" ng-click="open(unit)">
                      <strong style="display:initial">Building</strong> <br/>
                      <strong style="display:initial">Unit Number:</strong> <br/>
                      <strong style="display:initial">Tenant:</strong> <br/>
                </div>
-                 <div class="col-sm-4 pull-left">
-                      <span style="display:initial">&nbsp;{{unit.building}}</span><br/>
-                      <span style="display:initial">&nbsp;{{unit.unitnum}}</span><br/>
+                 <div class="col-sm-4 pull-left" ng-controller="ModalSearchCtrl" ng-click="open(unit)">
+                      <span style="display:initial"><a>&nbsp;{{unit.building}}</a></span><br/>
+                      <span style="display:initial"><a>&nbsp;{{unit.unitnum}}</a></span><br/>
                       <span style="display:initial">&nbsp;{{unit.tenant}}</span><br/>                      
                 </div>
                 <div class="col-sm-2 pull-left">
@@ -43,42 +40,45 @@
                 <div class="col-sm-4 pull-left">
                       <span>&nbsp;{{unit.type}}</span><br/>
                       <span>&nbsp;{{unit.status}}</span><br/>
-                        <span editable-text="unit.price" e-form="textBtnForm" onbeforesave="updateUnitPrice(data)">
-                        {{ unit.price || 'empty' }}
-                        </span>
-                        <button class="btn btn-default" ng-click="textBtnForm.$show()" ng-hide="textBtnForm.$visible">
-                            Change Price
-                        </button>
+                      <span>&nbsp;{{unit.price}}</span><br/>
                 </div>
          </header>
          <div class="clearfix"></div>
-         <hr/>
-                <month-year></month-year>                 
+         <br/>
                 <div class="row">
                     <div class="col-md-12" ng-show="rents.length > 0">
-                        <table class="table table-striped table-bordered">
-                            <thead> 
+                        <table class="table table-striped table-bordered table-condensed">
+                            <thead>
+                                <tr class="btn-warning">
+                                    <th colspan="7" style="padding-left:10px">
+                                        Date Range : From <input class="input-sm" type="date" name="d1" ng-model="d1"/> To <input class="input-sm" type="date" name="d2" ng-model='d2'/> <a class="btn btn-primary btn-sm" ng-click="loadRents()">Go</a>
+                                    </th>
+                                    <th colspan="3" style="vertical-align:middle;padding-left:10px">
+                                        Since: {{age[0].first}} - {{age[0].last}}
+                                    </th>
+                                </tr>
+                                <tr> 
                                 <th>Unit&nbsp;</th>
                                 <th>Month&nbsp;</th>
-                                <th>Sort Month&nbsp;</th>
-                                
-                                <th class="hidden-xs">Receipts&nbsp;</th>
+                                <th>Tenant</th>
+                                <th>Move In</th>
+                                <th>Move Out</th>
                                 <th>Date&nbsp;</th>
                                 <th>Rent Owed&nbsp;</th>
-                                <th>Deposit Paid&nbsp;</th>
                                 <th>Rent Paid&nbsp;</th>
-                                <th>Due This Month&nbsp;</th>
+                                <th>Rent Due&nbsp;</th>                                
                                 <th>Action&nbsp;</th>
+                                </tr>
                             </thead>
                             <tbody>
                                 <tr ng-repeat="data in rents | filter: year.value ">
                                     <td>{{data.unitid}}</td>
                                     <td>{{data.month}}</td>
-                                    <td>{{data.sort_month | date:'M/d/y'}}</td>                                    
-                                    <td class="hidden-xs">{{data.receipt}}</td>
+                                    <td>{{data.tenant}}</td>
+                                    <td>{{data.move_in}}</td>
+                                    <td>{{data.move_out}}</td>
                                     <td>{{data.date_paid | date:'M/d/y'}}</td>
                                     <td align="right">{{data.rent_owed | currency}}</td>
-                                    <td align="right">{{data.deposit_paid | currency}}</td>
                                     <td align="right">{{data.rent_paid | currency}}</td>
                                     <td align="right">{{data.due_this_mo | currency}}</td>
                                     <td><a href="#/edit-unit-rent/{{unit.building_id}}/{{data.unit_id}}/{{data.rent_id}}" class="btn" title="Edit Receipt">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Receipt</span></a></td>
@@ -87,9 +87,8 @@
                             </tbody>
                             <tfoot>
                                 <tr align="right">
-                                    <td colspan="5" >Subtotals:</td>
+                                    <td colspan="6" >Subtotals:</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_owed' | currency}}</td>
-                                    <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'deposit_paid' | currency}}</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_paid' | currency}}</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'due_this_mo' | currency}}</td>
                                     <td></td>

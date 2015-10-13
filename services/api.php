@@ -13,8 +13,20 @@
 			parent::__construct();				// Init parent contructor
 			$this->dbConnect();					// Initiate Database connection
 		}
-		
-		
+/*		
+		public $data = "";
+		const DB_SERVER = "localhost";
+		const DB_USER = "firestn_admin";
+		const DB_PASSWORD = "V9evn4uR";
+		const DB = "firestn_dbpm";
+		private $db = NULL;
+		private $mysqli = NULL;
+		public function __construct(){
+			parent::__construct();				// Init parent contructor
+			$this->dbConnect();					// Initiate Database connection
+		}
+*/
+
 		/*
 		 *  Connect to Database
 		*/
@@ -92,6 +104,30 @@
 			}
 			$this->response('',204);	// If no records "No Content" status
 		}
+		
+		private function unitsList(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+			$id = (int)$this->_request['id'];
+			
+			$query="SELECT unit_id id, unitnum, unitid from units where building_id = $id order by unitnum asc";
+			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+            
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+		
+		
+		
+		
+		
 		private function building(){	
 			if($this->get_request_method() != "GET"){
 				$this->response('',406);
@@ -242,7 +278,7 @@
 			}
 			$id = (int)$this->_request['id'];
 			if($id > 0){	
-				$query="SELECT * from tenants t where t.tenant_id=$id";
+				$query="SELECT * from tenants t LEFT JOIN units u ON t.tenant_id = u.tenant_id where t.tenant_id=$id";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				if($r->num_rows > 0) {
 					$result = $r->fetch_assoc();	
@@ -326,7 +362,7 @@
 		    	
 			
 			if($uid > 0){				
-			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.unit_id = $uid order by r.sort_month asc";
+			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant, move_in, move_out from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.unit_id = $uid order by r.sort_month asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -355,6 +391,56 @@
 		}
 		
 		
+        private function getRentsByDateRange(){
+        
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+		    $bid = (int)$this->_request['id'];
+		    $uid = (int)$this->_request['unit'];
+		    $d1 = $this->_request['d1'];
+		    $d2 = $this->_request['d2'];
+
+			if($bid > 0){	
+			    $query="SELECT r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.building_id = '$bid' and r.unit_id = '$uid' and (date_paid BETWEEN '$d1' AND '$d2') order by date_paid desc, unitid asc";
+			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+            }
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+        
+        }
+		
+		
+		
+        private function getRentsByMonth(){
+        
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+		    $id = (int)$this->_request['id'];
+		    $m = $this->_request['month'];
+		    	
+			
+			if($id > 0){				
+			    $query="SELECT r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.building_id = $id and month = '$m' order by unitid asc";
+			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+            }
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+        
+        }
 		private function insertRent(){
 			if($this->get_request_method() != "POST"){
 				$this->response('',406);
@@ -407,7 +493,7 @@
             $lastMonth ="$m/$y";
             $thisMonth = strtoupper(substr($this->_request['m'],0,3))."/".$this->_request['y'];
 			if($bid > 0 ){				
-                $query = "SELECT  u.*, concat(lastname,', ',firstname) tenant_name from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $bid and u.tenant_id != 0  and move_out = '' "; 
+                $query = "SELECT u.building_id, u.unit_id unit_id, unitnum, t.tenant_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, t.move_in, t.move_out, price, u.unitid from units u LEFT JOIN tenants t ON u.tenant_id = t.tenant_id where u.building_id = $bid and move_in <= STR_TO_DATE('01/".$thisMonth."','%d/%b/%Y') and (move_out >= STR_TO_DATE('01/".$thisMonth."','%d/%b/%Y') or move_out = '') order by unitnum asc"; 
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -535,7 +621,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT u.unit_id unit_id, unitnum, t.tenant_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, t.move_out, price, u.unitid from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $id order by unitnum asc";
+			    $query="SELECT u.building_id, u.unit_id unit_id, unitnum, t.tenant_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, t.move_out, price, u.unitid, u.total_bal_due from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $id order by unitnum asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){

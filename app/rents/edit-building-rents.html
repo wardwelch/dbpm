@@ -70,7 +70,7 @@
                     <label class="hidden-xs col-md-2">Now Showing:</label>
                     <month-year></month-year>                  
                     <span class="col-md-2">
-                        <button style="padding:inherit" ng-click="addRents(building.building_id,month.value,year.value)" class="btn btn-link"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Rents</button>
+                        <button style="padding:inherit" ng-click="addRents(building.building_id,month.value,year.value)" ng-disabled="month.value == '' || year.value == ''" class="btn btn-link"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Rents</button>
                     </span>
 <!-- 
                     <span class="pull-right col-md-2">
@@ -78,9 +78,11 @@
                     </span>
  -->
                 </div>
-                <div class="row">
+                <div class="row" ng-controller="ModalCtrl">
                     <div class="col-md-12" ng-show="rents.length > 0">
-                        <table class="table table-striped table-bordered">
+                    <div ng-controller="EditableTableCtrl">
+                        <form editable-form name="tableform" onaftersave="saveTable()" oncancel="cancel()">
+                        <table class="table table-striped table-bordered table-condensed">
                             <thead>
                                 <th>Unit&nbsp;</th>
                                 <th>Tenant&nbsp;</th>
@@ -90,33 +92,66 @@
                                 <th>Deposit Paid&nbsp;</th>
                                 <th>Rent Paid&nbsp;</th>
                                 <th>Due This Month&nbsp;</th>
-                                <th>Action&nbsp;</th>
+                                <th ng-show="!tableform.$visible">Action&nbsp;
+                                </th>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="data in rents | filter: month.value + '/' + year.value ">
-                                    <td>{{data.unitid}}</td>
-                                    <td>{{data.tenant}}</td>
-                                    <td class="hidden-xs">{{data.receipt}}</td>
-                                    <td>{{data.date_paid | date:'M/d/y'}}</td>
-                                    <td align="right">{{data.rent_owed | currency}}</td>
-                                    <td align="right">{{data.deposit_paid | currency}}</td>
-                                    <td align="right">{{data.rent_paid | currency}}</td>
-                                    <td align="right">{{data.due_this_mo | currency}}</td>
-                                    <td><a href="#/edit-rent/{{building.building_id}}/{{data.unit_id}}/{{data.rent_id}}" class="btn" title="Edit Receipt">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Receipt</span></a></td>
-                                    
+                                <tr ng-repeat="rent in rents | filter: month.value + '/' + year.value ">
+                                    <td>{{rent.unitid}}</td>
+                                    <td>{{rent.tenant}}</td>
+                                    <td><span editable-text="rent.receipt" e-form="tableform">
+                                        {{ rent.receipt}}
+                                    </span></td>
+                                    <td><span editable-date="rent.date_paid" e-form="tableform" onbeforesave="">
+                                        {{ rent.date_paid | date}}
+                                    </span></td>
+                                    <td align="right">{{rent.rent_owed | currency}}</td>
+                                    <td align="right"><span editable-text="rent.deposit_paid" e-form="tableform" >
+                                        {{ rent.deposit_paid | currency}}
+                                    </span></td>
+                                    <td align="right"><span editable-text="rent.rent_paid" e-form="tableform" onbeforesave="rent.due_this_mo = rent.rent_owed - rent.rent_paid - rent.adjustment">
+                                        {{ rent.rent_paid | currency}}
+                                    </span></td>
+
+<!-- 
+                                    <td class="hidden-xs">{{rent.receipt}}</td>
+                                    <td>{{rent.date_paid | date:'M/d/y'}}</td>
+                                    <td align="right">{{rent.rent_owed | currency}}</td>
+                                    <td align="right">{{rent.deposit_paid | currency}}</td>
+                                    <td align="right">{{rent.rent_paid | currency}}</td>
+ -->
+                                    <td align="right">{{rent.due_this_mo | currency}}</td>
+                                    <td style="white-space:nowrap" ng-show="!tableform.$visible">
+                                        <a class="btn" title="Edit Receipt" ng-click="open(rent)">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs" ng-show="!tableform.$visible">&nbsp; Edit Receipt</span></a>
+                                        <a class="btn" href="#/edit-unit-rents/{{building.building_id}}/{{rent.unit_id}}"><i class="glyphicon glyphicon-list-alt" title="Report"></i><span class="hidden-xs" ng-show="!tableform.$visible">&nbsp;Report</span></a>
+                                      </td>                                    
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr align="right">
-                                    <td colspan="4" >Subtotals:</td>
+                                    <td colspan="3" class="pull-left text-nowrap">
+                                        <!-- buttons -->
+                                        <div class="btn-edit">
+                                          <button type="button" class="btn btn-default btn-xs" ng-show="!tableform.$visible" ng-click="tableform.$show()">
+                                            Edit
+                                          </button>
+                                        </div>
+                                        <div class="btn-form" ng-show="tableform.$visible">
+                                          <button type="submit" ng-disabled="tableform.$waiting" class="btn btn-primary btn-xs">Save</button>
+                                          <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn btn-default btn-xs">Cancel</button>
+                                        </div> 
+                                    </td>
+                                    <td colspan="3">Subtotals:</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_owed' | currency}}</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'deposit_paid' | currency}}</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_paid' | currency}}</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'due_this_mo' | currency}}</td>
-                                    <td></td>
+                                    <td colspan="2" ng-show="!tableform.$visible"></td>
                                 </tr>
                             </tfoot>
                         </table>
+                        </form>
+                        </div>
                     </div>
                     <div class="col-md-12" ng-show="rents.length == 0">
                         <div class="col-md-12">
@@ -124,6 +159,128 @@
                         </div>
                     </div>
                 </div>
+                <script type="text/ng-template" id="myModalContent.html">
+                    <div class="modal-header">
+                        <h3 class="modal-title">I'm a modal!</h3>
+                    </div>
+                    <div class="modal-body">
+<div class="col-md-12">
+<form role="form" id="myform" name="myForm" class="form-horizontal">
+<input type="hidden" ng-model="rent.building_id" name="building_id" id="building_id" />
+<input type="hidden" ng-model="rent.unit_id" name="unit_id" id="unit_id" />
+<div class="row">
+<div class= "form-group" ng-class="{error: myForm.unitid.$invalid}">
+    <label class= "col-md-2"> Unit ID </label>
+    <div class="col-md-4">
+    <input name="unitid" ng-model="rent.unitid" type= "text" class= "form-control" placeholder="UnidID" disabled/>
+    <span ng-show="myForm.unitid.$dirty && myForm.unitid.$invalid" class="help-inline">Unit ID Required</span>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.tenant_name.$invalid}">
+    <label class= "col-md-2"> Tenant Name </label>
+    <div class="col-md-4">
+    <input name="tenant_name" ng-model="rent.tenant_name" type= "text" class="form-control" placeholder="tenant_name" disabled />
+    <span ng-show="myForm.tenant_name.$dirty && myForm.tenant_name.$invalid" class="help-inline">Tenant Name</span>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.month.$invalid}">
+    <label class= "col-md-2"> Month </label>
+    <div class="col-md-4">
+    <input name="month" ng-model="rent.month" type= "text" class="form-control" placeholder="Month" disabled />
+    <span ng-show="myForm.month.$dirty && myForm.month.$invalid" class="help-inline">Month</span>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.date_paid.$invalid}">
+    <label class= "col-md-2"> Date Paid </label>
+    <div class="col-md-4">
+        <input name="date_paid" ng-model="rent.date_paid" type="date" class="form-control" placeholder="date_paid" focus-me="{{true}}" />
+        <span ng-show="myForm.date_paid.$dirty && myForm.date_paid.$invalid" class="help-inline">Date Paid</span>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.receipt.$invalid}">
+    <label class= "col-md-2"> Receipt </label>
+    <div class="col-md-4">
+    <input name="receipt" ng-model="rent.receipt" type= "text" class= "form-control" placeholder="receipt"  />
+    <span ng-show="myForm.receipt.$dirty && myForm.receipt.$invalid" class="help-inline">Receipt</span>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.rent_owed.$invalid}">
+    <label class= "col-md-2"> Rent Owed </label>
+    <div class="col-md-4">
+    <input name="rent_owed" ng-model="rent.rent_owed" ng-change="calcDue()" type="text" class= "form-control" placeholder="rent_owed" />
+    <span ng-show="myForm.rent_owed.$dirty && myForm.rent_owed.$invalid" class="help-inline">Rent Owned</span>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.rent_paid.$invalid}">
+    <label class= "col-md-2"> Rent Paid </label>
+    <div class="col-md-4">
+    <input name="rent_paid" ng-model="rent.rent_paid" ng-change="calcDue()" type= "text" class="form-control" placeholder="rent_paid"  />
+    <span ng-show="myForm.rent_paid.$dirty && myForm.rent_paid.$invalid" class="help-inline">Rent Paid</span>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.adjustment.$invalid}">
+    <label class= "col-md-2"> Adjustment </label>
+    <div class="col-md-4">
+    <input name="adjustment" ng-model="rent.adjustment" ng-change="calcDue()" type= "text" class= "form-control" placeholder="adjustment" />
+    <span ng-show="myForm.adjustment.$dirty && myForm.adjustment.$invalid" class="help-inline">Adjustment</span>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.due_this_mo.$invalid}">
+    <label class= "col-md-2"> Deposit </label>
+    <div class="col-md-4">
+    <input name="deposit" ng-model="rent.deposit_paid" type= "text" class= "form-control" placeholder="Deposit" />
+    <span ng-show="myForm.deposit_paid.$dirty && myForm.deposit_paid.$invalid" class="help-inline">Deposit</span>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.due_this_mo.$invalid}">
+    <label class= "col-md-2"> Due this Month </label>
+    <div class="col-md-4">
+    <input name="due_this_mo" ng-model="rent.due_this_mo" type= "text" class= "form-control" placeholder="Due this Month" disabled/>
+    <span ng-show="myForm.due_this_mo.$dirty && myForm.due_this_mo.$invalid" class="help-inline">Due this Month</span>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.comments.$invalid}">
+    <label class= "col-md-2"> Comments </label>
+    <div class="col-md-4">
+    <input name="comments" ng-model="rent.comments" type= "text" class= "form-control" placeholder="comments" />
+    <span ng-show="myForm.comments.$dirty && myForm.comments.$invalid" class="help-inline">Comments</span>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.sort_month.$invalid}">
+    <label class= "col-md-2"> Sort Month </label>
+    <div class="col-md-4">
+    <input name="sort_month" ng-model="rent.sort_month" type= "date" class= "form-control" placeholder="sort_month" />
+    <span ng-show="myForm.sort_month.$dirty && myForm.sort_month.$invalid" class="help-inline">Sort Month</span>
+    </div>
+</div>
+<div class= "form-group">
+    <label class= "col-md-2"></label>
+    <div class="col-md-4">
+<!-- 
+    <a href="/dbpm/#/edit-building-rents/{{unit.building_id}}">Cancel</a>
+ -->
+    <a href="{{cancelText}}" >Cancel</a>
+        <button id="prev" ng-click="prevRent(rent);" 
+                ng-disabled="isFirst(rent) || myForm.$invalid"
+                class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></button>
+        <button id="save" ng-click="saveRent(rent);" 
+                ng-disabled="isClean() || myForm.$invalid"
+                class="btn btn-primary">Save</button>
+        <button id="next" ng-click="nextRent(rent);"
+                ng-disabled="isLast(rent) || myForm.$invalid"
+                class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
+        <button id="delete" ng-click="deleteRent(rent)"
+                ng-show="rent._id" class="btn btn-warning">Delete</button>
+    </div>
+</div>
+</div>
+</form>
+        </div>                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+                        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+                    </div>
+                </script>
             </tab>
             <tab heading="Units" select="switchToUnits(building.building_id)"></tab>
             <tab heading="Tenants" select="switchToTenants(building.building_id)"></tab>

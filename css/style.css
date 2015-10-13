@@ -4,3 +4,14 @@ snap-content {
   background-color: #fff;
   border-left: 1px solid #ccc;
 }
+
+a[ng-click]{
+    cursor: pointer;
+}
+a.editable-click { 
+    color: green;
+    border-bottom: none;
+}
+a.editable-click:hover { 
+    color: #47a447;
+}

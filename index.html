@@ -12,6 +12,7 @@
     <title>Dave Bentz</title>
 
     <!-- Bootstrap core CSS -->
+    
     <link href="css/bootstrap.min.css" rel="stylesheet">
     
     <style type="text/css">
@@ -89,15 +90,17 @@
         }              
 
     </style>
-    
-    
     <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script type="text/javascript" src="js//jquery.min.js"></script>
+    
     <script src="js/angular.min.js"></script>
     <script src="js/angular-route.min.js"></script>
+    <script src="js/angular-tab-trap.js"></script>
     <script src="js/ui-bootstrap-tpls-0.12.1.min.js"></script>
     <script src="js/snap.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/angular-snap.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/angular-cookies.js"></script>
+    <script src="js/event.min.js"></script>
     <script src="js/lodash.min.js"></script>
     <script src="js/xeditable.min.js"></script>        
     <script src="app/app.js"></script>
@@ -123,16 +126,16 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/dbpm/#/dashboard">Dave Bentz</a>
+          <a class="navbar-brand" href="#/dashboard">Dave Bentz</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse" ng-controller="HeaderController">
             <ul class="nav navbar-nav">
-                <li ng-class="{ active: isActive('#')}"><a ng-href="/dbpm/#/dashboard" snap-close>Dashboard</a></li>
-                <li ng-class="{ active: isActive('/buildings')}"><a ng-href="/dbpm/#/buildings" snap-close>Buildings</a></li>
+                <li ng-class="{ active: isActive('#')}"><a ng-href="#/dashboard" snap-close>Dashboard</a></li>
+                <li ng-class="{ active: isActive('#/buildings')}"><a ng-href="#/buildings" snap-close>Buildings</a></li>
 <!-- 
-                <li ng-class="{ active: isActive('/tenets')}"><a ng-href="/dbpm/#/tenants">tenants</a></li>
+                <li ng-class="{ active: isActive('/tenets')}"><a ng-href="#/tenants">tenants</a></li>
  -->
-                <li ng-class="{ active: isActive('/wo')}"><a ng-href="/dbpm/#/wo">Work Orders</a></li>
+                <li ng-class="{ active: isActive('/wo')}"><a ng-href="#/wo">Work Orders</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="../navbar-static-top/">Scott</a></li>
@@ -144,10 +147,10 @@
     <snap-drawer id="drawer">
     <div class="col-md-3">
         <ul class="nav navbar-nav">
-            <li ng-class="{ active: isActive('/dbpm/#/dashboard')}"><a ng-href="/dbpm/#/dashboard" snap-close>Dashboard</a></li>
-            <li ng-class="{ active: isActive('/dbpm/#/buildings')}"><a ng-href="/dbpm/#/buildings" snap-close>Buildings</a></li>
-            <li ng-class="{ active: isActive('/dbpm/#/tenants')}"><a ng-href="/dbpm/#/edit-building-tenants/1" snap-close>tenants</a></li>
-            <li ng-class="{ active: isActive('/dbpm/#/wo')}"><a ng-href="/dbpm/#/wo" snap-close>Work Orders</a></li>
+            <li ng-class="{ active: isActive('#/dashboard')}"><a ng-href="#/dashboard" snap-close>Dashboard</a></li>
+            <li ng-class="{ active: isActive('#/buildings')}"><a ng-href="#/buildings" snap-close>Buildings</a></li>
+            <li ng-class="{ active: isActive('#/tenants')}"><a ng-href="#/edit-building-tenants/1" snap-close>tenants</a></li>
+            <li ng-class="{ active: isActive('#/wo')}"><a ng-href="#/wo" snap-close>Work Orders</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="../navbar-static-top/">Scott</a></li>
