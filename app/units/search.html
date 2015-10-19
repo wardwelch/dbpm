@@ -7,36 +7,31 @@
     border-color: #78FA89;
   }
 </style>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <form role="form" name="myForm" class="form-horizontal">
-           <div class="modal-header">
-             <h3 class="modal-title">Search</h3>
-        </div>
-        <div class="modal-body">
-        <form role="form" name="myForm" class="form-horizontal">
+<form role="form" name="myForm" class="form-horizontal">
+    <div class="modal-header btn-success">
+        <h2 class="modal-title">Search</h2>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
             <div class="row">
                 <div class= "form-group">
-                <label class= "col-md-3">Building </label>
-                <div class="col-md-9">
-                    <select ng-model="lists.buildings.selected" class="form-control input-sm" ng-options="building.id as building.name for building in lists.buildings" ng-change="changeBuilding(lists.buildings.selected)"></select>
+                    <label class= "col-md-3">Building </label>
+                    <div class="col-md-9">
+                        <select ng-model="lists.buildings.selected" class="form-control input-sm" ng-options="building.id as building.name for building in lists.buildings" ng-change="changeBuilding(lists.buildings.selected)"></select>
+                    </div>
+                </div>
+                <div class= "form-group">
+                    <label class="col-md-3">Unit </label>
+                    <div class="col-md-9">
+                        <select ng-model="lists.units.selected" class="input-sm form-control" ng-options="unit.id as unit.unitnum for unit in lists.units" ></select>
+                    </div>
                 </div>
             </div>
-             <div class= "form-group">
-                <label class= "col-md-3">Unit </label>
-                <div class="col-md-9">
-                    <select ng-model="lists.units.selected" class="input-sm form-control" ng-options="unit.id as unit.unitnum for unit in lists.units" ></select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div class="col-md-12">
-                    <button class="btn btn-primary" ng-click="ok(lists)">OK</button>
-                    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-                </div>
-            </div>
-        </form>
         </div>
     </div>
-</div>
+    <div class="modal-footer btn-success">
+            <button class="btn btn-primary" ng-click="ok(lists)">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</form>
 

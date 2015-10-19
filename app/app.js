@@ -183,6 +183,7 @@ app.factory("services", ['$http', function($http) {
 	    });
 	};
 	
+			
     return obj;   
 }]);
 
@@ -237,6 +238,7 @@ app.directive('monthYear', monthYearDirective)
     monthYearDirective.$inject = [];
 
     function monthYearDirective() {
+
         var directive = {
             templateUrl: 'partials/monthYear-directive.html',
             restrict: 'EA',
@@ -264,11 +266,11 @@ app.directive('monthYear', monthYearDirective)
         { label: 'December', value: 'Dec'}
     ];
       
-
+        
         var d = new Date(),
             m = d.getMonth(),   
             yearStart = 1991,
-            yearEnd = 2015,
+            yearEnd = d.getFullYear(),
             current = d.getFullYear(),
             years = [{ label: 'All', value: ''}],
             year = 0;
@@ -278,7 +280,17 @@ app.directive('monthYear', monthYearDirective)
            years.push({'label': year, 'value' : year})  ;
         }
         
-        //initialize dropdowns and cookies if needed      
+        if( !$cookieStore.get('month')){
+            $cookieStore.put('month', $scope.months[m+1]);  
+        }
+        if( !$cookieStore.get('year')){
+            $cookieStore.put('year', _.find(years,{label: current, value: current}) );  
+        }
+        
+        
+        
+        //initialize dropdowns and cookies if needed
+
         $scope.m = !$cookieStore.get('month')  ?  _.findIndex($scope.months,{label: m, value: m}) : _.findIndex($scope.months, $cookieStore.get('month'));
         $scope.y = !$cookieStore.get('year')   ?  _.findIndex(years,{label: current, value: current}) : _.findIndex(years, $cookieStore.get('year'));
         $scope.years = years;
@@ -291,7 +303,6 @@ app.directive('monthYear', monthYearDirective)
         $scope.monthChanged = function(){
             $cookieStore.put('month', $scope.month);
         }
-        
     }
 
 app.controller('editCtrlPrice', function ($scope, $rootScope, $location, $routeParams, services, price, $log, $window) {
@@ -427,6 +438,11 @@ app.config(['$routeProvider',function($routeProvider) {
         templateUrl: 'partials/dashboard.html',
         controller: 'listCtrl'
       })      
+      .when('/wo', {
+        title: 'Dashboard',
+        templateUrl: 'partials/wo.html',
+        controller: 'listCtrl'
+      })      
       .when('/lastInsertID', {
         title: 'last insert ID',
         templateUrl: 'partials/results.html',
@@ -458,6 +474,10 @@ app.run(['$location', '$rootScope', function($location, $rootScope) {
     });
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         $rootScope.title = current.$$route.title;
+        $rootScope.today = function() {
+            var d = new Date();
+            return d.toLocaleDateString();
+        }
     });
     
 }]);

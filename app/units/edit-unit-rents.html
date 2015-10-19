@@ -10,6 +10,7 @@
 </style>
 <div class="view">
     <div class="container">
+<!-- 
         <div class="row">
             <nav class= "navbar navbar-default  hidden-xs" role= "navigation" >
                 <div class= "navbar-header" >
@@ -20,8 +21,8 @@
             </nav>
             <div class="col-md-12">
                 <div class="clearfix"></div>
+ -->
         <header>
-            <h4>{{title}}</h4>
                 <div class="col-sm-2 pull-left" ng-controller="ModalSearchCtrl" ng-click="open(unit)">
                      <strong style="display:initial">Building</strong> <br/>
                      <strong style="display:initial">Unit Number:</strong> <br/>
@@ -46,12 +47,12 @@
          <div class="clearfix"></div>
          <br/>
                 <div class="row">
-                    <div class="col-md-12" ng-show="rents.length > 0">
-                        <table class="table table-striped table-bordered table-condensed">
+                    <div class="col-md-12" >
+                        <table class="table table-striped stripes table-bordered table-condensed">
                             <thead>
-                                <tr class="btn-warning">
+                                <tr style="color: #fff;background-color: #f0ad4e;border-color: #eea236;">
                                     <th colspan="7" style="padding-left:10px">
-                                        Date Range : From <input class="input-sm" type="date" name="d1" ng-model="d1"/> To <input class="input-sm" type="date" name="d2" ng-model='d2'/> <a class="btn btn-primary btn-sm" ng-click="loadRents()">Go</a>
+                                        Date Range : From <input style="color:#333" class="input-sm" type="date" name="d1" ng-model="d1"/> To <input style="color:#333" class="input-sm" type="date" name="d2" ng-model='d2'/> <a class="btn btn-primary btn-sm" ng-click="loadRents()">Go</a>
                                     </th>
                                     <th colspan="3" style="vertical-align:middle;padding-left:10px">
                                         Since: {{age[0].first}} - {{age[0].last}}
@@ -81,13 +82,14 @@
                                     <td align="right">{{data.rent_owed | currency}}</td>
                                     <td align="right">{{data.rent_paid | currency}}</td>
                                     <td align="right">{{data.due_this_mo | currency}}</td>
-                                    <td><a href="#/edit-unit-rent/{{unit.building_id}}/{{data.unit_id}}/{{data.rent_id}}" class="btn" title="Edit Receipt">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Receipt</span></a></td>
+                                    <td><a href="#/edit-unit-rent/{{unit.building_id}}/{{data.unit_id}}/{{data.rent_id}}" class="btn btn-primary btn-xs" title="Edit Receipt">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Receipt</span></a></td>
                                     
                                 </tr>
                             </tbody>
                             <tfoot>
-                                <tr align="right">
-                                    <td colspan="6" >Subtotals:</td>
+                                <tr class="subtotals" align="right">
+                                    <td class="text-left" colspan="1" ><a href="/dbpm/#/edit-building-units/{{unit.building_id}}" class="btn btn-primary btn-xs">Return</a></td>
+                                    <td colspan="5" >Subtotals:</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_owed' | currency}}</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_paid' | currency}}</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'due_this_mo' | currency}}</td>
@@ -95,11 +97,6 @@
                                 </tr>
                             </tfoot>
                         </table>
-                    </div>
-                    <div class="col-md-12" ng-show="rents.length == 0">
-                        <div class="col-md-12">
-                            <h4>No units found</h4>
-                        </div>
                     </div>
                 </div>
             </div>

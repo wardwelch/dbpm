@@ -50,8 +50,8 @@ app.controller('listCtrlTenants', function ($scope, services) {
 
 app.controller('editCtrlTenants', function ($scope, $rootScope, $location, $routeParams, services, building, $log) {
     var buildingID = ($routeParams.buildingID) ? parseInt($routeParams.buildingID) : 0;
-    $rootScope.title = (buildingID > 0) ? 'Edit tenants' : 'Add tenants';
-    $scope.buttonText = (buildingID > 0) ? 'Update tenants' : 'Add New tenants';
+    $rootScope.title = (buildingID > 0) ? 'Edit Tenants' : 'Add Tenants';
+    $scope.buttonText = (buildingID > 0) ? 'Update Tenants' : 'Add New Tenants';
       var original = building.data;
       original._id = buildingID;
       $scope.building = angular.copy(original);
@@ -86,6 +86,22 @@ app.controller('editCtrlTenants', function ($scope, $rootScope, $location, $rout
         }
     };
 });
+
+app.filter('sumByKey', function () {
+    return function (data, key) {
+        if (typeof (data) === 'undefined' || typeof (key) === 'undefined') {
+            return 0;
+        }
+
+        var sum = 0;
+        for (var i = data.length - 1; i >= 0; i--) {
+            sum += parseInt(data[i][key]);
+        }
+
+        return sum;
+    };    
+ });
+
 app.controller('editCtrlTenant', function ($scope, $rootScope, $location, $routeParams, $log, services, tenant) {
     var tenantID = ($routeParams.tenantID) ? parseInt($routeParams.tenantID) : 0;    
     var buildingID = ($routeParams.buildingID);
@@ -98,7 +114,7 @@ app.controller('editCtrlTenant', function ($scope, $rootScope, $location, $route
     $scope.tenant._id = tenantID;
     $scope.tenant.building_id = buildingID;
     $scope.tenant.unit_id = unitID;
-
+$log.log($scope.tenant);
     services.getBuilding(buildingID).then(function(data){
         $scope.building = data.data;
     });
@@ -118,11 +134,11 @@ app.controller('editCtrlTenant', function ($scope, $rootScope, $location, $route
       $scope.moveIn = function() {
         alert("coming soon");  
       }
-      
       $scope.moveOut = function(unit) {
           if(confirm("Move this Tenant out?: #"+unit.tenant_id)==true) {
             unit.tenant_id = 0;
             unit.tenant = 'Vacant';
+            unit.status = 'vacant';
             services.updateUnit(unit.unit_id, unit);
         }
       };

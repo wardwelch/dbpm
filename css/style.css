@@ -15,3 +15,75 @@ a.editable-click {
 a.editable-click:hover { 
     color: #47a447;
 }
+
+.strike {
+    text-decoration: line-through;
+}
+.bold {
+    font-weight: bold;
+}
+.red {
+    color: red;
+}
+.has-error {
+    color: red;
+    background-color: yellow;
+}
+.orange {
+    color: orange;
+}
+.inactive {
+    text-decoration: line-through;
+}
+.stripes {
+   background-color: #d9edf7;
+}
+
+.title{
+    font-size:larger;
+    color:#000000;
+
+}
+.top-nav{
+background-color: #337AB7;
+}
+.top-nav a{
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
+
+.subtotals {
+   color:#fff;
+   background-color: #5cb85c;
+}
+
+.tabhead{
+    background-color: #f0ad4e;
+    color: #fff;
+    margin:auto;
+}
+.nav>li>a:focus, .nav-tabs>li>a:hover {
+    text-decoration: none;
+    background-color: #f0ad4e;
+}
+.navbar-nav>li>a:focus, .top-nav .nav>li>a:hover {
+    text-decoration: none;
+    background-color:  #2e6da4;
+}
+
+.nav-tabs>li.active>a:hover{
+    color: #fff;
+    cursor: default;
+    background-color: #f0ad4e;
+    border: 1px solid #f0ad4e;
+    border-bottom-color:#f0ad4e;
+}
+
+.nav-tabs>li.active>a{
+    color: #fff;
+    cursor: default;
+    background-color: #f0ad4e;
+    border: 1px solid #f0ad4e;
+    border-bottom-color: #f0ad4e;
+}

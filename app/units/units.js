@@ -29,14 +29,12 @@ app.config(['$routeProvider',function($routeProvider) {
       })      
 }]);
 
-app.controller('ModalTenantCtrl', function ($scope, $modal, $log, $window) {
+app.controller('ModalTenantCtrl', function ($scope, $modal, $log, $window, services) {
 
   $scope.animationsEnabled = true;
 
   $scope.open = function (unit) {
 
-    $log.log(unit);
-   
     var modalInstance = $modal.open({
       animation: $scope.animationsEnabled,
       templateUrl: 'app/units/modal.html',
@@ -49,9 +47,10 @@ app.controller('ModalTenantCtrl', function ($scope, $modal, $log, $window) {
         }
     });
 
-    modalInstance.result.then(function (unit) {
-        $log.log(unit);
-        $window.location.reload()
+    modalInstance.result.then(function (tenant) {
+        $log.log(tenant);
+        services.updateTenant(tenant.tenant_id, tenant);
+        //$window.location.reload()
         
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
@@ -67,47 +66,70 @@ app.controller('ModalTenantCtrl', function ($scope, $modal, $log, $window) {
 // Please note that $modalInstance represents a modal window (instance) dependency.
 // It is not the same as the $modal service used above.
 
-app.controller('ModalTenantInstanceCtrl', function ($scope, $modalInstance, $log, services, unit) {
-
-     
+app.controller('ModalTenantInstanceCtrl', function ($scope, $rootScope, $modalInstance, $log, services, unit) {
+    
+    $log.log("adding tenant..,")
     if(unit.tenant_id > 0) {
         services.getTenant(unit.tenant_id).then(function(data){
             $scope.tenant = data.data ;
+            $log.log(data.data);
         });
     }else
     {
+    
+     
         $scope.tenant = {
-            building_id:   unit.building_id,
+            building_id :  unit.building_id,
             unit_id     :  unit.unit_id,
-            unitnum    :    unit.unitnum
+            unitnum     :  unit.unitnum,
+            unitid      :  unit.unitid,
+            tenant_id   :  unit.tenant_id
         }
+       $log.log('new tenant');
     }
   
-  
+      $scope.isClean = function() {
+        //return angular.equals(original, $scope.tenant);
+        return false;
+      }
+      
   $scope.ok = function (tenant) {
+        $log.log(tenant);
         if (!tenant.tenant_id) {
+            $log.log("saving tenant");
+            tenant.status = 'active'
             services.insertTenant(tenant);
             unit.tenant = tenant.lastname + ', ' + tenant.firstname;
-            unit.status = tenant.status;
+            unit.status = "Occupied";
+            unit.building = tenant
+            
         }
         else {
-            services.updateTenant(tenant.tenant_id, tenant); 
+            if(tenant.status == 'inactive' && tenant.move_out_date != ''){
+                $log.log('saving unit...');
+                unit.tenant = 'Vacant';
+                unit.tenant_id = 0;
+                unit.status = 'Vacant';
+                services.updateUnit(unit.unit_id, unit); 
+                
+            }
+          $log.log('no save');  
         }
-        unit.move_out = tenant.move_out;
-        $modalInstance.close(unit);
+        
+        $log.log(tenant);
+        $modalInstance.close(tenant);
   };
 
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
   
-        $scope.moveOut = function(unit) {
-          if(confirm("Move this Tenant out?: #"+unit.tenant_id)==true) {
-            unit.tenant_id = 0;
-            unit.tenant = 'Vacant';
-            services.updateUnit(unit.unit_id, unit);
-        }
-      };
+    $scope.moveOut = function(tenant) {
+      if(confirm("Move this Tenant out?: #"+tenant.tenant_id)==true) {
+        tenant.status = 'inactive';
+        
+      }
+  };
 
   
 });
@@ -255,7 +277,7 @@ app.filter('sumByKey', function () {
     };    
  });
  
-app.controller('editCtrlUnits', function ($scope, $rootScope, $location, $routeParams, services, building, $log) {
+app.controller('editCtrlUnits', function ($scope, $rootScope, $window, $location, $routeParams, services, building, $log) {
     var buildingID = ($routeParams.buildingID) ? parseInt($routeParams.buildingID) : 0;
     $rootScope.title = (buildingID > 0) ? 'Edit Units' : 'Add Units';
     $scope.buttonText = (buildingID > 0) ? 'Update Units' : 'Add New Units';
@@ -266,6 +288,7 @@ app.controller('editCtrlUnits', function ($scope, $rootScope, $location, $routeP
 
     services.getUnits(buildingID).then(function(data){
         $scope.units = data.data;
+        $log.log($scope.units);
     });
     
     services
@@ -277,12 +300,13 @@ app.controller('editCtrlUnits', function ($scope, $rootScope, $location, $routeP
       $scope.isClean = function() {
         return angular.equals(original, $scope.building);
       }
-    
+
       $scope.deleteUnit = function(unit) {
-        if(unit.tenant_id == null) {
-            $location.path('#');
-            if(confirm("Are you sure want to delete Unit name: "+unit.unitid)==true){
-                services.deleteUnit(unit.unit_id);
+      $log.log(unit);
+        if(!unit.tenant_id) {
+            if(confirm("Are you sure want to delete Unit Name: "+unit.unitid)==true){
+               services.deleteUnit(unit.unit_id);
+                $window.location.reload()            
             }
         }
         else{
@@ -474,9 +498,9 @@ app.controller('editCtrlUnitRents', function ($scope, $rootScope, $location, $ro
       }
 
       $scope.deleteUnit = function(unit) {
-        $location.path('/edit-building-units/' + buildingID );
         if(confirm("Are you sure you want to delete unit name: "+$scope.unit._id)==true)
-            services.deleteUnit(unit.unit_id);
+         $location.path('/edit-building-units/' + buildingID );
+           services.deleteUnit(unit.unit_id);
       };
       
       $scope.nextUnit = function(unit, event) {

@@ -259,7 +259,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT * from tenants t where t.building_id = $id and move_out = '' order by t.`lastname` asc";
+			    $query="SELECT * from tenants t where t.building_id = $id order by t.`lastname` asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -278,7 +278,7 @@
 			}
 			$id = (int)$this->_request['id'];
 			if($id > 0){	
-				$query="SELECT * from tenants t LEFT JOIN units u ON t.tenant_id = u.tenant_id where t.tenant_id=$id";
+				$query="SELECT t.*, u.unitnum, u.building from tenants t LEFT JOIN units u ON t.tenant_id = u.tenant_id where t.tenant_id=$id";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				if($r->num_rows > 0) {
 					$result = $r->fetch_assoc();	
@@ -621,7 +621,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT u.building_id, u.unit_id unit_id, unitnum, t.tenant_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, t.move_out, price, u.unitid, u.total_bal_due from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $id order by unitnum asc";
+			    $query="SELECT u.building_id, u.unit_id unit_id, unitnum, t.tenant_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, t.move_in, price, u.unitid, u.total_bal_due from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $id order by unitnum asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -847,7 +847,7 @@
 				$this->response('',406);
 			}
 			$tenant = json_decode(file_get_contents("php://input"),true);
-			$column_names = array( 'building_id', 'unit_id', 'unitid', 'lastname', 'firstname', 'ssn', 'creditcard', 'cardnumber', 'unused', 'status', 'deposit_paid', 'firstmo_paid', 'lastmo_paid', 'other_paid', 'balance_due', 'move_in', 'move_out', '30_day_notice', 'other', 'drivers_license');
+			$column_names = array( 'building_id', 'unit_id', 'unitid', 'lastname', 'firstname', 'ssn', 'creditcard', 'cardnumber', 'note', 'status', 'deposit_paid', 'firstmo_paid', 'lastmo_paid', 'other_paid', 'balance_due', 'move_in', 'move_out', '30_day_notice', 'other', 'drivers_license');
 			$keys = array_keys($tenant);
 			$columns = '';
 			$values = '';
@@ -958,7 +958,7 @@
 			}
 			$tenant = json_decode(file_get_contents("php://input"),true);
 			$id = (int)$tenant['id'];
-			$column_names = array( 'building_id', 'unit_id', 'unitid', 'lastname', 'firstname', 'ssn', 'creditcard', 'cardnumber', 'unused', 'status', 'deposit_paid', 'firstmo_paid', 'lastmo_paid', 'other_paid', 'balance_due', 'move_in', 'move_out', '30_day_notice', 'other', 'drivers_license');
+			$column_names = array( 'building_id', 'unit_id', 'unitid', 'lastname', 'firstname', 'ssn', 'creditcard', 'cardnumber', 'note', 'status', 'deposit_paid', 'firstmo_paid', 'lastmo_paid', 'other_paid', 'balance_due', 'move_in', 'move_out', '30_day_notice', 'other', 'drivers_license');
 			$keys = array_keys($tenant['tenant']);
 			$columns = '';
 			$values = '';

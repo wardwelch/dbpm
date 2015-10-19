@@ -10,7 +10,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-6">
 <form role="form" name="myForm" id="myForm" class="form-horizontal" ng-keyUp="doKey(rent,$event)">
 <div class="modal-header">
     <h3 class="modal-title">{{title}}</h3>
@@ -131,7 +131,7 @@
                 ng-disabled="isLast(rent) || myForm.$invalid"
                 class="btn btn-default" tabindex="0" ><span class="glyphicon glyphicon-chevron-right"></span></button>
         <button id="delete" ng-click="deleteRent(rent)"
-                ng-show="rent._id" tabindex="0" class="btn btn-warning">Delete</button>
+                ng-show="rent._id" tabindex="0" class="btn btn-danger">Delete</button>
         <button class="btn btn-warning" ng-click="cancel()" tabindex="-1" >Cancel</button>
  
  

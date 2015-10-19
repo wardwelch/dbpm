@@ -6,7 +6,7 @@
   .form-horizontal input.ng-valid.ng-dirty {
     border-color: #78FA89;
   }
-  #
+
 </style>
 <div class="view">
     <div class="container">
@@ -63,18 +63,18 @@
         <tabset ng-init="tab.active = true">
             <tab heading="Rents" select="switchToRents(building.building_id)"></tab>
             <tab heading="Units" select="switchToUnits(building.building_id)"></tab>
-            <tab heading="Tenants" active="tab.active">
-                <div class="row" style="padding:10px">
-                    <strong class="col-md-2 pull-left strong">
+            <tab heading="Tenants" active="tab.active" class="tab-active">
+                <div class="row tabhead" style="padding:10px">
+                    <span class="title col-md-2 pull-left">
                         {{title}}
-                    </strong>
-                    <span class="pull-right col-md-2">
-                        <a style="padding:inherit" class="btn btn-link" href="#/edit-tenant/{{building.building_id}}/0/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Tenant</a>
+                    </span>
+                    <span class="pull-right">
+                        <a class="btn btn-primary btn-xs" href="#/edit-tenant/{{building.building_id}}/0/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Tenant</a>
                     </span>
                 </div>
                <div class="row">
                     <div class="col-md-12" ng-show="tenants.length > 0">
-                        <table class="table table-striped table-bordered">
+                        <table class="table table-striped stripes table-bordered">
                             <thead>
                                 <th>ID</th>
                                 <th>First<span class="hidden-xs"> Name</span>&nbsp;</th>
@@ -88,7 +88,7 @@
                                 <th>Action&nbsp;</th>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="d in tenants">
+                                <tr ng-repeat="d in tenants" ng-class="d.status == 'active' ? '' : 'inactive'">
                                     <td>{{d.tenant_id}}</td>
                                     <td>{{d.firstname}}</td>
                                     <td>{{d.lastname}}</td>
@@ -97,9 +97,19 @@
                                     <td>{{d.move_in | date:'M/d/y'}}</td>
                                     <td>{{d.move_out | date:'M/d/y'}}</td>
                                     <td>{{d.balance_due | currency}}</td>                
-                                    <td><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{d.unit_id}}/{{d.tenant_id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Tenant</span></a></td>
+                                    <td><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{d.unit_id}}/{{d.tenant_id}}" class="btn btn-primary btn-xs">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Tenant</span></a></td>
                                 </tr>
                             </tbody>
+                                <tr>
+                                    <td colspan="4" class="text-right subtotals">Subtotals:</td>
+                                    <td colspan="1" class="text-right subtotals">{{ tenants | sumByKey:'deposit_paid' | currency}}</td>
+                                    <td colspan="1" class="text-right subtotals"></td>
+                                    <td colspan="1" class="text-right subtotals"></td>
+                                    <td colspan="1" class="text-right subtotals">{{ tenants | sumByKey:'deposit_paid' | currency}}</td>
+                                    <td colspan="1" class="text-right subtotals"></td>                                    
+                                </tr>
+                            <tfoot>
+                            </tfoot>
                         </table>
                     </div>
                     <div class="col-md-12" ng-show="tenants.length == 0">

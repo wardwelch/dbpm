@@ -235,16 +235,6 @@ app.controller('editCtrlRent', function ($scope, $rootScope, $http, $location, $
       $scope.isClean = function() {
         return angular.equals(original, $scope.rent);
       }
-//       $scope.isFirst = function(rent) {
-//         var first = 0;
-//         var current = _.findIndex($scope.rents, 'rent_id', rent.rent_id);
-//         return current == first;
-//       }
-//       $scope.isLast = function(rent) {
-//         var last = ($scope.rents.length)-1;
-//         var current = _.findIndex($scope.rents, 'rent_id', rent.rent_id);
-//         return current == last;
-//       }
 
         $scope.deleteRent = function(rent) {
             $location.path('/edit-building-rents/' + buildingID);
@@ -394,109 +384,18 @@ app.controller('editCtrlRents', function ($scope, $rootScope, $location, $routeP
             services.updateBuilding(buildingID, building);
         }
     };
-});    
+}); 
+   
 app.controller('EditableTableCtrl', function($scope, $filter, $http, $q, $log, services) {
-/*
-  $scope.users = [
-    {id: 1, name: 'awesome user1', status: 2, group: 4, groupName: 'admin'},
-    {id: 2, name: 'awesome user2', status: undefined, group: 3, groupName: 'vip'},
-    {id: 3, name: 'awesome user3', status: 2, group: null}
-  ]; 
-
-  $scope.statuses = [
-    {value: 1, text: 'status1'},
-    {value: 2, text: 'status2'},
-    {value: 3, text: 'status3'},
-    {value: 4, text: 'status4'}
-  ]; 
-
-  $scope.groups = [];
-  $scope.loadGroups = function() {
-    return $scope.groups.length ? null : $http.get('/groups').success(function(data) {
-      $scope.groups = data;
-    });
-  };
-
-  $scope.showGroup = function(user) {
-    if(user.group && $scope.groups.length) {
-      var selected = $filter('filter')($scope.groups, {id: user.group});
-      return selected.length ? selected[0].text : 'Not set';
-    } else {
-      return user.groupName || 'Not set';
-    }
-  };
-
-  $scope.showStatus = function(user) {
-    var selected = [];
-    if(user.status) {
-      selected = $filter('filter')($scope.statuses, {value: user.status});
-    }
-    return selected.length ? selected[0].text : 'Not set';
-  };
-
-
-  // filter users to show
-  $scope.filterUser = function(user) {
-    return user.isDeleted !== true;
-  };
-
-  // mark user as deleted
-  $scope.deleteUser = function(id) {
-    var filtered = $filter('filter')($scope.users, {id: id});
-    if (filtered.length) {
-      filtered[0].isDeleted = true;
-    }
-  };
-  */
-
-  // add user
-  $scope.addRent = function() {
-    $scope.rents.push({
-      id: $scope.rents.length+1,
-      name: '',
-      status: null,
-      group: null,
-      isNew: true
-    });
-  };
-  
-
-  // cancel all changes
-  $scope.cancel = function() {
-    for (var i = $scope.rents.length; i--;) {
-      var rent = $scope.rents[i];    
-      // undelete
-      if (rent.isDeleted) {
-        delete rent.isDeleted;
-      }
-      // remove new 
-      if (rent.isNew) {
-        $scope.rents.splice(i, 1);
-      }      
-    };
-  };
-  
-  $scope.changePaid = function(data, id){
-       $scope.rents[id].due_this_mo = $scope.rents[id].rent_owed - data;
-  }
-  
   // save edits
   $scope.saveTable = function() {
     var results = [];
+    $scope.rents = $filter('filter')($scope.rents, $scope.month.value + '/' + $scope.year.value);
     for (var i = $scope.rents.length; i--;) {
-      var rent = $scope.rents[i];
-      // actually delete user
-      if (rent.isDeleted) {
-        $scope.rents.splice(i, 1);
-      }
-      // mark as not new 
-      if (rent.isNew) {
-        rent.isNew = false;
-      }
-
-      // send on server
-    //results.push($http.post('services/updateRent', {id:rent.rent_id, rent:rent})); 
-    results.push(services.updateRent(rent.rent_id, rent));        
+        var rent = $scope.rents[i];
+        $log.log($scope.m);
+        
+        results.push(services.updateRent(rent.rent_id, rent));        
     }
 
     return $q.all(results);
