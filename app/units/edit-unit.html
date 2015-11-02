@@ -10,6 +10,8 @@
 <div class="view">
     <div class="container">
         <div class="row">
+        <h1>Edit Unit</h1>
+<!-- 
             <nav class= "navbar navbar-default  hidden-xs" role= "navigation" >
                 <div class= "navbar-header" >
                     <a class= "navbar-brand" href= "/dbpm/#/edit-building-units/{{unit.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Units List </a>
@@ -17,6 +19,7 @@
                     <a ng-show="unit._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Unit Number: {{unit._id}}</a>
                 </div>
             </nav>
+ -->
             <div class="col-md-12">
                 <div class="clearfix"></div>
                 <form role="form" name="myForm" class="form-horizontal">
@@ -99,15 +102,15 @@
                         <div class= "form-group">
                             <label class= "col-md-2"></label>
                             <div class="col-md-4">
-                            <a href="/dbpm/#/edit-building-units/{{unit.building_id}}" class="btn">Cancel</a>
+                            <a href="/dbpm/#/edit-building-units/{{unit.building_id}}" class="btn btn-cancel">Cancel</a>
                                 <button id="save" ng-click="saveUnit(unit, $event);" 
                                         ng-disabled="isClean() || myForm.$invalid"
-                                        class="btn btn-primary">Save</button>
+                                        class="btn btn-save">Save</button>
                                 <button id="add" ng-show="!unit._id" ng-click="saveUnit(unit, $event);" 
                                         ng-disabled="isClean() || myForm.$invalid"
-                                        class="btn btn-primary">Save and Add Another</button>
+                                        class="btn btn-save">Save and Add Another</button>
                                 <button ng-click="deleteUnit(unit)"
-                                        ng-show="unit._id" class="btn btn-danger">Delete</button>
+                                        ng-show="unit._id" class="btn btn-delete">Delete</button>
                             </div>
                         </div>
                     </div>

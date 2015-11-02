@@ -364,7 +364,10 @@ app.controller('editCtrlRents', function ($scope, $rootScope, $location, $routeP
         if(confirm("We will now create rents for Building:" + buildingID + "/" + month+"/"+year)==true){
             services.addRents(buildingID,month,year)
             .then(function(){  
-            $window.location.reload()
+                services.getRents(buildingID)
+                .then(function(data){
+                    $scope.rents = data.data;
+                });
             });
         }
       };
@@ -384,6 +387,9 @@ app.controller('editCtrlRents', function ($scope, $rootScope, $location, $routeP
             services.updateBuilding(buildingID, building);
         }
     };
+    
+    
+    
 }); 
    
 app.controller('EditableTableCtrl', function($scope, $filter, $http, $q, $log, services) {
@@ -400,6 +406,7 @@ app.controller('EditableTableCtrl', function($scope, $filter, $http, $q, $log, s
 
     return $q.all(results);
   };
+  
 
 });
 

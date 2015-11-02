@@ -8,30 +8,10 @@
   }
   
   
-<style>
-  .modal-header, h4, .close {
-      background-color: #5cb85c;
-      color:white !important;
-      text-align: center;
-      font-size: 30px;
-  }
-  .modal-footer {
-      background-color: #f9f9f9;
-  }
-  </style>
-
 </style>
 <div class="view">
     <div class="container">
         <div class="row">
-        <nav class= "navbar navbar-default" role= "navigation" >
-        <div class= "navbar-header" >
-        <a class= "navbar-brand" href= "/dbpm/#/edit-building-rents/{{building.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Rents List </a>
-        <a ng-show="tenant._id" class= "navbar-brand" href= "/dbpm/#/edit-tenant/{{building.building_id}}/0"><i class="glyphicon glyphicon-plus"></i> Create Rent </a>
-        <a ng-show="tenant._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Rent Number: {{rent._id}}</a>
-
-        </div>
-        </nav>
         <header>
             <h4>{{title}}</h4>
                 <div class="col-sm-2 pull-left">
@@ -160,7 +140,7 @@
 <!-- 
     <a href="/dbpm/#/edit-building-rents/{{unit.building_id}}">Cancel</a>
  -->
-    <a href="{{cancelText}}" >Cancel</a>
+    <a href="{{cancelText}}" class="btn btn-cancel">Cancel</a>
 <!-- 
         <button id="prev" ng-click="prevRent(rent);" 
                 ng-disabled="isFirst(rent) || myForm.$invalid"
@@ -168,14 +148,14 @@
  -->
         <button id="save" ng-click="saveRent(rent);" 
                 ng-disabled="isClean() || myForm.$invalid"
-                class="btn btn-primary">Save</button>
+                class="btn btn-save">Save</button>
 <!-- 
         <button id="next" ng-click="nextRent(rent);"
                 ng-disabled="isLast(rent) || myForm.$invalid"
                 class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
  -->
         <button id="delete" ng-click="deleteRent(rent)"
-                ng-show="rent._id" class="btn btn-warning">Delete</button>
+                ng-show="rent._id" class="btn btn-delete">Delete</button>
     </div>
 </div>
 </div>

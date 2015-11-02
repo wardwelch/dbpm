@@ -60,7 +60,7 @@
                </div>
             </header>
         </div>
-        <hr />
+        <hr class="color"/>
         <tabset ng-init="tab.active = true">
             <tab heading="Rents" active="tab.active">
                 <div class="row tabhead" style="padding:10px">
@@ -70,7 +70,7 @@
                     <label class="text-right hidden-xs col-md-2">Now Showing:</label>
                     <month-year></month-year>                  
                     <span class="pull-right">
-                        <button ng-click="addRents(building.building_id,month.value,year.value)" ng-disabled="month.value == '' || year.value == ''" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Rents</button>
+                        <button ng-click="addRents(building.building_id,month.value,year.value)" ng-disabled="month.value == '' || year.value == ''" class="btn btn-add btn-sm"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Rents</button>
                     </span>
 <!-- 
                     <span class="pull-right col-md-2">
@@ -82,16 +82,15 @@
                     <div class="col-md-12" ng-show="rents.length > 0">
                     <div ng-controller="EditableTableCtrl">
                         <form editable-form name="tableform" onaftersave="saveTable()" oncancel="cancel()" >
-                        <table class="table table-striped stripes table-bordered table-condensed">
-                            <thead>
+                        <table class="table table-striped stripes table-bordered ">
+                            <thead class="thead-text">
                                 <th>Unit&nbsp;</th>
                                 <th>Tenant&nbsp;</th>
                                 <th class="hidden-xs">Receipts&nbsp;</th>
                                 <th>Date&nbsp;</th>
                                 <th>Rent Owed&nbsp;</th>
-                                <th>Deposit Paid&nbsp;</th>
                                 <th>Rent Paid&nbsp;</th>
-                                <th>Due This Month&nbsp;</th>
+                                <th ng-show="!tableform.$visible">Due This Month&nbsp;</th>
                                 <th ng-show="!tableform.$visible">Action&nbsp;
                                 </th>
                             </thead>
@@ -102,23 +101,22 @@
                                     <td><span editable-text="rent.receipt" e-form="tableform" e-class="input-xs">
                                         {{ rent.receipt}}
                                     </span></td>
-                                    <td><span editable-date="rent.date_paid" e-form="tableform"  e-class="input-xs">
+                                                                        
+                  <td><span editable-date="rent.date_paid" e-form="tableform"  e-class="input-xs" >
                                         {{ rent.date_paid | date}}
                                     </span></td>
-                                    <td align="right"><span editable-text="rent.rent_owed" e-form="tableform"  e-class="input-xs">
+ 
+                   <td align="right"><span editable-text="rent.rent_owed" e-form="tableform"  e-class="input-xs">
                                         {{  rent.rent_owed | currency}}
-                                    </span></td>
-                                    <td align="right"><span editable-text="rent.deposit_paid" e-form="tableform" e-class="input-xs">
-                                        {{ rent.deposit_paid | currency}}
                                     </span></td>
                                     <td align="right"><span editable-text="rent.rent_paid" e-form="tableform" onaftersave="rent.due_this_mo = rent.rent_owed - rent.rent_paid"  e-class="input-xs">
                                         {{ rent.rent_paid | currency}}
                                     </span></td> 
 
-                                    <td align="right">{{rent.due_this_mo | currency}}</td>
+                                    <td align="right" ng-show="!tableform.$visible">{{rent.due_this_mo | currency}}</td>
                                     <td style="white-space:nowrap" ng-show="!tableform.$visible">
-                                        <a class="btn btn-primary btn-xs" title="Edit Receipt" ng-click="open(rent)">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs" ng-show="!tableform.$visible">&nbsp; Edit Receipt</span></a>
-                                        <a class="btn btn-info btn-xs" href="#/edit-unit-rents/{{building.building_id}}/{{rent.unit_id}}"><i class="glyphicon glyphicon-list-alt" title="Report"></i><span class="hidden-xs" ng-show="!tableform.$visible">&nbsp;Report</span></a>
+                                        <a class="btn btn-edit btn-sm" title="Edit Receipt" ng-click="open(rent)">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs" ng-show="!tableform.$visible"></span></a>
+                                        <a class="btn btn-report btn-sm" href="#/edit-unit-rents/{{building.building_id}}/{{rent.unit_id}}"><i class="glyphicon glyphicon-list-alt" title="Report"></i><span class="hidden-xs" ng-show="!tableform.$visible"></span></a>
                                       </td>                                    
                                 </tr>
                             </tbody>
@@ -126,21 +124,20 @@
                                 <tr align="right" class="subtotals">
                                     <td colspan="3" class="pull-left text-nowrap">
                                         <!-- buttons -->
-                                        <div class="btn-edit">
-                                          <button type="button" class="btn btn-primary btn-xs" ng-show="!tableform.$visible" ng-click="tableform.$show()">
+                                        <div>
+                                          <button type="button" class="btn btn-edit " ng-show="!tableform.$visible" ng-click="tableform.$show()">
                                             Edit
                                           </button>
                                         </div>
                                         <div class="btn-form" ng-show="tableform.$visible">
-                                          <button type="submit" ng-disabled="tableform.$waiting" class="btn btn-primary btn-xs">Save</button>
-                                          <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn btn-warning btn-xs">Cancel</button>
+                                          <button type="submit" ng-disabled="tableform.$waiting" class="btn btn-save ">Save</button>
+                                          <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn btn-cancel ">Cancel</button>
                                         </div> 
                                     </td>
                                     <td colspan="3">Subtotals:</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_owed' | currency}}</td>
-                                    <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'deposit_paid' | currency}}</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_paid' | currency}}</td>
-                                    <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'due_this_mo' | currency}}</td>
+                                    <td ng-show="!tableform.$visible">{{(rents | filter: month.value +'/' + year.value) | sumByKey:'due_this_mo' | currency}}</td>
                                     <td colspan="2" ng-show="!tableform.$visible"></td>
                                 </tr>
                             </tfoot>
@@ -254,26 +251,26 @@
 <!-- 
     <a href="/dbpm/#/edit-building-rents/{{unit.building_id}}">Cancel</a>
  -->
-    <a href="{{cancelText}}" >Cancel</a>
+    <a href="{{cancelText}}" class="btn btn-cancel">Cancel</a>
         <button id="prev" ng-click="prevRent(rent);" 
                 ng-disabled="isFirst(rent) || myForm.$invalid"
                 class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></button>
         <button id="save" ng-click="saveRent(rent);" 
                 ng-disabled="isClean() || myForm.$invalid"
-                class="btn btn-primary">Save</button>
+                class="btn btn-save">Save</button>
         <button id="next" ng-click="nextRent(rent);"
                 ng-disabled="isLast(rent) || myForm.$invalid"
                 class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
         <button id="delete" ng-click="deleteRent(rent)"
-                ng-show="rent._id" class="btn btn-warning">Delete</button>
+                ng-show="rent._id" class="btn btn-delete">Delete</button>
     </div>
 </div>
 </div>
 </form>
         </div>                    </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
-                        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+                        <button class="btn btn-save" type="button" ng-click="ok()">OK</button>
+                        <button class="btn btn-cancel" type="button" ng-click="cancel()">Cancel</button>
                     </div>
                 </script>
             </tab>

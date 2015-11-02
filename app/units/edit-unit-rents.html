@@ -45,12 +45,13 @@
                 </div>
          </header>
          <div class="clearfix"></div>
+         <hr class="color" />
          <br/>
                 <div class="row">
                     <div class="col-md-12" >
-                        <table class="table table-striped stripes table-bordered table-condensed">
+                        <table class="table table-striped stripes table-bordered">
                             <thead>
-                                <tr style="color: #fff;background-color: #f0ad4e;border-color: #eea236;">
+                                <tr class="btn-warning">
                                     <th colspan="7" style="padding-left:10px">
                                         Date Range : From <input style="color:#333" class="input-sm" type="date" name="d1" ng-model="d1"/> To <input style="color:#333" class="input-sm" type="date" name="d2" ng-model='d2'/> <a class="btn btn-primary btn-sm" ng-click="loadRents()">Go</a>
                                     </th>
@@ -82,13 +83,13 @@
                                     <td align="right">{{data.rent_owed | currency}}</td>
                                     <td align="right">{{data.rent_paid | currency}}</td>
                                     <td align="right">{{data.due_this_mo | currency}}</td>
-                                    <td><a href="#/edit-unit-rent/{{unit.building_id}}/{{data.unit_id}}/{{data.rent_id}}" class="btn btn-primary btn-xs" title="Edit Receipt">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Receipt</span></a></td>
+                                    <td><a href="#/edit-unit-rent/{{unit.building_id}}/{{data.unit_id}}/{{data.rent_id}}" class="btn btn-edit btn-sm" title="Edit Receipt">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs"></span></a></td>
                                     
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr class="subtotals" align="right">
-                                    <td class="text-left" colspan="1" ><a href="/dbpm/#/edit-building-units/{{unit.building_id}}" class="btn btn-primary btn-xs">Return</a></td>
+                                    <td class="text-left" colspan="1" ><a href="/dbpm/#/edit-building-units/{{unit.building_id}}" class="btn btn-return btn-sm">Return</a></td>
                                     <td colspan="5" >Subtotals:</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_owed' | currency}}</td>
                                     <td>{{(rents | filter: month.value +'/' + year.value) | sumByKey:'rent_paid' | currency}}</td>

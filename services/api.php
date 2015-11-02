@@ -49,26 +49,83 @@
 			if($this->get_request_method() != "POST"){
 				$this->response('',406);
 			}
-			$email = $this->_request['email'];		
-			$password = $this->_request['pwd'];
+		    
+			$user = json_decode(file_get_contents("php://input"),true);
+			$email = $user['email'];
+			$password = $user['pwd'];
+
+// 			$email = $this->_request['email'];
+//             $password = $this->_request['pwd'];
+
+
 			if(!empty($email) and !empty($password)){
 				if(filter_var($email, FILTER_VALIDATE_EMAIL)){
-					$query="SELECT uid, name, email FROM users WHERE email = '$email' AND password = '".md5($password)."' LIMIT 1";
+					$query="SELECT id, username, email FROM users WHERE email = '$email' AND password = '".md5($password)."' LIMIT 1";
 					$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
-
 					if($r->num_rows > 0) {
-						$result = $r->fetch_assoc();	
-						// If success everythig is good send header as "OK" and user details
-						$this->response($this->json($result), 200);
+					    $result = $r->fetch_assoc();
+					    
+						// If success everything is good send header as "OK" and user details
+						
+                        if (!isset($_SESSION)) {
+                            session_start();
+                        }
+                        $_SESSION['id'] = $result['id'];
+                        $_SESSION['email'] = $email;
+                        $_SESSION['username'] = $result['username'];
+				        $success = array('status' => "Success", "msg" => "Login Successfull", "data" => $result);
+				        $this->response($this->json($success),200);
 					}
 					$this->response('', 204);	// If no records "No Content" status
 				}
 			}
 			
-			$error = array('status' => "Failed", "msg" => "Invalid Email address or Password");
+			$error = array('status' => "Failed", "msg" => "Invalid Email or Password");
 			$this->response($this->json($error), 400);
 		}
 
+        public function getSession(){
+            if (!isset($_SESSION)) {
+                session_start();
+            }
+            $sess = array();
+            if(isset($_SESSION['id']))
+            {
+                $sess["id"] = $_SESSION['id'];
+                $sess["username"] = $_SESSION['username'];
+                $sess["email"] = $_SESSION['email'];
+            }
+            else
+            {
+                $sess["id"] = '';
+                $sess["username"] = 'Guest';
+                $sess["email"] = '';
+            }
+            $this->response($this->json($sess), 200);
+        }
+        public function destroySession(){
+            if (!isset($_SESSION)) {
+            session_start();
+            }
+            if(isSet($_SESSION['id']))
+            {
+                unset($_SESSION['id']);
+                unset($_SESSION['username']);
+                unset($_SESSION['email']);
+                $info='info';
+                if(isSet($_COOKIE[$info]))
+                {
+                    setcookie ($info, '', time() - $cookie_time);
+                }
+                $txt="Logged Out Successfully...";
+            }
+            else
+            {
+                $txt = "Not logged in...";
+            }
+            $msg = array('message'=>$txt);
+            $this->response($this->json($msg), 200);
+        }
 
 //buildings	
 	
@@ -92,7 +149,7 @@
 			if($this->get_request_method() != "GET"){
 				$this->response('',406);
 			}
-			$query="SELECT building_id id, code, name from buildings";
+			$query="SELECT building_id id, code, name from buildings where inactive = '0'";
 			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 
 			if($r->num_rows > 0){
@@ -259,7 +316,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT * from tenants t where t.building_id = $id order by t.`lastname` asc";
+			    $query="SELECT * from tenants t where t.building_id = $id order by t.unitid asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -500,6 +557,7 @@
 				$result = array();
 				while($row = $r->fetch_assoc()){
 				    $row['month'] = $thisMonth;
+				    $row['date_paid'] = $this->_request['y']."-".str_pad($n,2,'0',STR_PAD_LEFT)."-01";
 				    $row['sort_month'] = $this->_request['y']."-".str_pad($n,2,'0',STR_PAD_LEFT)."-01";
 				    $row['comments'] = "auto added";
 				    $row['due_this_mo'] = $row['price'];

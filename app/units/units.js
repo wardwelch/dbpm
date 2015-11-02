@@ -72,6 +72,7 @@ app.controller('ModalTenantInstanceCtrl', function ($scope, $rootScope, $modalIn
     if(unit.tenant_id > 0) {
         services.getTenant(unit.tenant_id).then(function(data){
             $scope.tenant = data.data ;
+            unit.move_in = tenant.move_in;
             $log.log(data.data);
         });
     }else
@@ -101,7 +102,8 @@ app.controller('ModalTenantInstanceCtrl', function ($scope, $rootScope, $modalIn
             services.insertTenant(tenant);
             unit.tenant = tenant.lastname + ', ' + tenant.firstname;
             unit.status = "Occupied";
-            unit.building = tenant
+            unit.building = tenant;
+            unit.move_in = tenant.move_in
             
         }
         else {

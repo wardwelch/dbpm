@@ -50,8 +50,8 @@ app.controller('listCtrlTenants', function ($scope, services) {
 
 app.controller('editCtrlTenants', function ($scope, $rootScope, $location, $routeParams, services, building, $log) {
     var buildingID = ($routeParams.buildingID) ? parseInt($routeParams.buildingID) : 0;
-    $rootScope.title = (buildingID > 0) ? 'Edit Tenants' : 'Add Tenants';
-    $scope.buttonText = (buildingID > 0) ? 'Update Tenants' : 'Add New Tenants';
+    $rootScope.title = (buildingID > 0) ? 'Save' : 'Save';
+    $scope.buttonText = (buildingID > 0) ? 'Save' : 'Save';
       var original = building.data;
       original._id = buildingID;
       $scope.building = angular.copy(original);
@@ -59,6 +59,7 @@ app.controller('editCtrlTenants', function ($scope, $rootScope, $location, $rout
       
     services.getTenants(buildingID).then(function(data){
         $scope.tenants = data.data;
+        $log.log($scope.tenants);
     });
     services
     .getBuildingsList()
@@ -106,8 +107,8 @@ app.controller('editCtrlTenant', function ($scope, $rootScope, $location, $route
     var tenantID = ($routeParams.tenantID) ? parseInt($routeParams.tenantID) : 0;    
     var buildingID = ($routeParams.buildingID);
     var unitID = ($routeParams.unitID);
-    $rootScope.title = (tenantID > 0) ? 'Edit Tenant' : 'Add Tenant';
-    $scope.buttonText = (tenantID > 0) ? 'Update Tenant' : 'Add New Tenant';
+    $rootScope.title = (tenantID > 0) ? 'Save' : 'Save';
+    $scope.buttonText = (tenantID > 0) ? 'Save' : 'Save';
     var original = tenant.data || {};
     original._id = tenantID;
     $scope.tenant = angular.copy(original);

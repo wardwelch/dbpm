@@ -10,6 +10,7 @@
 <div class="view">
     <div class="container">
         <div class="row">
+<!-- 
         <nav class= "navbar navbar-default" role= "navigation" >
         <div class= "navbar-header" >
         <a class= "navbar-brand" href= "#/buildings"><i class="glyphicon glyphicon-th-large"></i> Buildings List</a>
@@ -17,6 +18,7 @@
         <a ng-show="building._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Building Number: {{building._id}}</a>
         </div>
         </nav>
+ -->
         <header>
             <h3>{{title}}</h3>
         </header>
@@ -78,14 +80,14 @@
                         </div>
                         <div class= "form-group">
                             <label class= "col-md-2">Inactive </label>
-                            <div class="col-md-1" ng-init="building.inactive = 0">
-                                <input type="checkbox" ng-model="building.inactive" ng-true-value="1" ng-false-value="0" ng-change="changeInactive(building.inactive)" class="form-control"/>
+                            <div class="col-md-1" ng-init="building.inactive = '0'">
+                                <input type="checkbox" ng-model="building.inactive" ng-true-value="1" ng-false-value="0" ng-change="changeInactive(building.inactive)"  class="form-control"/>
                             </div>
                         </div>
                         <div class= "form-group">
                             <label class= "col-md-2"></label>
                             <div class="col-md-4">
-                            <a href="#/buildings" class="btn">Cancel</a> 
+                            <a href="#/buildings" class="btn btn-warning">Cancel</a> 
                                 <button ng-click="saveBuilding(building);" 
                                         ng-disabled="isClean() || myForm.$invalid"
                                         class="btn btn-primary">{{buttonText}}</button>

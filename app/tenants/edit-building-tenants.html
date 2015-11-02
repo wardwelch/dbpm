@@ -59,7 +59,7 @@
                 </div>
             </header>
         </div>
-        <hr />
+        <hr class="color" />
         <tabset ng-init="tab.active = true">
             <tab heading="Rents" select="switchToRents(building.building_id)"></tab>
             <tab heading="Units" select="switchToUnits(building.building_id)"></tab>
@@ -68,8 +68,16 @@
                     <span class="title col-md-2 pull-left">
                         {{title}}
                     </span>
+<div class="pull-left">
+  <label>
+   <input type="checkbox" ng-model="search"
+           ng-true-value="active" ng-false-value="" ng-init="search='active'">
+           <span style="color:#000000;">Show only active tenants</span>
+   </label>  
+  </label>
+</div>
                     <span class="pull-right">
-                        <a class="btn btn-primary btn-xs" href="#/edit-tenant/{{building.building_id}}/0/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Tenant</a>
+                        <a class="btn btn-add btn-sm" href="#/edit-tenant/{{building.building_id}}/0/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Tenant</a>
                     </span>
                 </div>
                <div class="row">
@@ -82,13 +90,12 @@
                                 <th>UnitID&nbsp;</th>
                                 <th>Deposit Paid&nbsp;</th>
                                 <th>Move In&nbsp;</th>
-                                <th>Move Out&nbsp;</th>
-                                
+                                <th>Move Out&nbsp;</th>                                
                                 <th>Balance Due&nbsp;</th>
                                 <th>Action&nbsp;</th>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="d in tenants" ng-class="d.status == 'active' ? '' : 'inactive'">
+                                <tr ng-repeat=" d in tenants | filter:search:true " ng-class="d.status == 'active' ? '' : 'inactive'">
                                     <td>{{d.tenant_id}}</td>
                                     <td>{{d.firstname}}</td>
                                     <td>{{d.lastname}}</td>
@@ -97,7 +104,7 @@
                                     <td>{{d.move_in | date:'M/d/y'}}</td>
                                     <td>{{d.move_out | date:'M/d/y'}}</td>
                                     <td>{{d.balance_due | currency}}</td>                
-                                    <td><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{d.unit_id}}/{{d.tenant_id}}" class="btn btn-primary btn-xs">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Tenant</span></a></td>
+                                    <td><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{d.unit_id}}/{{d.tenant_id}}" class="btn btn-edit btn-sm" title="Edit Tenant">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs"></span></a></td>
                                 </tr>
                             </tbody>
                                 <tr>

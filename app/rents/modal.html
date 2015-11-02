@@ -126,13 +126,13 @@
                 class="btn btn-default"  tabindex="0" ><span class="glyphicon glyphicon-chevron-left"></span></button>
         <button id="save" ng-click="ok();" 
                 ng-disabled="isClean() || myForm.$invalid"
-                class="btn btn-primary" tabindex="0" >Save</button>
+                class="btn btn-save" tabindex="0" >Save</button>
         <button id="next" ng-click="nextRent(rent);"
                 ng-disabled="isLast(rent) || myForm.$invalid"
                 class="btn btn-default" tabindex="0" ><span class="glyphicon glyphicon-chevron-right"></span></button>
         <button id="delete" ng-click="deleteRent(rent)"
-                ng-show="rent._id" tabindex="0" class="btn btn-danger">Delete</button>
-        <button class="btn btn-warning" ng-click="cancel()" tabindex="-1" >Cancel</button>
+                ng-show="rent._id" tabindex="0" class="btn btn-delete">Delete</button>
+        <button class="btn btn-cancel" ng-click="cancel()" tabindex="-1" >Cancel</button>
  
  
 <!-- 

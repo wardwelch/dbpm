@@ -5,6 +5,22 @@ app.factory("services", ['$http', function($http) {
     var obj = {};
        
     // tenants
+    
+    obj.login = function (user) {
+        return $http.post(serviceBase + 'login', user).then(function (status) {
+            return status.data;
+        });
+	};
+    obj.getSession = function () {
+        return $http.get(serviceBase + 'getSession').then(function (status) {
+            return status.data;
+        });
+	};
+    obj.destroySession = function () {
+        return $http.get(serviceBase + 'destroySession').then(function (status) {
+            return status.data;
+        });
+	};
     obj.getLastInsertID = function() {
         return $http.get(serviceBase + 'lastInsertID');
     
@@ -187,14 +203,38 @@ app.factory("services", ['$http', function($http) {
     return obj;   
 }]);
 
-
-
+app.controller('DashboardController', function ($scope, $rootScope, $location, $routeParams, $log, $window) {
+    $rootScope.title =  'Dashboard';
+});
 
 app.controller('listCtrl', function ($scope, services) {
     services
     .addRents(9)
     .then(function(data){
         $scope.result = data.data;
+    });
+});
+
+app.controller('LoginController', function ($scope, $location, $rootScope, $route, $log, services) {
+    $rootScope.title =  'Login';
+    $scope.buttonText = 'Login';   
+    $scope.user = {};
+    
+    $scope.login = function (user) {  
+        services.login(user).then(function(data) {
+            if(data.status == "Success") {
+               $location.path("#/buildings"); 
+            }else{
+               $scope.loginError = "Invalid user/pass.";             
+            }
+    });
+    }
+    	
+});
+
+app.controller('LogoutController', function ($scope, $location, $rootScope, $log, services) {
+    services.destroySession().then(function(data){
+        $log.log(data);   
     });
 });
 
@@ -433,15 +473,25 @@ app.controller('HeaderController',function HeaderController($scope, $location)
 });
 app.config(['$routeProvider',function($routeProvider) {
     $routeProvider
+      .when('/logout', {
+        title: "Logout",
+        templateUrl: 'partials/logout.html',
+        controller: 'LogoutController'
+      })      
       .when('/dashboard', {
         title: 'Dashboard',
         templateUrl: 'partials/dashboard.html',
-        controller: 'listCtrl'
+        controller: 'DashboardController'
+      })      
+      .when('/login', {
+        title: 'Login',
+        templateUrl: 'partials/login.html',
+        controller: 'LoginController'
       })      
       .when('/wo', {
-        title: 'Dashboard',
+        title: 'Work Orders',
         templateUrl: 'partials/wo.html',
-        controller: 'listCtrl'
+        controller: 'WorkorderController'
       })      
       .when('/lastInsertID', {
         title: 'last insert ID',
@@ -465,12 +515,29 @@ app.config(['$routeProvider',function($routeProvider) {
         }
       })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/dashboard'
       });
 }]);
-app.run(['$location', '$rootScope', function($location, $rootScope) {
+app.run(['$location', '$rootScope', '$http', function($location, $rootScope, $http) {
     $rootScope.$on('$routeChangeStart', function (event, current, previous) {
-        console.log(event);
+        $rootScope.authenticated = false;
+            $http.get('services/getSession').then(function (status) {
+            console.log(status);
+            var results = status.data;
+            if (results.id) {
+                $rootScope.authenticated = true;
+                $rootScope.uid = results.id;
+                $rootScope.username = results.username;
+                $rootScope.email = results.email;
+            } else {
+                var nextUrl = current.$$route.originalPath;
+                if (nextUrl == '/signup' || nextUrl == '/login') {
+
+                } else {
+                    $location.path("/login");
+                }
+            }
+        });
     });
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         $rootScope.title = current.$$route.title;
@@ -479,5 +546,7 @@ app.run(['$location', '$rootScope', function($location, $rootScope) {
             return d.toLocaleDateString();
         }
     });
-    
+    $rootScope.$on( "$locationChangeStart", function(event, next, current) {
+        
+    });
 }]);

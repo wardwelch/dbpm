@@ -34,62 +34,6 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/angular-snap.css" type="text/css" />
     <link href="css/xeditable.css" rel="stylesheet">
-    <style>
-        #drawer{
-            padding-top:70px;
-            padding-left:10px;
-        }
-        .snap-content{
-            margin-top:60px;
-        } 
-        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
-             padding: 2px;
-        } 
-        .panel-heading {
-          padding: 5px 10px;
-          border-bottom: 1px solid transparent;
-          border-top-left-radius: 3px;
-          border-top-right-radius: 3px;
-        } 
-        .acrdn-data{
-            font-weight: 300;
-        } 
-        .btn-right10{
-            margin:10px;
-            float: right;
-        } 
-        .form-group {
-            margin-bottom: 4px;
-        } 
-                   
-        .form-control {
-          display: block;
-          width: 100%;
-          height: 34px;
-          padding: 6px 12px;
-          font-size: 14px;
-          line-height: 1.42857143;
-          color: #555;
-          background-color: #fff;
-          background-image: none;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-          box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-          -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-          -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-          transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-        }
-                        
-        .nav-tabs>li>a {
-          margin-right: 2px;
-          font-weight: bold;
-          line-height: 1.42857143;
-          border: 1px solid transparent;
-          border-radius: 4px 4px 0 0;
-        }              
-
-    </style>
     <script src="js/ie10-viewport-bug-workaround.js"></script>
     <script type="text/javascript" src="js//jquery.min.js"></script>
     
@@ -113,7 +57,7 @@
     
   </head>
 
-  <body bgcolor="#f0ad4e">
+  <body>
   
   
     <!-- Fixed navbar -->
@@ -139,7 +83,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="../navbar-static-top/">Scott</a></li>
-                <li class="active"><a href="./">Sign In<span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="#/logout">Sign In<span class="sr-only">(current)</span></a></li>
             </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -159,9 +103,11 @@
     </div>   
     </snap-drawer>
 <snap-content data-snap-ignore="true"> 
-    <div class="container" >
+<div>
+    <div class="container">
             <div ng-view="" id="ng-view"></div>   
     </div>
+</div>
 </snap-content>
 
   </body>
