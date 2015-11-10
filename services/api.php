@@ -3,10 +3,10 @@
 
 	class API extends REST {
 		public $data = "";
-		const DB_SERVER = "127.0.0.1";
-		const DB_USER = "root";
-		const DB_PASSWORD = "";
-		const DB = "bents_test";
+        const DB_SERVER = "127.0.0.1";
+        const DB_USER = "root";
+        const DB_PASSWORD = "";
+        const DB = "bents_test";
 		private $db = NULL;
 		private $mysqli = NULL;
 		public function __construct(){
@@ -31,7 +31,16 @@
 		 *  Connect to Database
 		*/
 		private function dbConnect(){
-			$this->mysqli = new mysqli(self::DB_SERVER, self::DB_USER, self::DB_PASSWORD, self::DB);
+		
+		
+		    if($_SERVER['SERVER_NAME'] == 'localhost'){
+			    $this->mysqli = new mysqli(self::DB_SERVER, self::DB_USER, self::DB_PASSWORD, self::DB);			
+			}
+		    if($_SERVER['SERVER_NAME'] == 'rodfirestone.com'){
+		
+			    $this->mysqli = new mysqli('localhost', 'firestn_admin', 'V9evn4uR', 'firestn_dbpm');
+			
+			}
 		}
 		
 		/*
@@ -101,7 +110,7 @@
                 $sess["username"] = 'Guest';
                 $sess["email"] = '';
             }
-            $this->response($this->json($sess), 200);
+            $this->response($this->json($_SESSION), 200);
         }
         public function destroySession(){
             if (!isset($_SESSION)) {
@@ -127,6 +136,23 @@
             $this->response($this->json($msg), 200);
         }
 
+//tickets	
+	
+		private function tickets(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+			$query="SELECT * from tickets";
+			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
 //buildings	
 	
 		private function buildings(){	
@@ -374,7 +400,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.building_id = $id order by unitid asc";
+			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant , move_in, move_out, balance_due, note from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.building_id = $id order by unitid asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -437,7 +463,7 @@
 			}
 			$id = (int)$this->_request['id'];
 			if($id > 0){	
-				$query="SELECT * from rents where rent_id = $id";
+				$query="SELECT r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where rent_id = $id";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				if($r->num_rows > 0) {
 					$result = $r->fetch_assoc();	
@@ -459,7 +485,7 @@
 		    $d2 = $this->_request['d2'];
 
 			if($bid > 0){	
-			    $query="SELECT r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.building_id = '$bid' and r.unit_id = '$uid' and (date_paid BETWEEN '$d1' AND '$d2') order by date_paid desc, unitid asc";
+			    $query="SELECT r.* , concat(lastname,', ',firstname) , move_in tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.building_id = '$bid' and r.unit_id = '$uid' and (date_paid BETWEEN '$d1' AND '$d2') order by date_paid desc, unitid asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){

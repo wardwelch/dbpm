@@ -56,7 +56,7 @@
                       <span>&nbsp;{{building.city}}</span><br/>
                       <span>&nbsp;{{building.state}}</span><br/>  
                       <span>&nbsp;{{building.zip}}</span><br/> 
-                      <span>&nbsp;<input type="checkbox" ng-model="building.inactive" ng-true-value="1" ng-false-value="0"/></span> <br/> 
+                      <span>&nbsp;<input type="checkbox" ng-model="building.inactive" ng-true-value="1" ng-false-value="0" disabled/></span> <br/> 
                </div>
             </header>
         </div>
@@ -97,13 +97,13 @@
                             <tbody>
                                 <tr ng-repeat="rent in rents | filter: month.value + '/' + year.value ">
                                     <td>{{rent.unitid}}</td>
-                                    <td>{{rent.tenant}}</td>
+                                    <td>{{rent.tenant}}&nbsp;<i class="glyphicon glyphicon-info-sign" popover-title="{{rent.tenant}}" popover="Move In: {{rent.move_in}}<br />Bal Due: {{rent.balance_due}}<br />Note:{{rent.note}}" popover-trigger="mouseenter"></i></td>
                                     <td><span editable-text="rent.receipt" e-form="tableform" e-class="input-xs">
                                         {{ rent.receipt}}
                                     </span></td>
                                                                         
-                  <td><span editable-date="rent.date_paid" e-form="tableform"  e-class="input-xs" >
-                                        {{ rent.date_paid | date}}
+                  <td ng-controller="DatepickerCtrl"><span editable-date="rent.date_paid" e-form="tableform"  e-class="input-xs">
+                                        {{ rent.date_paid | date:'M/d/y'}}
                                     </span></td>
  
                    <td align="right"><span editable-text="rent.rent_owed" e-form="tableform"  e-class="input-xs">

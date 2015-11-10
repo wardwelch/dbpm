@@ -44,6 +44,7 @@ app.config(['$routeProvider',function($routeProvider) {
 app.controller('listCtrlTenants', function ($scope, services) {
     services.getTenants().then(function(data){
         $scope.tenants = data.data;
+        
     });
 });
 
@@ -58,9 +59,21 @@ app.controller('editCtrlTenants', function ($scope, $rootScope, $location, $rout
       $scope.building._id = buildingID;
       
     services.getTenants(buildingID).then(function(data){
-        $scope.tenants = data.data;
-        $log.log($scope.tenants);
+       $scope.tenants = data.data;
+       var tenants = $scope.tenants;
+        var i = 0;
+        var len = tenants.length;
+        for (; i < len; ) { 
+                    firstmo = parseFloat(tenants[i].firstmo_paid);
+                    lastmo = parseFloat(tenants[i].lastmo_paid);
+                    deposit_paid = parseFloat(tenants[i].deposit_paid);
+                    other_paid = parseFloat(tenants[i].other_paid);
+                    tenants[i].deposit = firstmo + lastmo + deposit_paid + other_paid;
+            i++;
+        }       
+              
     });
+    
     services
     .getBuildingsList()
     .then(function(data){
@@ -115,7 +128,8 @@ app.controller('editCtrlTenant', function ($scope, $rootScope, $location, $route
     $scope.tenant._id = tenantID;
     $scope.tenant.building_id = buildingID;
     $scope.tenant.unit_id = unitID;
-$log.log($scope.tenant);
+    
+    $log.log($scope.tenant);
     services.getBuilding(buildingID).then(function(data){
         $scope.building = data.data;
     });

@@ -73,6 +73,7 @@
           <a class="navbar-brand" href="#/dashboard">Dave Bentz</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse" ng-controller="HeaderController">
+        <span id="version">v.0.05.01 <?php echo("What")?></span>
             <ul class="nav navbar-nav">
                 <li ng-class="{ active: isActive('#')}"><a ng-href="#/dashboard" snap-close>Dashboard</a></li>
                 <li ng-class="{ active: isActive('#/buildings')}"><a ng-href="#/buildings" snap-close>Buildings</a></li>
@@ -82,8 +83,9 @@
                 <li ng-class="{ active: isActive('/wo')}"><a ng-href="#/wo">Work Orders</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="../navbar-static-top/">Scott</a></li>
-                <li class="active"><a href="#/logout">Sign In<span class="sr-only">(current)</span></a></li>
+                <li><a>{{username}}</a></li>
+                <li class="active" ng-show="!authenticated"><a href="#/login">Sign In<span class="sr-only">(current)</span></a></li>
+                <li class="active" ng-show="authenticated"><a href="#/logout">Sign Out<span class="sr-only">(current)</span></a></li>
             </ul>
         </div><!--/.nav-collapse -->
       </div>

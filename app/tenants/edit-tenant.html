@@ -82,7 +82,7 @@
 <div class= "form-group" ng-class="{error: myForm.status.$invalid}">
     <label class= "col-md-2"> Status </label>
     <div class="col-md-4">
-    <input name="status" ng-model="tenant.status" type= "text" class= "form-control" placeholder="Status" />
+    <input name="status" ng-model="tenant.status" type= "text" class= "form-control" placeholder="Status" disabled/>
     <span ng-show="myForm.status.$dirty && myForm.status.$invalid" class="help-inline">Status</span>
     </div>
 </div>
@@ -108,10 +108,14 @@
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.other_paid.$invalid}">
-    <label class= "col-md-2"> Other Paid </label>
-    <div class="col-md-4">
-    <input name="other_paid" ng-model="tenant.other_paid" type= "text" class= "form-control" placeholder="Other Paid" />
-    <span ng-show="myForm.other_paid.$dirty && myForm.other_paid.$invalid" class="help-inline">Other Paid</span>
+    <label class= "col-md-2"> Other Paid/Other* </label>
+    <div class="col-md-1">
+        <input name="other_paid" ng-model="tenant.other_paid" type= "text" class= "form-control" placeholder="Other Paid" />
+        <span ng-show="myForm.other_paid.$dirty && myForm.other_paid.$invalid" class="help-inline">Other Paid</span>
+    </div>
+    <div class="col-md-3">
+        <input name="other" ng-model="tenant.other" type= "text" class= "form-control" placeholder="Other" />
+        <span ng-show="myForm.other.$dirty && myForm.other.$invalid" class="help-inline">Other</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.balance_due.$invalid}">

@@ -340,7 +340,7 @@ app.controller('editCtrlRents', function ($scope, $rootScope, $location, $routeP
     .then(function(data){
         $scope.list = data.data;
     });
-
+    
     services
     .getRentsRange(buildingID)
     .then(function(data){
@@ -387,26 +387,61 @@ app.controller('editCtrlRents', function ($scope, $rootScope, $location, $routeP
             services.updateBuilding(buildingID, building);
         }
     };
-    
-    
+     
     
 }); 
-   
+angular.module('ui.bootstrap').controller('DatepickerCtrl', function ($scope) {
+  $scope.today = function() {
+    $scope.dt = new Date();
+  };
+  $scope.today();
+
+  $scope.clear = function () {
+    $scope.dt = null;
+  };
+
+  // Disable weekend selection
+  $scope.disabled = function(date, mode) {
+    return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+  };
+
+  $scope.toggleMin = function() {
+    $scope.minDate = $scope.minDate ? null : new Date();
+  };
+  $scope.toggleMin();
+
+  $scope.open = function($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+
+    $scope.opened = true;
+  };
+
+  $scope.dateOptions = {
+    formatYear: 'yy',
+    startingDay: 1
+  };
+
+  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+  $scope.format = $scope.formats[0];
+});
 app.controller('EditableTableCtrl', function($scope, $filter, $http, $q, $log, services) {
   // save edits
   $scope.saveTable = function() {
     var results = [];
     $scope.rents = $filter('filter')($scope.rents, $scope.month.value + '/' + $scope.year.value);
     for (var i = $scope.rents.length; i--;) {
-        var rent = $scope.rents[i];
-        $log.log($scope.m);
-        
+        var rent = $scope.rents[i];        
         results.push(services.updateRent(rent.rent_id, rent));        
     }
 
-    return $q.all(results);
+    $q.all(results);
+    services.getRents(rent.building_id)
+    .then(function(data){
+        $scope.rents = data.data;
+    });
   };
-  
+
 
 });
 

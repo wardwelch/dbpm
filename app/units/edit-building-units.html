@@ -107,7 +107,7 @@
                                         </td>
                                        <td>{{data.type}}</td>
                                         <td>{{data.status}}</td>
-                                        <td class="nowrap">{{data.move_in}}</td>  
+                                        <td class="nowrap">{{data.move_in | date:'M/d/y'}}</td>  
                                         <td class="text-right">
                                             <span editable-text="data.price" e-name="price" e-form="priceform" buttons="no" onbeforesave="updateUnitPrice($data, data)" e-class="input-xs">
                                                 {{ data.price || 'empty' | currency}}

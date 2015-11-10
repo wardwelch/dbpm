@@ -57,11 +57,11 @@
     <span ng-show="myForm.unitid.$dirty && myForm.unitid.$invalid" class="help-inline">Unit ID Required</span>
     </div>
 </div>
-<div class= "form-group" ng-class="{error: myForm.tenant_name.$invalid}">
-    <label class= "col-md-2"> Tenant Name </label>
+<div class= "form-group" ng-class="{error: myForm.tenant.$invalid}">
+    <label class= "col-md-2"> Tenant </label>
     <div class="col-md-4">
-    <input name="tenant_name" ng-model="rent.tenant_name" type= "text" class="form-control" placeholder="tenant_name" disabled />
-    <span ng-show="myForm.tenant_name.$dirty && myForm.tenant_name.$invalid" class="help-inline">Tenant Name</span>
+    <input name="tenant" ng-model="rent.tenant" type= "text" class="form-control" placeholder="tenant" disabled />
+    <span ng-show="myForm.tenant.$dirty && myForm.tenant.$invalid" class="help-inline">Tenant</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.month.$invalid}">

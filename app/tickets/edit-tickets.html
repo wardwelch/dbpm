@@ -1,0 +1,101 @@
+<style type="text/css">
+  .form-horizontal input.ng-invalid.ng-dirty {
+    border-color: #FA787E;
+  }
+
+  .form-horizontal input.ng-valid.ng-dirty {
+    border-color: #78FA89;
+  }
+</style>
+<div class="view">
+    <div class="container">
+        <div class="row">
+<!-- 
+        <nav class= "navbar navbar-default" role= "navigation" >
+        <div class= "navbar-header" >
+        <a class= "navbar-brand" href= "#/buildings"><i class="glyphicon glyphicon-th-large"></i> Buildings List</a>
+        <a ng-show="building._id" class= "navbar-brand" href= "#/edit-building/0"><i class="glyphicon glyphicon-plus"></i> Create Building </a>
+        <a ng-show="building._id" class= "navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing Building Number: {{building._id}}</a>
+        </div>
+        </nav>
+ -->
+        <header>
+            <h3>{{title}}</h3>
+        </header>
+         <div class="col-md-12">
+            <div class="container">
+                <div class="row">
+                    <form role="form" name="myForm" class="form-horizontal">
+                        <div class= "form-group" ng-class="{error: myForm.name.$invalid}">
+                            <label class= "col-md-2"> Code</label>
+                            <div class="col-md-4">
+                            <input name="code" ng-model="building.code" type= "text" class= "form-control" placeholder="Code" required/>
+                            <span ng-show="myForm.code.$dirty && myForm.code.$invalid" class="help-inline">Code Required</span>
+                            </div>
+                        </div>
+                        <div class= "form-group" ng-class="{error: myForm.name.$invalid}">
+                            <label class= "col-md-2"> Name </label>
+                            <div class="col-md-4">
+                            <input name="name" ng-model="building.name" type= "text" class= "form-control" placeholder="Name" required/>
+                            <span ng-show="myForm.name.$dirty && myForm.name.$invalid" class="help-inline">Name Required</span>
+                            </div>
+                        </div>
+                        <div class= "form-group">
+                            <label class= "col-md-2"> Owner </label>
+                            <div class="col-md-4">
+                            <input name="owner" ng-model="building.owner" type= "owner" class= "form-control" placeholder="Enter owner" required/>
+                            <span ng-show="myForm.owner.$dirty && myForm.owner.$invalid && !myForm.owner.$error.owner" class="help-inline">Owner Required</span>
+                            <span ng-show="myForm.owner.$error.owner" class="help-inline">Owner is not valid</span>
+                            </div>
+                        </div>
+                        <div class= "form-group">
+                            <label class= "col-md-2">Units </label>
+                            <div class="col-md-4">
+                            <input ng-model="building.units" type= "text" class= "form-control" placeholder= "Units"/>
+                            </div>
+                        </div>
+                        <div class= "form-group">
+                            <label class= "col-md-2">Street </label>
+                            <div class="col-md-4">
+                            <input ng-model="building.street" type= "text" class= "form-control" placeholder= "Street"/>
+                            </div>
+                        </div>
+                        <div class= "form-group">
+                            <label class= "col-md-2">City </label>
+                            <div class="col-md-4">
+                            <input ng-model="building.city" type= "text" class= "form-control" placeholder= "City"/>
+                            </div>
+                        </div>
+                        <div class= "form-group">
+                            <label class= "col-md-2">State </label>
+                            <div class="col-md-4">
+                            <input ng-model="building.state" type= "text" class= "form-control" placeholder= "State"/>
+                            </div>
+                        </div>
+                        <div class= "form-group">
+                            <label class= "col-md-2">Zip </label>
+                            <div class="col-md-4">
+                            <input ng-model="building.zip" type="text" class= "form-control" placeholder= "Zip"/>
+                            </div>
+                        </div>
+                        <div class= "form-group">
+                            <label class= "col-md-2">Inactive </label>
+                            <div class="col-md-1" ng-init="building.inactive = '0'">
+                                <input type="checkbox" ng-model="building.inactive" ng-true-value="1" ng-false-value="0" ng-change="changeInactive(building.inactive)"  class="form-control"/>
+                            </div>
+                        </div>
+                        <div class= "form-group">
+                            <label class= "col-md-2"></label>
+                            <div class="col-md-4">
+                            <a href="#/buildings" class="btn btn-warning">Cancel</a> 
+                                <button ng-click="saveBuilding(building);" 
+                                        ng-disabled="isClean() || myForm.$invalid"
+                                        class="btn btn-primary">{{buttonText}}</button>
+                                <button ng-click="deleteBuilding(building)"
+                                        ng-show="building._id" class="btn btn-danger">Delete</button>
+                            </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>

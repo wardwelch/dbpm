@@ -249,4 +249,9 @@ sriped D9EDF7
     height: 30px;
 }
 
+#version {
+    position: absolute;
+    left:2px;
+    z-index: 1001;
+}
 

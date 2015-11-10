@@ -100,16 +100,25 @@
                                     <td>{{d.firstname}}</td>
                                     <td>{{d.lastname}}</td>
                                     <td>{{d.unitid}}</td>                
-                                    <td>{{d.deposit_paid | currency}}</td>
+                                    <td align="right"><i class="glyphicon glyphicon-info-sign" popover-title="{{Deposit}}" popover="
+                                    <span class='pull-left'>Deposit:</span>
+                                    <span class='pull-right'>{{d.deposit_paid | currency}}</span><br />
+                                    <span class='pull-left'>First Mo:</span>
+                                    <span class='pull-right'> {{d.firstmo_paid | currency}}</span><br />
+                                    <span class='pull-left'>Last Mo:</span>
+                                    <span class='pull-right'>{{d.lastmo_paid | currency}}</span><br />
+                                    <span class='pull-left'>{{d.other}}:</span>
+                                    <span class='pull-right'>{{d.other_paid | currency}}</span>" 
+                                    popover-trigger="mouseenter"></i>&nbsp;{{d.deposit | currency}}</td>
                                     <td>{{d.move_in | date:'M/d/y'}}</td>
                                     <td>{{d.move_out | date:'M/d/y'}}</td>
-                                    <td>{{d.balance_due | currency}}</td>                
+                                    <td align="right">{{d.balance_due | currency}}</td>                
                                     <td><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{d.unit_id}}/{{d.tenant_id}}" class="btn btn-edit btn-sm" title="Edit Tenant">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs"></span></a></td>
                                 </tr>
                             </tbody>
                                 <tr>
                                     <td colspan="4" class="text-right subtotals">Subtotals:</td>
-                                    <td colspan="1" class="text-right subtotals">{{ tenants | sumByKey:'deposit_paid' | currency}}</td>
+                                    <td colspan="1" class="text-right subtotals">{{ tenants | sumByKey:'deposit' | currency}}</td>
                                     <td colspan="1" class="text-right subtotals"></td>
                                     <td colspan="1" class="text-right subtotals"></td>
                                     <td colspan="1" class="text-right subtotals">{{ tenants | sumByKey:'deposit_paid' | currency}}</td>
