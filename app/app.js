@@ -61,6 +61,32 @@ app.factory("services", ['$http', function($http) {
 	        return status.data;
 	    });
 	};
+    //Tickets	
+    obj.getTickets = function(){
+        return $http.get(serviceBase + 'tickets');
+    }
+    obj.getTicket = function(ticketID){
+        return $http.get(serviceBase + 'ticket?id=' + ticketID);
+    }
+    
+    obj.insertTicket = function (ticket) {       
+       return $http.post(serviceBase + 'insertTicket', ticket).then(function (results) {           
+         return results;
+        });
+	};
+
+	obj.updateTicket = function (id,ticket) {
+	    return $http.post(serviceBase + 'updateTicket', {id:id, ticket:ticket}).then(function (status) {
+	        return status.data;
+	    });
+	};
+
+	obj.deleteTicket = function (id) {
+	    return $http.delete(serviceBase + 'deleteTicket?id=' + id).then(function (status) {
+	        return status.data;
+	    });
+	};
+    
     //Buildings	
     obj.getBuildings = function(){
         return $http.get(serviceBase + 'buildings');
@@ -499,6 +525,22 @@ app.controller('HeaderController',function HeaderController($scope, $location)
 });
 app.config(['$routeProvider',function($routeProvider) {
     $routeProvider
+      .when('/tickets', {
+        title: 'Tickets',
+        templateUrl: 'app/tickets/tickets.html',
+        controller: 'listCtrlTickets'
+      })      
+      .when('/edit-ticket/:ticketID', {
+        title: 'Edit Building',
+        templateUrl: 'app/tickets/edit-ticket.html',
+        controller: 'editCtrlticket',
+        resolve: {
+          ticket: function(services, $route){
+            var ticketID = $route.current.params.ticketID;
+            return services.getticket(ticketID);
+          }
+        }
+      })
       .when('/logout', {
         title: "Logout",
         templateUrl: 'partials/logout.html',
@@ -513,11 +555,6 @@ app.config(['$routeProvider',function($routeProvider) {
         title: 'Login',
         templateUrl: 'partials/login.html',
         controller: 'LoginController'
-      })      
-      .when('/wo', {
-        title: 'Work Orders',
-        templateUrl: 'partials/wo.html',
-        controller: 'WorkorderController'
       })      
       .when('/lastInsertID', {
         title: 'last insert ID',

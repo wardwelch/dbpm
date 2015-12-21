@@ -10,186 +10,177 @@
 <div class="view">
     <div class="container">
         <div class="row">
-<!-- 
-        <nav class= "navbar navbar-default" role= "navigation" >
-        <div class= "navbar-header" >
-        <a class= "navbar-brand" href= "/dbpm/#/edit-building-tenants/{{tenant.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Units List (Building: {{tenant.building_id}})</a>
-        <a ng-show="tenant._id" class= "navbar-brand" href= "/dbpm/#/edit-tenant/{{tenant.building_id}}/0"><i class="glyphicon glyphicon-plus"></i> Create tenant </a>
-        <a ng-show="tenant._id" class= "hidden-xs navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing tenant Number: {{tenant._id}}</a>
-        </div>
-        </nav>
- -->
         <header>
             <h3>{{title}}</h3>
         </header>
         <div class="col-md-12">
 
 <form role="form" name="myForm" class="form-horizontal">
-<input type="hidden" ng-model="tenant.building_id" name="building_id" id="building_id" />
-<input type="hidden" ng-model="tenant.unit_id" name="unit_id" id="unit_id" />
+<input type="hidden" ng-model="ticket.building_id" name="building_id" id="building_id" />
+<input type="hidden" ng-model="ticket.unit_id" name="unit_id" id="unit_id" />
 <div class="row">
-<div class= "form-group" ng -class="{error: myForm.unitnum.$invalid}">
-    <label class= "col-md-2"> UnitNum </label>
+<div class= "form-group" ng -class="{error: myForm.id.$invalid}">
+    <label class= "col-md-2"> Ticket ID </label>
     <div class="col-md-4">
-    <input name="unitnum" ng-model="tenant.unitnum" type= "text" class= "form-control" placeholder="Unit Number" disabled required/>
-    <span ng-show="myForm.unitnum.$dirty && myForm.unitnum.$invalid" class="help-inline">Unitnum Required</span>
+    <input name="ticket_id" ng-model="ticket.ticket_id" type="text" class= "form-control" disabled/>
     </div>
 </div>
-<div class= "form-group" ng-class="{error: myForm.firstname.$invalid}">
-    <label class= "col-md-2"> First Name </label>
+<div class= "form-group" ng -class="{error: myForm.building.$invalid}">
+    <label class= "col-md-2"> Building </label>
     <div class="col-md-4">
-    <input name="firstname" ng-model="tenant.firstname" type= "text" class= "form-control" placeholder="First Name" required/>
-    <span ng-show="myForm.firstname.$dirty && myForm.firstname.$invalid" class="help-inline">Name Required</span>
+    <input name="building" ng-model="building.name" type= "text" class= "form-control" disabled/>
     </div>
 </div>
-<div class= "form-group" ng-class="{error: myForm.lastname.$invalid}">
-    <label class= "col-md-2"> Last Name </label>
+<div class= "form-group" ng-class="{error: myForm.unitnum.$invalid}">
+    <label class= "col-md-2"> Unit Num </label>
     <div class="col-md-4">
-    <input name="lastname" ng-model="tenant.lastname" type= "text" class= "form-control" placeholder="Last Name" required/>
-    <span ng-show="myForm.lastname.$dirty && myForm.lastname.$invalid" class="help-inline">Name Required</span>
+    <input name="unitnum" ng-model="unit.unitnum" type= "text" class= "form-control" disabled/>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.deposit_paid.$invalid}">
+    <label class= "col-md-2"> Requested By</label>
+    <div class="col-md-4">
+    <input name="requested_by" ng-model="ticket.requested_by" type= "text" class= "form-control" placeholder="Requested By" />
+    <span ng-show="myForm.requested_by.$dirty && myForm.requested_by.$invalid" class="help-inline">Requested By</span>
+    </div>
+</div>
+<div class= "form-group" ng-class="{error: myForm.requested_on.$invalid}">
+    <label class= "col-md-2"> Requested On </label>
+    <div class="col-md-4">
+    <input name="requested_on" ng-model="ticket.requested_by" type= "date" class= "form-control" placeholder="Requested On" />
+    <span ng-show="myForm.requested_on.$dirty && myForm.requested_on.$invalid" class="help-inline">Requested On</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.status.$invalid}">
     <label class= "col-md-2"> Status </label>
     <div class="col-md-4">
-    <input name="status" ng-model="tenant.status" type= "text" class= "form-control" placeholder="Status" disabled/>
+    <input name="status" ng-model="ticket.status" type= "text" class= "form-control" placeholder="Status" disabled/>
     <span ng-show="myForm.status.$dirty && myForm.status.$invalid" class="help-inline">Status</span>
     </div>
 </div>
-<div class= "form-group" ng-class="{error: myForm.deposit_paid.$invalid}">
-    <label class= "col-md-2"> Deposit Paid </label>
+<div class= "form-group" ng-class="{error: myForm.ticket.age.$invalid}">
+    <label class= "col-md-2"> Age </label>
     <div class="col-md-4">
-    <input name="deposit_paid" ng-model="tenant.deposit_paid" type= "text" class= "form-control" placeholder="Deposit Paid" />
-    <span ng-show="myForm.deposit_paid.$dirty && myForm.deposit_paid.$invalid" class="help-inline">Deposit Paid</span>
+    <input name="age" ng-model="ticket.age" type= "text" class= "form-control" placeholder="Age" />
+    <span ng-show="myForm.age.$dirty && myForm.age.$invalid" class="help-inline">Age</span>
     </div>
 </div>
-<div class= "form-group" ng-class="{error: myForm.firstmo_paid.$invalid}">
-    <label class= "col-md-2"> First Month Paid </label>
+<div class= "form-group" ng-class="{error: myForm.category.$invalid}">
+    <label class= "col-md-2"> Category </label>
     <div class="col-md-4">
-    <input name="firstmo_paid" ng-model="tenant.firstmo_paid" type= "text" class= "form-control" placeholder="First Month Paid" />
-    <span ng-show="myForm.firstmo_paid.$dirty && myForm.firstmo_paid.$invalid" class="help-inline">First Month Paid</span>
+    <input name="category" ng-model="ticket.category" type= "text" class= "form-control" placeholder="Category" />
+    <span ng-show="myForm.category.$dirty && myForm.category.$invalid" class="help-inline">Category</span>
     </div>
 </div>
-<div class= "form-group" ng-class="{error: myForm.lastmo_paid.$invalid}">
-    <label class= "col-md-2"> Last Month Paid </label>
+<div class= "form-group" ng-class="{error: myForm.subject.$invalid}">
+    <label class= "col-md-2"> Subject </label>
     <div class="col-md-4">
-    <input name="lastmo_paid" ng-model="tenant.lastmo_paid" type= "text" class= "form-control" placeholder="Last Month Paid" />
-    <span ng-show="myForm.lastmo_paid.$dirty && myForm.lastmo_paid.$invalid" class="help-inline">Last Month Paid</span>
-    </div>
-</div>
-<div class= "form-group" ng-class="{error: myForm.other_paid.$invalid}">
-    <label class= "col-md-2"> Other Paid/Other* </label>
-    <div class="col-md-1">
-        <input name="other_paid" ng-model="tenant.other_paid" type= "text" class= "form-control" placeholder="Other Paid" />
-        <span ng-show="myForm.other_paid.$dirty && myForm.other_paid.$invalid" class="help-inline">Other Paid</span>
-    </div>
-    <div class="col-md-3">
-        <input name="other" ng-model="tenant.other" type= "text" class= "form-control" placeholder="Other" />
-        <span ng-show="myForm.other.$dirty && myForm.other.$invalid" class="help-inline">Other</span>
+        <input name="subject" ng-model="ticket.subject" type= "text" class= "form-control" placeholder="Subject" />
+        <span ng-show="myForm.subject.$dirty && myForm.subject.$invalid" class="help-inline">Subject</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.balance_due.$invalid}">
     <label class= "col-md-2"> Balance Due </label>
     <div class="col-md-4">
-    <input name="balance_due" ng-model="tenant.balance_due" type= "text" class= "form-control" placeholder="Balance Due" />
+    <input name="balance_due" ng-model="ticket.balance_due" type= "text" class= "form-control" placeholder="Balance Due" />
     <span ng-show="myForm.balance_due.$dirty && myForm.balance_due.$invalid" class="help-inline">Balance Due</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.move_in.$invalid}">
     <label class= "col-md-2"> Move In </label>
     <div class="col-md-4">
-    <input name="move_in" ng-model="tenant.move_in" type= "date" class= "form-control" placeholder="Move In" />
+    <input name="move_in" ng-model="ticket.move_in" type= "date" class= "form-control" placeholder="Move In" />
     <span ng-show="myForm.move_in.$dirty && myForm.move_in.$invalid" class="help-inline">Move In</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.emergency_contact.$invalid}">
     <label class= "col-md-2"> Emergency Contact </label>
     <div class="col-md-4">
-        <input name="emergency_contact" ng-model="tenant.emergency_contact" type="text" class="form-control" placeholder="John Doe"/>
+        <input name="emergency_contact" ng-model="ticket.emergency_contact" type="text" class="form-control" placeholder="John Doe"/>
         <span ng-show="myForm.emergency_contact.$dirty && myForm.emergency_contact.$invalid" class="help-inline">Emergency Contact</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.emergency_phone.$invalid}">
     <label class= "col-md-2"> Emergency Phone </label>
     <div class="col-md-4">
-        <input name="emergency_phone" ng-model="tenant.emergency_phone" type="tel" class="form-control" placeholder="Emergency Phone"/>
+        <input name="emergency_phone" ng-model="ticket.emergency_phone" type="tel" class="form-control" placeholder="Emergency Phone"/>
         <span ng-show="myForm.emergency_phone.$dirty && myForm.emergency_phone.$invalid" class="help-inline">Emergency Phone</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.parking.$invalid}">
     <label class= "col-md-2"> Parking </label>
     <div class="col-md-4">
-        <input name="parking" ng-model="tenant.parking" type="text" class="form-control" placeholder="Parking"/>
+        <input name="parking" ng-model="ticket.parking" type="text" class="form-control" placeholder="Parking"/>
         <span ng-show="myForm.parking.$dirty && myForm.parking.$invalid" class="help-inline">Parking</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.license_plate.$invalid}">
     <label class= "col-md-2"> Licence Plate </label>
     <div class="col-md-4">
-        <input name="license_plate" ng-model="tenant.license_plate" type="text" class="form-control" placeholder="Licence Plate"/>
+        <input name="license_plate" ng-model="ticket.license_plate" type="text" class="form-control" placeholder="Licence Plate"/>
         <span ng-show="myForm.license_plate.$dirty && myForm.license_plate.$invalid" class="help-inline">Licence Plate</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.photo.$invalid}">
     <label class= "col-md-2"> Photo </label>
     <div class="col-md-4">
-        <input name="photo" ng-model="tenant.photo" type="text" class="form-control" placeholder="Photo"/>
+        <input name="photo" ng-model="ticket.photo" type="text" class="form-control" placeholder="Photo"/>
         <span ng-show="myForm.photo.$dirty && myForm.photo.$invalid" class="help-inline">Photo</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.roommate.$invalid}">
     <label class= "col-md-2"> Roomate </label>
     <div class="col-md-4">
-        <input name="roommate" ng-model="tenant.roommate" type="file" class="form-control" placeholder="Roomate"/>
+        <input name="roommate" ng-model="ticket.roommate" type="file" class="form-control" placeholder="Roomate"/>
         <span ng-show="myForm.roommate.$dirty && myForm.roommate.$invalid" class="help-inline">Roomate</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.military.$invalid}">
     <label class= "col-md-2"> Military </label>
     <div class="col-md-4">
-        <input name="military" ng-model="tenant.military" type="text" class="form-control" placeholder="Military"/>
+        <input name="military" ng-model="ticket.military" type="text" class="form-control" placeholder="Military"/>
         <span ng-show="myForm.military.$dirty && myForm.military.$invalid" class="help-inline">Military</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.background_check.$invalid}">
     <label class= "col-md-2"> Background Check </label>
     <div class="col-md-4">
-        <input name="background_check" ng-model="tenant.background_check" type="text" class="form-control" placeholder="Background Check"/>
+        <input name="background_check" ng-model="ticket.background_check" type="text" class="form-control" placeholder="Background Check"/>
         <span ng-show="myForm.background_check.$dirty && myForm.background_check.$invalid" class="help-inline">Background Check</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.notes.$invalid}">
     <label class= "col-md-2"> Notes </label>
     <div class="col-md-4">
-        <input name="notes" ng-model="tenant.notes" type="text" class="form-control" placeholder="Notes"/>
+        <input name="notes" ng-model="ticket.notes" type="text" class="form-control" placeholder="Notes"/>
         <span ng-show="myForm.notes.$dirty && myForm.notes.$invalid" class="help-inline">Notes</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.us_citizen.$invalid}">
     <label class= "col-md-2"> US Citizen </label>
     <div class="col-md-4">
-        <input name="us_citizen" ng-model="tenant.us_citizen" type="text" class="form-control" placeholder="US Citizen"/>
+        <input name="us_citizen" ng-model="ticket.us_citizen" type="text" class="form-control" placeholder="US Citizen"/>
         <span ng-show="myForm.us_citizen.$dirty && myForm.us_citizen.$invalid" class="help-inline">US Citizen</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.previous_address.$invalid}">
     <label class= "col-md-2"> Previous Address </label>
     <div class="col-md-4">
-        <input name="previous_address" ng-model="tenant.previous_address" type="text" class="form-control" placeholder="Previous Address"/>
+        <input name="previous_address" ng-model="ticket.previous_address" type="text" class="form-control" placeholder="Previous Address"/>
         <span ng-show="myForm.previous_address.$dirty && myForm.previous_address.$invalid" class="help-inline">Previous Address</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.employer.$invalid}">
     <label class= "col-md-2"> Employer </label>
     <div class="col-md-4">
-        <input name="employer" ng-model="tenant.employer" type="text" class="form-control" placeholder="Employer"/>
+        <input name="employer" ng-model="ticket.employer" type="text" class="form-control" placeholder="Employer"/>
         <span ng-show="myForm.employer.$dirty && myForm.employer.$invalid" class="help-inline">Employer</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.tenant_notes.$invalid}">
     <label class= "col-md-2"> Tenant Notes </label>
     <div class="col-md-4">
-        <input name="tenant_notes" ng-model="tenant.tenant_notes" type="text" class="form-control" placeholder="Tenant Notes"/>
+        <input name="tenant_notes" ng-model="ticket.tenant_notes" type="text" class="form-control" placeholder="Tenant Notes"/>
         <span ng-show="myForm.tenant_notes.$dirty && myForm.tenant_notes.$invalid" class="help-inline">Tenant Notes</span>
     </div>
 </div>
@@ -226,11 +217,11 @@
     <label class= "col-md-2"></label>
     <div class="col-md-4">
     <a href="{{cancelText}}" class="btn btn-cancel">Cancel</a>
-        <button ng-click="saveTenant(tenant);" 
+        <button ng-click="saveTicket(ticket);" 
                 ng-disabled="isClean() || myForm.$invalid"
                 class="btn btn-save">{{buttonText}}</button>
-        <button ng-click="deleteTenant(tenant._id)"
-                ng-show="tenant._id" class="btn btn-delete">Delete</button>
+        <button ng-click="deleteticket(ticket._id)"
+                ng-show="ticket._id" class="btn btn-delete">Delete</button>
     </div>
 </div>
 </div>

@@ -142,7 +142,7 @@
 			if($this->get_request_method() != "GET"){
 				$this->response('',406);
 			}
-			$query="SELECT * from tickets";
+			$query="select tic.*, concat(lastname,', ',firstname) requested_by from tickets tic left join tenants ten on tic.tenant_id = ten.tenant_id";
 			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 			if($r->num_rows > 0){
 				$result = array();
@@ -153,6 +153,24 @@
 			}
 			$this->response('',204);	// If no records "No Content" status
 		}
+		
+		private function ticket(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+			$id = (int)$this->_request['id'];
+			if($id > 0){	
+				$query="SELECT * from tickets where ticket_id = $id";
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+				if($r->num_rows > 0) {
+					$result = $r->fetch_assoc();	
+					$this->response($this->json($result), 200); // send user details
+				}
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+		
+		
 //buildings	
 	
 		private function buildings(){	
@@ -400,7 +418,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant , move_in, move_out, balance_due, note from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.building_id = $id order by unitid asc";
+			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant , move_in, move_out, balance_due, notes from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.building_id = $id order by unitid asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){

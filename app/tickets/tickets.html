@@ -5,7 +5,7 @@
         <table class="table table-striped stripes table-bordered">
             <thead>
                 <tr class="bg-orange text-black">
-                    <td colspan="6">
+                    <td colspan="10">
                         <div class="pull-left" >
                           <span style="padding:10px 10px" class="title">Edit tickets</span>
                           <label style="padding:10px 50px">
@@ -18,73 +18,51 @@
                 </td>
                 </tr>
                 <tr>
-                <th><i class="glyphicon glyphicon-ok"></i></th>
-                <th class="hidden-xs">Code&nbsp;</th>
-                <th>Name&nbsp;</th>
-                <th class="hidden-xs">Owner&nbsp;</th>
-                <th>Units&nbsp;</th>
-                <th>Action&nbsp;</th>
+ 	<th> Ticket Id</th>
+	<th> Unitid</th>
+	<th> Status</th>
+	<th> Age</th>
+	<th> Requested by</th>
+	<th> Requested on</th>
+	<th> Category</th>
+	<th> Subject</th>
+	<th> Description</th>
+	<th> Action</th>
+<!-- 
+	<th> due on</th>
+	<th> estimated cost</th>
+	<th> estimated start</th>
+	<th> photo</th>
+	<th> final cost</th>
+	<th> final complete</th>
+	<th> ticket notes</th>
+	<th> requester email</th>
+	<th> requestor phone</th>
+	<th> requestor photo</th>
+ -->
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="data in tickets | filter : search">
-                    <td><input type="checkbox" ng-checked="{{data.inactive}}" disabled /></td>
-                    <td class="hidden-xs">{{data.code}}</td>
-                    <td>{{data.name}}</td>
-                    <td class="hidden-xs">{{data.owner}}</td>
-                    <td>{{data.units}}</td>
+                <tr ng-repeat="data in tickets">
+        <td> {{data.ticket_id}}</td>
+        <td> {{data.unitid}}</td>
+        <td> {{data.status}}</td>
+        <td> {{data.age}}</td>
+        <td> {{data.requested_by}}</td>
+        <td> {{data.requested_on}}</td>
+        <td> {{data.category}}</td>
+        <td> {{data.subject}}</td>
+        <td> {{data.description}}</td>
                     <td class="small">
                         <div class="">
                             <a href="#/edit-ticket/{{data.ticket_id}}" class="btn btn-edit btn-sm" title="Edit ticket">&nbsp;<i class="glyphicon glyphicon-pencil"></i><span class="hidden-sm hidden-xs"></span></a>
-                            <div class="btn-group">
-                            <a href="#/edit-ticket-units/{{data.ticket_id}}" class="btn btn-report btn-sm" title="Units">&nbsp;<i class="glyphicon glyphicon-home"></i><span class="hidden-sm hidden-xs"></span></a>
-                            <a href="#/edit-ticket-rents/{{data.ticket_id}}" class="btn btn-report btn-sm" title="Rents">&nbsp;<i class="glyphicon glyphicon-usd"></i><span class="hidden-sm hidden-xs"></span></a>
-                            <a href="#/edit-ticket-tenants/{{data.ticket_id}}" class="btn btn-report btn-sm" title="Tenants">&nbsp;<i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"></span></a>
-                        
                         </div>
                     </td>
                 </tr>
             </tbody>
             <tfoot class="subtotals">
-                <tr><td colspan="6">&nbsp;</td></tr>
+                <tr><td colspan="10">&nbsp;</td></tr>
             </tfoot>
         </table>
     </div>
 </div>
-<script>
-app.controller('DatepickerDemoCtrl', function ($scope) {
-  $scope.today = function() {
-    $scope.dt = new Date();
-  };
-  $scope.today();
-
-  $scope.clear = function () {
-    $scope.dt = null;
-  };
-
-  // Disable weekend selection
-  $scope.disabled = function(date, mode) {
-    return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
-  };
-
-  $scope.toggleMin = function() {
-    $scope.minDate = $scope.minDate ? null : new Date();
-  };
-  $scope.toggleMin();
-
-  $scope.open = function($event) {
-    $event.preventDefault();
-    $event.stopPropagation();
-
-    $scope.opened = true;
-  };
-
-  $scope.dateOptions = {
-    formatYear: 'yy',
-    startingDay: 1
-  };
-
-  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-  $scope.format = $scope.formats[0];
-});
-</script>
