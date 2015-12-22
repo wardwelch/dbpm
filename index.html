@@ -12,6 +12,7 @@
     <title>Dave Bentz</title>
 
     <!-- Bootstrap core CSS -->
+    
     <link href="css/bootstrap.min.css" rel="stylesheet">
     
     <style type="text/css">
@@ -33,71 +34,17 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/angular-snap.css" type="text/css" />
     <link href="css/xeditable.css" rel="stylesheet">
-    <style>
-        #drawer{
-            padding-top:70px;
-            padding-left:10px;
-        }
-        .snap-content{
-            margin-top:60px;
-        } 
-        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
-             padding: 2px;
-        } 
-        .panel-heading {
-          padding: 5px 10px;
-          border-bottom: 1px solid transparent;
-          border-top-left-radius: 3px;
-          border-top-right-radius: 3px;
-        } 
-        .acrdn-data{
-            font-weight: 300;
-        } 
-        .btn-right10{
-            margin:10px;
-            float: right;
-        } 
-        .form-group {
-            margin-bottom: 4px;
-        } 
-                   
-        .form-control {
-          display: block;
-          width: 100%;
-          height: 34px;
-          padding: 6px 12px;
-          font-size: 14px;
-          line-height: 1.42857143;
-          color: #555;
-          background-color: #fff;
-          background-image: none;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-          box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-          -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-          -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-          transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-        }
-                        
-        .nav-tabs>li>a {
-          margin-right: 2px;
-          font-weight: bold;
-          line-height: 1.42857143;
-          border: 1px solid transparent;
-          border-radius: 4px 4px 0 0;
-        }              
-
-    </style>
-    
-    
     <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script type="text/javascript" src="js//jquery.min.js"></script>
+    
     <script src="js/angular.min.js"></script>
     <script src="js/angular-route.min.js"></script>
+    <script src="js/angular-tab-trap.js"></script>
     <script src="js/ui-bootstrap-tpls-0.12.1.min.js"></script>
     <script src="js/snap.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/angular-snap.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/angular-cookies.js"></script>
+    <script src="js/event.min.js"></script>
     <script src="js/lodash.min.js"></script>
     <script src="js/xeditable.min.js"></script>        
     <script src="app/app.js"></script>
@@ -114,7 +61,7 @@
   
   
     <!-- Fixed navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top" ng-controller="DropdownCtrl">
+    <nav class="navbar top-nav navbar-fixed-top" ng-controller="DropdownCtrl">
       <div class="container">
         <div class="navbar-header">
           <button snap-toggle="" type="button" class="navbar-toggle collapsed dropdown" dropdown data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -123,20 +70,22 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/dbpm/#/dashboard">Dave Bentz</a>
+          <a class="navbar-brand" href="#/dashboard">Dave Bentz</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse" ng-controller="HeaderController">
+        <span id="version">v.0.05.01 <?php echo("What")?></span>
             <ul class="nav navbar-nav">
-                <li ng-class="{ active: isActive('#')}"><a ng-href="/dbpm/#/dashboard" snap-close>Dashboard</a></li>
-                <li ng-class="{ active: isActive('/buildings')}"><a ng-href="/dbpm/#/buildings" snap-close>Buildings</a></li>
+                <li ng-class="{ active: isActive('#')}"><a ng-href="#/dashboard" snap-close>Dashboard</a></li>
+                <li ng-class="{ active: isActive('#/buildings')}"><a ng-href="#/buildings" snap-close>Buildings</a></li>
 <!-- 
-                <li ng-class="{ active: isActive('/tenets')}"><a ng-href="/dbpm/#/tenants">tenants</a></li>
+                <li ng-class="{ active: isActive('/tenets')}"><a ng-href="#/tenants">tenants</a></li>
  -->
-                <li ng-class="{ active: isActive('/wo')}"><a ng-href="/dbpm/#/wo">Work Orders</a></li>
+                <li ng-class="{ active: isActive('/wo')}"><a ng-href="#/wo">Work Orders</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="../navbar-static-top/">Scott</a></li>
-                <li class="active"><a href="./">Sign In<span class="sr-only">(current)</span></a></li>
+                <li><a>{{username}}</a></li>
+                <li class="active" ng-show="!authenticated"><a href="#/login">Sign In<span class="sr-only">(current)</span></a></li>
+                <li class="active" ng-show="authenticated"><a href="#/logout">Sign Out<span class="sr-only">(current)</span></a></li>
             </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -144,10 +93,10 @@
     <snap-drawer id="drawer">
     <div class="col-md-3">
         <ul class="nav navbar-nav">
-            <li ng-class="{ active: isActive('/dbpm/#/dashboard')}"><a ng-href="/dbpm/#/dashboard" snap-close>Dashboard</a></li>
-            <li ng-class="{ active: isActive('/dbpm/#/buildings')}"><a ng-href="/dbpm/#/buildings" snap-close>Buildings</a></li>
-            <li ng-class="{ active: isActive('/dbpm/#/tenants')}"><a ng-href="/dbpm/#/edit-building-tenants/1" snap-close>tenants</a></li>
-            <li ng-class="{ active: isActive('/dbpm/#/wo')}"><a ng-href="/dbpm/#/wo" snap-close>Work Orders</a></li>
+            <li ng-class="{ active: isActive('#/dashboard')}"><a ng-href="#/dashboard" snap-close>Dashboard</a></li>
+            <li ng-class="{ active: isActive('#/buildings')}"><a ng-href="#/buildings" snap-close>Buildings</a></li>
+            <li ng-class="{ active: isActive('#/tenants')}"><a ng-href="#/edit-building-tenants/1" snap-close>tenants</a></li>
+            <li ng-class="{ active: isActive('#/wo')}"><a ng-href="#/wo" snap-close>Work Orders</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="../navbar-static-top/">Scott</a></li>
@@ -156,9 +105,11 @@
     </div>   
     </snap-drawer>
 <snap-content data-snap-ignore="true"> 
-    <div class="container" >
+<div>
+    <div class="container">
             <div ng-view="" id="ng-view"></div>   
     </div>
+</div>
 </snap-content>
 
   </body>

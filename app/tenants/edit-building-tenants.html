@@ -6,7 +6,7 @@
   .form-horizontal input.ng-valid.ng-dirty {
     border-color: #78FA89;
   }
-  #
+
 </style>
 <div class="view">
     <div class="container">
@@ -59,44 +59,73 @@
                 </div>
             </header>
         </div>
-        <hr />
+        <hr class="color" />
         <tabset ng-init="tab.active = true">
             <tab heading="Rents" select="switchToRents(building.building_id)"></tab>
             <tab heading="Units" select="switchToUnits(building.building_id)"></tab>
-            <tab heading="Tenants" active="tab.active">
-                <div class="row" style="padding:10px">
-                    <strong class="col-md-2 pull-left strong">
+            <tab heading="Tenants" active="tab.active" class="tab-active">
+                <div class="row tabhead" style="padding:10px">
+                    <span class="title col-md-2 pull-left">
                         {{title}}
-                    </strong>
-                    <span class="pull-right col-md-2">
-                        <a style="padding:inherit" class="btn btn-link" href="#/edit-tenant/{{building.building_id}}/0/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Tenant</a>
+                    </span>
+<div class="pull-left">
+  <label>
+   <input type="checkbox" ng-model="search"
+           ng-true-value="active" ng-false-value="" ng-init="search='active'">
+           <span style="color:#000000;">Show only active tenants</span>
+   </label>  
+  </label>
+</div>
+                    <span class="pull-right">
+                        <a class="btn btn-add btn-sm" href="#/edit-tenant/{{building.building_id}}/0/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Tenant</a>
                     </span>
                 </div>
                <div class="row">
                     <div class="col-md-12" ng-show="tenants.length > 0">
-                        <table class="table table-striped table-bordered">
+                        <table class="table table-striped stripes table-bordered">
                             <thead>
                                 <th>ID</th>
                                 <th>First<span class="hidden-xs"> Name</span>&nbsp;</th>
                                 <th>Last<span class="hidden-xs"> Name</span>&nbsp;</th>
-                                <th>Unit ID&nbsp;</th>
+                                <th>UnitID&nbsp;</th>
                                 <th>Deposit Paid&nbsp;</th>
                                 <th>Move In&nbsp;</th>
+                                <th>Move Out&nbsp;</th>                                
                                 <th>Balance Due&nbsp;</th>
                                 <th>Action&nbsp;</th>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="d in tenants track by d.unit_id">
+                                <tr ng-repeat=" d in tenants | filter:search:true " ng-class="d.status == 'active' ? '' : 'inactive'">
                                     <td>{{d.tenant_id}}</td>
                                     <td>{{d.firstname}}</td>
                                     <td>{{d.lastname}}</td>
-                                    <td>{{d.unit_id}}</td>                
-                                    <td>{{d.deposit_paid | currency}}</td>
+                                    <td>{{d.unitid}}</td>                
+                                    <td align="right"><i class="glyphicon glyphicon-info-sign" popover-title="{{Deposit}}" popover="
+                                    <span class='pull-left'>Deposit:</span>
+                                    <span class='pull-right'>{{d.deposit_paid | currency}}</span><br />
+                                    <span class='pull-left'>First Mo:</span>
+                                    <span class='pull-right'> {{d.firstmo_paid | currency}}</span><br />
+                                    <span class='pull-left'>Last Mo:</span>
+                                    <span class='pull-right'>{{d.lastmo_paid | currency}}</span><br />
+                                    <span class='pull-left'>{{d.other}}:</span>
+                                    <span class='pull-right'>{{d.other_paid | currency}}</span>" 
+                                    popover-trigger="mouseenter"></i>&nbsp;{{d.deposit | currency}}</td>
                                     <td>{{d.move_in | date:'M/d/y'}}</td>
-                                    <td>{{d.balance_due | currency}}</td>                
-                                    <td><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{d.unit_id}}/{{d.tenant_id}}" class="btn">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Tenant</span></a></td>
+                                    <td>{{d.move_out | date:'M/d/y'}}</td>
+                                    <td align="right">{{d.balance_due | currency}}</td>                
+                                    <td><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{d.unit_id}}/{{d.tenant_id}}" class="btn btn-edit btn-sm" title="Edit Tenant">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs"></span></a></td>
                                 </tr>
                             </tbody>
+                                <tr>
+                                    <td colspan="4" class="text-right subtotals">Subtotals:</td>
+                                    <td colspan="1" class="text-right subtotals">{{ tenants | sumByKey:'deposit' | currency}}</td>
+                                    <td colspan="1" class="text-right subtotals"></td>
+                                    <td colspan="1" class="text-right subtotals"></td>
+                                    <td colspan="1" class="text-right subtotals">{{ tenants | sumByKey:'deposit_paid' | currency}}</td>
+                                    <td colspan="1" class="text-right subtotals"></td>                                    
+                                </tr>
+                            <tfoot>
+                            </tfoot>
                         </table>
                     </div>
                     <div class="col-md-12" ng-show="tenants.length == 0">

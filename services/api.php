@@ -3,23 +3,44 @@
 
 	class API extends REST {
 		public $data = "";
-		const DB_SERVER = "127.0.0.1";
-		const DB_USER = "root";
-		const DB_PASSWORD = "";
-		const DB = "bents_test";
+        const DB_SERVER = "127.0.0.1";
+        const DB_USER = "root";
+        const DB_PASSWORD = "";
+        const DB = "bents_test";
 		private $db = NULL;
 		private $mysqli = NULL;
 		public function __construct(){
 			parent::__construct();				// Init parent contructor
 			$this->dbConnect();					// Initiate Database connection
 		}
-		
-		
+/*		
+		public $data = "";
+		const DB_SERVER = "localhost";
+		const DB_USER = "firestn_admin";
+		const DB_PASSWORD = "V9evn4uR";
+		const DB = "firestn_dbpm";
+		private $db = NULL;
+		private $mysqli = NULL;
+		public function __construct(){
+			parent::__construct();				// Init parent contructor
+			$this->dbConnect();					// Initiate Database connection
+		}
+*/
+
 		/*
 		 *  Connect to Database
 		*/
 		private function dbConnect(){
-			$this->mysqli = new mysqli(self::DB_SERVER, self::DB_USER, self::DB_PASSWORD, self::DB);
+		
+		
+		    if($_SERVER['SERVER_NAME'] == 'localhost'){
+			    $this->mysqli = new mysqli(self::DB_SERVER, self::DB_USER, self::DB_PASSWORD, self::DB);			
+			}
+		    if($_SERVER['SERVER_NAME'] == 'rodfirestone.com'){
+		
+			    $this->mysqli = new mysqli('localhost', 'firestn_admin', 'V9evn4uR', 'firestn_dbpm');
+			
+			}
 		}
 		
 		/*
@@ -37,27 +58,101 @@
 			if($this->get_request_method() != "POST"){
 				$this->response('',406);
 			}
-			$email = $this->_request['email'];		
-			$password = $this->_request['pwd'];
+		    
+			$user = json_decode(file_get_contents("php://input"),true);
+			$email = $user['email'];
+			$password = $user['pwd'];
+
+// 			$email = $this->_request['email'];
+//             $password = $this->_request['pwd'];
+
+
 			if(!empty($email) and !empty($password)){
 				if(filter_var($email, FILTER_VALIDATE_EMAIL)){
-					$query="SELECT uid, name, email FROM users WHERE email = '$email' AND password = '".md5($password)."' LIMIT 1";
+					$query="SELECT id, username, email FROM users WHERE email = '$email' AND password = '".md5($password)."' LIMIT 1";
 					$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
-
 					if($r->num_rows > 0) {
-						$result = $r->fetch_assoc();	
-						// If success everythig is good send header as "OK" and user details
-						$this->response($this->json($result), 200);
+					    $result = $r->fetch_assoc();
+					    
+						// If success everything is good send header as "OK" and user details
+						
+                        if (!isset($_SESSION)) {
+                            session_start();
+                        }
+                        $_SESSION['id'] = $result['id'];
+                        $_SESSION['email'] = $email;
+                        $_SESSION['username'] = $result['username'];
+				        $success = array('status' => "Success", "msg" => "Login Successfull", "data" => $result);
+				        $this->response($this->json($success),200);
 					}
 					$this->response('', 204);	// If no records "No Content" status
 				}
 			}
 			
-			$error = array('status' => "Failed", "msg" => "Invalid Email address or Password");
+			$error = array('status' => "Failed", "msg" => "Invalid Email or Password");
 			$this->response($this->json($error), 400);
 		}
 
+        public function getSession(){
+            if (!isset($_SESSION)) {
+                session_start();
+            }
+            $sess = array();
+            if(isset($_SESSION['id']))
+            {
+                $sess["id"] = $_SESSION['id'];
+                $sess["username"] = $_SESSION['username'];
+                $sess["email"] = $_SESSION['email'];
+            }
+            else
+            {
+                $sess["id"] = '';
+                $sess["username"] = 'Guest';
+                $sess["email"] = '';
+            }
+            $this->response($this->json($_SESSION), 200);
+        }
+        public function destroySession(){
+            if (!isset($_SESSION)) {
+            session_start();
+            }
+            if(isSet($_SESSION['id']))
+            {
+                unset($_SESSION['id']);
+                unset($_SESSION['username']);
+                unset($_SESSION['email']);
+                $info='info';
+                if(isSet($_COOKIE[$info]))
+                {
+                    setcookie ($info, '', time() - $cookie_time);
+                }
+                $txt="Logged Out Successfully...";
+            }
+            else
+            {
+                $txt = "Not logged in...";
+            }
+            $msg = array('message'=>$txt);
+            $this->response($this->json($msg), 200);
+        }
 
+//tickets	
+	
+		private function tickets(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+			$query="SELECT * from tickets";
+			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
 //buildings	
 	
 		private function buildings(){	
@@ -80,7 +175,7 @@
 			if($this->get_request_method() != "GET"){
 				$this->response('',406);
 			}
-			$query="SELECT building_id id, code, name from buildings";
+			$query="SELECT building_id id, code, name from buildings where inactive = '0'";
 			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 
 			if($r->num_rows > 0){
@@ -92,6 +187,30 @@
 			}
 			$this->response('',204);	// If no records "No Content" status
 		}
+		
+		private function unitsList(){	
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+			$id = (int)$this->_request['id'];
+			
+			$query="SELECT unit_id id, unitnum, unitid from units where building_id = $id order by unitnum asc";
+			$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+            
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+		}
+		
+		
+		
+		
+		
 		private function building(){	
 			if($this->get_request_method() != "GET"){
 				$this->response('',406);
@@ -106,6 +225,41 @@
 				}
 			}
 			$this->response('',204);	// If no records "No Content" status
+		}
+		
+		
+		private function addBuilding($arr){
+			$building = array(
+			"building_id"=> 1,
+			"code"=> 10,
+			"name"=> "1749 10th Street",
+			"street"=> "1749 10th Street",
+			"city"=> "Santa Monica",
+			"state"=> "",
+			"zip"=> "27516",
+			"owner"=> "CRAIG & DAVE BENTZ",
+			"units"=> 9,
+			"inactive"=> 0
+		);
+
+			$column_names = array('code', 'name', 'owner', 'street', 'city', 'state', 'zip', 'inactive', 'units');
+			$keys = array_keys($building);
+			$columns = '';
+			$values = '';
+			foreach($column_names as $desired_key){ // Check the customer received. If blank insert blank into the array.
+			   if(!in_array($desired_key, $keys)) {
+			   		$$desired_key = '';
+				}else{
+					$$desired_key = $this->mysqli->real_escape_string($building[$desired_key]);
+				}
+				$columns = $columns.$desired_key.',';
+				$values = $values."'".$$desired_key."',";
+			}
+			$query = "INSERT INTO buildings(".trim($columns,',').") VALUES(".trim($values,',').")";
+			if(!empty($rent)){
+				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+			}else
+				$this->response('',204);	//"No Content" status
 		}
 		
 		
@@ -188,7 +342,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT * from tenants t where t.building_id = $id order by t.`lastname` desc";
+			    $query="SELECT * from tenants t where t.building_id = $id order by t.unitid asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -207,7 +361,7 @@
 			}
 			$id = (int)$this->_request['id'];
 			if($id > 0){	
-				$query="SELECT * from tenants t where t.tenant_id=$id";
+				$query="SELECT t.*, u.unitnum, u.building from tenants t LEFT JOIN units u ON t.tenant_id = u.tenant_id where t.tenant_id=$id";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				if($r->num_rows > 0) {
 					$result = $r->fetch_assoc();	
@@ -246,7 +400,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.building_id = $id order by unitid asc";
+			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant , move_in, move_out, balance_due, note from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.building_id = $id order by unitid asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -291,7 +445,7 @@
 		    	
 			
 			if($uid > 0){				
-			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.unit_id = $uid order by r.sort_month asc";
+			    $query="SELECT  r.* , concat(lastname,', ',firstname) tenant, move_in, move_out from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.unit_id = $uid order by r.sort_month asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -309,7 +463,7 @@
 			}
 			$id = (int)$this->_request['id'];
 			if($id > 0){	
-				$query="SELECT * from rents where rent_id = $id";
+				$query="SELECT r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where rent_id = $id";
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 				if($r->num_rows > 0) {
 					$result = $r->fetch_assoc();	
@@ -320,6 +474,56 @@
 		}
 		
 		
+        private function getRentsByDateRange(){
+        
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+		    $bid = (int)$this->_request['id'];
+		    $uid = (int)$this->_request['unit'];
+		    $d1 = $this->_request['d1'];
+		    $d2 = $this->_request['d2'];
+
+			if($bid > 0){	
+			    $query="SELECT r.* , concat(lastname,', ',firstname) , move_in tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.building_id = '$bid' and r.unit_id = '$uid' and (date_paid BETWEEN '$d1' AND '$d2') order by date_paid desc, unitid asc";
+			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+            }
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+        
+        }
+		
+		
+		
+        private function getRentsByMonth(){
+        
+			if($this->get_request_method() != "GET"){
+				$this->response('',406);
+			}
+		    $id = (int)$this->_request['id'];
+		    $m = $this->_request['month'];
+		    	
+			
+			if($id > 0){				
+			    $query="SELECT r.* , concat(lastname,', ',firstname) tenant from rents r LEFT JOIN  tenants t ON r.tenant_id = t.tenant_id where r.building_id = $id and month = '$m' order by unitid asc";
+			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
+            }
+			if($r->num_rows > 0){
+				$result = array();
+				while($row = $r->fetch_assoc()){
+					$result[] = $row;
+				}
+				$this->response($this->json($result), 200); // send user details
+			}
+			$this->response('',204);	// If no records "No Content" status
+        
+        }
 		private function insertRent(){
 			if($this->get_request_method() != "POST"){
 				$this->response('',406);
@@ -363,7 +567,7 @@
 				$this->response('',406);
 			}
 			$bid = (int)$this->_request['id'];
-            $tmp = (int)date_parse($this->_request['m']);
+            $tmp = date_parse($this->_request['m']);
             $n =$tmp['month']; 
             $date = date_create();
             date_date_set($date, $this->_request['y'], $n-1, 01);
@@ -372,16 +576,20 @@
             $lastMonth ="$m/$y";
             $thisMonth = strtoupper(substr($this->_request['m'],0,3))."/".$this->_request['y'];
 			if($bid > 0 ){				
-                $query = "SELECT  u.*, concat(lastname,', ',firstname) tenant_name from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $bid and u.tenant_id != 0"; 
+                $query = "SELECT u.building_id, u.unit_id unit_id, unitnum, t.tenant_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, t.move_in, t.move_out, price, u.unitid from units u LEFT JOIN tenants t ON u.tenant_id = t.tenant_id where u.building_id = $bid and move_in <= STR_TO_DATE('01/".$thisMonth."','%d/%b/%Y') and (move_out >= STR_TO_DATE('01/".$thisMonth."','%d/%b/%Y') or move_out = '') order by unitnum asc"; 
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
 				$result = array();
 				while($row = $r->fetch_assoc()){
 				    $row['month'] = $thisMonth;
+				    $row['date_paid'] = $this->_request['y']."-".str_pad($n,2,'0',STR_PAD_LEFT)."-01";
 				    $row['sort_month'] = $this->_request['y']."-".str_pad($n,2,'0',STR_PAD_LEFT)."-01";
 				    $row['comments'] = "auto added";
 				    $row['due_this_mo'] = $row['price'];
+				    $row['adjustment'] = 0;
+				    $row['rent_paid'] = 0;
+				    $row['deposit_paid'] = 0;
 				    $row['rent_owed'] = $row['price'];
 				    $row['tenant_name'] = $row['tenant_name'];
 					$result[] = $row;
@@ -424,7 +632,6 @@
 				$values = $values."'".$$desired_key."',";
 			}
 			$query = "INSERT INTO rents(".trim($columns,',').") VALUES(".trim($values,',').")";
-			print_r($columns);exit;
 			if(!empty($rent)){
 				$r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
 			}else
@@ -498,7 +705,7 @@
 		    	
 			
 			if($id > 0){				
-			    $query="SELECT u.unit_id unit_id, unitnum, t.tenant_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, price, u.unitid from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $id order by unitnum asc";
+			    $query="SELECT u.building_id, u.unit_id unit_id, unitnum, t.tenant_id, concat(lastname,', ',firstname) tenant, `type`, u.`status` status, t.move_in, price, u.unitid, u.total_bal_due from units u LEFT JOIN  tenants t ON u.tenant_id = t.tenant_id where u.building_id = $id order by unitnum asc";
 			    $r = $this->mysqli->query($query) or die($this->mysqli->error.__LINE__);
             }
 			if($r->num_rows > 0){
@@ -724,7 +931,7 @@
 				$this->response('',406);
 			}
 			$tenant = json_decode(file_get_contents("php://input"),true);
-			$column_names = array( 'building_id', 'unit_id', 'unitid', 'lastname', 'firstname', 'ssn', 'creditcard', 'cardnumber', 'unused', 'status', 'deposit_paid', 'firstmo_paid', 'lastmo_paid', 'other_paid', 'balance_due', 'move_in', 'move_out', '30_day_notice', 'other', 'drivers_license');
+			$column_names = array( 'building_id', 'unit_id', 'unitid', 'lastname', 'firstname', 'ssn', 'creditcard', 'cardnumber', 'note', 'status', 'deposit_paid', 'firstmo_paid', 'lastmo_paid', 'other_paid', 'balance_due', 'move_in', 'move_out', '30_day_notice', 'other', 'drivers_license');
 			$keys = array_keys($tenant);
 			$columns = '';
 			$values = '';
@@ -835,7 +1042,7 @@
 			}
 			$tenant = json_decode(file_get_contents("php://input"),true);
 			$id = (int)$tenant['id'];
-			$column_names = array( 'building_id', 'unit_id', 'unitid', 'lastname', 'firstname', 'ssn', 'creditcard', 'cardnumber', 'unused', 'status', 'deposit_paid', 'firstmo_paid', 'lastmo_paid', 'other_paid', 'balance_due', 'move_in', 'move_out', '30_day_notice', 'other', 'drivers_license');
+			$column_names = array( 'building_id', 'unit_id', 'unitid', 'lastname', 'firstname', 'ssn', 'creditcard', 'cardnumber', 'note', 'status', 'deposit_paid', 'firstmo_paid', 'lastmo_paid', 'other_paid', 'balance_due', 'move_in', 'move_out', '30_day_notice', 'other', 'drivers_license');
 			$keys = array_keys($tenant['tenant']);
 			$columns = '';
 			$values = '';

@@ -1,106 +1,90 @@
-<!-- 
 <div class="row" >
-    <nav class= "navbar navbar-default" role= "navigation" >
-        <div class= "navbar-header" >
-            <a class="btn btn-lg btn-success" href="#/edit-building/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add new Building</a>
-        </div>
-    </nav>
-    <div class="col-md-12" ng-show="buildings.length > 0">    
- -->
-<!-- 
-            <accordion>
-                <accordion-group  ng-repeat="building in buildings" is-open="building.open">
-                    <accordion-heading>
-                        Name: {{building.name}}
-                    </accordion-heading>
-                    <accordion>
-                        <accordion-group ng-repeat="unit in units" is-open="unit.open"> 
-                            <accordion-heading>
-                                <a class="btn">{{unit.unit_id}}</a> {{unit.tenant}}
-                            </accordion-heading> 
-                            <div ng-repeat="rent in rents">
-                                {{rent.receipt}}
-                            </div>
-                       </accordion-group>
-                    </accordion>
-                </accordion-group>
-            </accordion> 
- -->
-<!-- 
-            <accordion>
-                <accordion-group  ng-repeat="building in buildings">
-                    <accordion-heading>
-                        <span ng-click="getUnitsByBuilding(building.building_id)"><a class="btn">{{building.name}}</a></span>
-                    </accordion-heading>
-                    <accordion>
-                        <accordion-group ng-repeat="unit in units"> 
-                            <accordion-heading>
-                                <span ng-click="getRentsByUnit(unit.unit_id)"><a class="btn">{{unit.unit_id}}</a> {{unit.tenant}}
-                            </accordion-heading> 
-                            <table class="table table-striped table-bordered">
-                                <thead>
-                                    <th>Month</th>
-                                    <th>Receipt</th>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="rent in rents | filter: 2011">
-                                    <td>{{rent.month}}</td>
-                                    <td>{{rent.receipt}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                       </accordion-group>
-                    </accordion>
-                </accordion-group>
-            </accordion> 
- -->
-<!-- 
-    </div>
-    <div class="col-md-12" ng-show="buildings.length == 0">
-        <div class="col-md-12">
-            <h4>No buildings found</h4>
-        </div>
-    </div>
-</div>
- -->
-<div class="row" >
-    <nav class= "navbar navbar-default" role= "navigation" >
-        <div class= "navbar-header" >
-                <a class="btn btn-sm btn-success btn-right10" href="#/edit-building/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add New Building</a>
-        </div>
-    </nav>
-    <div class="col-md-12" ng-show="buildings.length > 0" >    
-        <table class="table table-striped table-bordered">
+                <h2>Buildings</h2>
+    <div class="col-md-12" > 
+        <hr class="color"> 
+        <table class="table table-striped stripes table-bordered">
             <thead>
+                <tr class="bg-orange text-black">
+                    <td colspan="6">
+                        <div class="pull-left" >
+                          <span style="padding:10px 10px" class="title">Edit Buildings</span>
+                          <label style="padding:10px 50px">
+                           <input type="checkbox" ng-model="search.inactive"
+                                    ng-true-value="0" ng-false-value="" ng-init="search.inactive='0'">
+                                   Show only active buildings
+                           </label>  
+                        </div>
+                        <a class="btn btn-sm btn-primary btn-sm btn-right10" href="#/edit-building/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add New Building</a>  
+                </td>
+                </tr>
+                <tr>
                 <th><i class="glyphicon glyphicon-ok"></i></th>
                 <th class="hidden-xs">Code&nbsp;</th>
                 <th>Name&nbsp;</th>
                 <th class="hidden-xs">Owner&nbsp;</th>
                 <th>Units&nbsp;</th>
-                <th>Action man&nbsp;</th>
+                <th>Action&nbsp;</th>
+                </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="data in buildings">
+                <tr ng-repeat="data in buildings | filter : search">
                     <td><input type="checkbox" ng-checked="{{data.inactive}}" disabled /></td>
                     <td class="hidden-xs">{{data.code}}</td>
                     <td>{{data.name}}</td>
                     <td class="hidden-xs">{{data.owner}}</td>
                     <td>{{data.units}}</td>
                     <td class="small">
-                        <div class="btn-group btn-group-xs">
-                            <a href="#/edit-building/{{data.building_id}}" class="btn" title="Edit Building">&nbsp;<i class="glyphicon glyphicon-pencil"></i><span class="hidden-sm hidden-xs">Edit</span></a>
-                            <a href="#/edit-building-units/{{data.building_id}}" class="btn" title="Edit Unit">&nbsp;<i class="glyphicon glyphicon-home"></i><span class="hidden-sm hidden-xs">Units</span></a>
-                            <a href="#/edit-building-rents/{{data.building_id}}" class="btn" title="Edit Rents">&nbsp;<i class="glyphicon glyphicon-usd"></i><span class="hidden-sm hidden-xs">Rents</span></a>
-                            <a href="#/edit-building-tenants/{{data.building_id}}" class="btn" title="Edit tenants">&nbsp;<i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs">Tenants</span></a>
+                        <div class="">
+                            <a href="#/edit-building/{{data.building_id}}" class="btn btn-edit btn-sm" title="Edit Building">&nbsp;<i class="glyphicon glyphicon-pencil"></i><span class="hidden-sm hidden-xs"></span></a>
+                            <div class="btn-group">
+                            <a href="#/edit-building-units/{{data.building_id}}" class="btn btn-report btn-sm" title="Units">&nbsp;<i class="glyphicon glyphicon-home"></i><span class="hidden-sm hidden-xs"></span></a>
+                            <a href="#/edit-building-rents/{{data.building_id}}" class="btn btn-report btn-sm" title="Rents">&nbsp;<i class="glyphicon glyphicon-usd"></i><span class="hidden-sm hidden-xs"></span></a>
+                            <a href="#/edit-building-tenants/{{data.building_id}}" class="btn btn-report btn-sm" title="Tenants">&nbsp;<i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"></span></a>
+                        
                         </div>
                     </td>
                 </tr>
             </tbody>
+            <tfoot class="subtotals">
+                <tr><td colspan="6">&nbsp;</td></tr>
+            </tfoot>
         </table>
     </div>
-    <div class="col-md-12" ng-show="buildings.length == 0">
-        <div class="col-md-12">
-            <h4>No buildings found</h4>
-        </div>
-    </div>
 </div>
+<script>
+app.controller('DatepickerDemoCtrl', function ($scope) {
+  $scope.today = function() {
+    $scope.dt = new Date();
+  };
+  $scope.today();
+
+  $scope.clear = function () {
+    $scope.dt = null;
+  };
+
+  // Disable weekend selection
+  $scope.disabled = function(date, mode) {
+    return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+  };
+
+  $scope.toggleMin = function() {
+    $scope.minDate = $scope.minDate ? null : new Date();
+  };
+  $scope.toggleMin();
+
+  $scope.open = function($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+
+    $scope.opened = true;
+  };
+
+  $scope.dateOptions = {
+    formatYear: 'yy',
+    startingDay: 1
+  };
+
+  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+  $scope.format = $scope.formats[0];
+});
+</script>

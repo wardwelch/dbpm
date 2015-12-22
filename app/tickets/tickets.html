@@ -1,0 +1,51 @@
+<div class="row" >
+                <h2>Tickets</h2>
+    <div class="col-md-12" > 
+        <hr class="color"> 
+        <table class="table table-striped stripes table-bordered">
+            <thead>
+                <tr class="bg-orange text-black">
+                    <td colspan="6">
+                        <div class="pull-left" >
+                          <span style="padding:10px 10px" class="title">Edit tickets</span>
+                          <label style="padding:10px 50px">
+                           <input type="checkbox" ng-model="search.inactive"
+                                    ng-true-value="0" ng-false-value="" ng-init="search.inactive='0'">
+                                   Show only active tickets
+                           </label>  
+                        </div>
+                        <a class="btn btn-sm btn-primary btn-sm btn-right10" href="#/edit-ticket/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add New ticket</a>  
+                </td>
+                </tr>
+                <tr>
+                <th>Code&nbsp;</th>
+                <th>Name&nbsp;</th>
+                <th>Owner&nbsp;</th>
+                <th>Units&nbsp;</th>
+                <th>Action&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="data in tickets">
+                    <td>{{data.ticket_id}}</td>
+                    <td>{{data.category}}</td>
+                    <td>{{data.requested_by}}</td>
+                    <td>{{data.requested_on}}</td>
+                    <td class="small">
+                        <div class="">
+                            <a href="#/edit-ticket/{{data.ticket_id}}" class="btn btn-edit btn-sm" title="Edit ticket">&nbsp;<i class="glyphicon glyphicon-pencil"></i><span class="hidden-sm hidden-xs"></span></a>
+                            <div class="btn-group">
+                            <a href="#/edit-ticket-units/{{data.ticket_id}}" class="btn btn-report btn-sm" title="Units">&nbsp;<i class="glyphicon glyphicon-home"></i><span class="hidden-sm hidden-xs"></span></a>
+                            <a href="#/edit-ticket-rents/{{data.ticket_id}}" class="btn btn-report btn-sm" title="Rents">&nbsp;<i class="glyphicon glyphicon-usd"></i><span class="hidden-sm hidden-xs"></span></a>
+                            <a href="#/edit-ticket-tenants/{{data.ticket_id}}" class="btn btn-report btn-sm" title="Tenants">&nbsp;<i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"></span></a>
+                        
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot class="subtotals">
+                <tr><td colspan="6">&nbsp;</td></tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

@@ -1,3 +1,24 @@
+app.config(['$routeProvider',function($routeProvider) {
+    $routeProvider
+      .when('/buildings', {
+        title: 'Buildings',
+        templateUrl: 'app/buildings/buildings.html',
+        controller: 'listCtrlBuildings'
+      })
+      .when('/edit-building/:buildingID', {
+        title: 'Edit Buildisng',
+        templateUrl: 'app/buildings/edit-building.html',
+        controller: 'editCtrlBuilding',
+        resolve: {
+          building: function(services, $route){
+            var buildingID = $route.current.params.buildingID;
+            return services.getBuilding(buildingID);
+          }
+        }
+      })
+}]);
+
+
 app.controller('listCtrlBuildings', function ($scope, services) {
     services
     .getBuildings()

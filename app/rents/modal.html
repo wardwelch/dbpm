@@ -1,4 +1,4 @@
-﻿<style type="text/css">
+<style type="text/css">
   .form-horizontal input.ng-invalid.ng-dirty {
     border-color: #FA787E;
   }
@@ -6,160 +6,147 @@
   .form-horizontal input.ng-valid.ng-dirty {
     border-color: #78FA89;
   }
-  
-  
 </style>
-<div class="view">
-    <div class="container">
-        <div class="row">
-        <header>
-            <h4>{{title}}</h4>
-                <div class="col-sm-2 pull-left">
-                     <strong style="display:initial">Building</strong> <br/>
-                     <strong style="display:initial">Unit Number:</strong> <br/>
-                     <strong style="display:initial">Current Price:</strong> <br/>  
-               </div>
-                 <div class="col-sm-4 pull-left">
-                      <span style="display:initial">&nbsp;{{building.code}}</span><br/>
-                      <span style="display:initial">&nbsp;{{unit.unitnum}}</span><br/>
-                        <span editable-text="unit.price" e-form="textBtnForm" onbeforesave="updateUnitPrice(data)">
-                        {{ unit.price || 'empty' }}
-                        </span>
-                        <button class="btn btn-default" ng-click="textBtnForm.$show()" ng-hide="textBtnForm.$visible">
-                            Change Price
-                        </button>
 
-<!-- 
-                      <span style="display:initial">&nbsp;{{unit.price}}</span>&nbsp;&nbsp;<a class="btn btn-link" href="#/edit-price/{{rent.unitid}}">Change Price</a><br/>                    
- -->
-               </div>
-                <div class="col-sm-2 pull-left">
-                     <strong style="display:initial">Type:</strong><br/>
-                     <strong style="display:initial">Status:</strong><br/>
-               </div>
-                <div class="col-sm-4 pull-left">
-                      <span>&nbsp;{{unit.type}}</span><br/>
-                      <span>&nbsp;{{unit.status}}</span><br/>
-                </div>
-         </header>
-         <div class="clearfix"></div>
-         <hr/>
-         
-<div class="col-md-12">
-<form role="form" id="myform" name="myForm" class="form-horizontal">
-<input type="hidden" ng-model="rent.building_id" name="building_id" id="building_id" />
-<input type="hidden" ng-model="rent.unit_id" name="unit_id" id="unit_id" />
-<div class="row">
-<div class= "form-group" ng-class="{error: myForm.unitid.$invalid}">
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+<form role="form" name="myForm" id="myForm" class="form-horizontal" ng-keyUp="doKey(rent,$event)">
+<div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+</div>
+<div class="modal-body">
+            <input type="hidden" ng-model="tenant.building_id" name="building_id" id="building_id" />
+            <input type="hidden" ng-model="tenant.unit_id" name="unit_id" id="unit_id" />
+<tab-trap>
+    <div class= "form-group" ng-class="{error: myForm.unitid.$invalid}">
     <label class= "col-md-2"> Unit ID </label>
-    <div class="col-md-4">
+    <div class="col-md-6">
     <input name="unitid" ng-model="rent.unitid" type= "text" class= "form-control" placeholder="UnidID" disabled/>
     <span ng-show="myForm.unitid.$dirty && myForm.unitid.$invalid" class="help-inline">Unit ID Required</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.tenant.$invalid}">
-    <label class= "col-md-2"> Tenant </label>
-    <div class="col-md-4">
+    <label class= "col-md-2"> Tenant Name </label>
+    <div class="col-md-6">
     <input name="tenant" ng-model="rent.tenant" type= "text" class="form-control" placeholder="tenant" disabled />
-    <span ng-show="myForm.tenant.$dirty && myForm.tenant.$invalid" class="help-inline">Tenant</span>
+    <span ng-show="myForm.tenant.$dirty && myForm.tenant.$invalid" class="help-inline">Tenant Name</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.month.$invalid}">
     <label class= "col-md-2"> Month </label>
-    <div class="col-md-4">
+    <div class="col-md-6">
     <input name="month" ng-model="rent.month" type= "text" class="form-control" placeholder="Month" disabled />
     <span ng-show="myForm.month.$dirty && myForm.month.$invalid" class="help-inline">Month</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.date_paid.$invalid}">
     <label class= "col-md-2"> Date Paid </label>
-    <div class="col-md-4">
-        <input name="date_paid" ng-model="rent.date_paid" type="date" class="form-control" placeholder="date_paid" focus-me="{{true}}" />
+    <div class="col-md-6">
+        <input name="date_paid" ng-model="rent.date_paid" type="date" class="form-control" placeholder="date_paid"  focus-me="{{true}}" />
         <span ng-show="myForm.date_paid.$dirty && myForm.date_paid.$invalid" class="help-inline">Date Paid</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.receipt.$invalid}">
     <label class= "col-md-2"> Receipt </label>
-    <div class="col-md-4">
-    <input name="receipt" ng-model="rent.receipt" type= "text" class= "form-control" placeholder="receipt"  />
+    <div class="col-md-6">
+    <input name="receipt" ng-model="rent.receipt" type= "text" class= "form-control" placeholder="receipt"/>
     <span ng-show="myForm.receipt.$dirty && myForm.receipt.$invalid" class="help-inline">Receipt</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.rent_owed.$invalid}">
     <label class= "col-md-2"> Rent Owed </label>
-    <div class="col-md-4">
+    <div class="col-md-6">
     <input name="rent_owed" ng-model="rent.rent_owed" ng-change="calcDue()" type="text" class= "form-control" placeholder="rent_owed" />
     <span ng-show="myForm.rent_owed.$dirty && myForm.rent_owed.$invalid" class="help-inline">Rent Owned</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.rent_paid.$invalid}">
     <label class= "col-md-2"> Rent Paid </label>
-    <div class="col-md-4">
+    <div class="col-md-6">
     <input name="rent_paid" ng-model="rent.rent_paid" ng-change="calcDue()" type= "text" class="form-control" placeholder="rent_paid"  />
     <span ng-show="myForm.rent_paid.$dirty && myForm.rent_paid.$invalid" class="help-inline">Rent Paid</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.adjustment.$invalid}">
     <label class= "col-md-2"> Adjustment </label>
-    <div class="col-md-4">
+    <div class="col-md-6">
     <input name="adjustment" ng-model="rent.adjustment" ng-change="calcDue()" type= "text" class= "form-control" placeholder="adjustment" />
     <span ng-show="myForm.adjustment.$dirty && myForm.adjustment.$invalid" class="help-inline">Adjustment</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.due_this_mo.$invalid}">
     <label class= "col-md-2"> Deposit </label>
-    <div class="col-md-4">
+    <div class="col-md-6">
     <input name="deposit" ng-model="rent.deposit_paid" type= "text" class= "form-control" placeholder="Deposit" />
     <span ng-show="myForm.deposit_paid.$dirty && myForm.deposit_paid.$invalid" class="help-inline">Deposit</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.due_this_mo.$invalid}">
     <label class= "col-md-2"> Due this Month </label>
-    <div class="col-md-4">
+    <div class="col-md-6">
     <input name="due_this_mo" ng-model="rent.due_this_mo" type= "text" class= "form-control" placeholder="Due this Month" disabled/>
     <span ng-show="myForm.due_this_mo.$dirty && myForm.due_this_mo.$invalid" class="help-inline">Due this Month</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.comments.$invalid}">
     <label class= "col-md-2"> Comments </label>
-    <div class="col-md-4">
-    <input name="comments" ng-model="rent.comments" type= "text" class= "form-control" placeholder="comments" />
+    <div class="col-md-6">
+    <textarea name="comments" ng-model="rent.comments" type= "text" class= "form-control" placeholder="comments">{{rent.comments}}</textarea>
     <span ng-show="myForm.comments.$dirty && myForm.comments.$invalid" class="help-inline">Comments</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.sort_month.$invalid}">
     <label class= "col-md-2"> Sort Month </label>
-    <div class="col-md-4">
+    <div class="col-md-6">
     <input name="sort_month" ng-model="rent.sort_month" type= "date" class= "form-control" placeholder="sort_month" />
     <span ng-show="myForm.sort_month.$dirty && myForm.sort_month.$invalid" class="help-inline">Sort Month</span>
     </div>
 </div>
-<div class= "form-group">
-    <label class= "col-md-2"></label>
-    <div class="col-md-4 text-right">
+</div>
+<div class="modal-footer">
+    <div class="col-md-8">
+
 <!-- 
-    <a href="/dbpm/#/edit-building-rents/{{unit.building_id}}">Cancel</a>
+                <div class= "form-group">
+                    <label class= "col-md-2"></label>
+                    <div class="col-md-4">
+                    <a href="/dbpm/#/edit-building-rents/{{building.building_id}}" class="btn">Cancel</a>
+                        <button ng-click="saveRent(rent);" 
+                                ng-disabled="isClean() || myForm.$invalid"
+                                class="btn btn-primary">{{buttonText}}</button>
+                        <button ng-click="deleteRent(rent)"
+                                ng-show="rent._id" class="btn btn-warning">Delete</button>
+                    </div>
+                </div>
  -->
-    <a href="{{cancelText}}" class="btn btn-cancel">Cancel</a>
-<!-- 
+ 
         <button id="prev" ng-click="prevRent(rent);" 
                 ng-disabled="isFirst(rent) || myForm.$invalid"
-                class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></button>
- -->
-        <button id="save" ng-click="saveRent(rent);" 
+                class="btn btn-default"  tabindex="0" ><span class="glyphicon glyphicon-chevron-left"></span></button>
+        <button id="save" ng-click="ok();" 
                 ng-disabled="isClean() || myForm.$invalid"
-                class="btn btn-save">Save</button>
-<!-- 
+                class="btn btn-save" tabindex="0" >Save</button>
         <button id="next" ng-click="nextRent(rent);"
                 ng-disabled="isLast(rent) || myForm.$invalid"
-                class="btn btn-default"><span class="glyphicon glyphicon-chevron-right"></span></button>
- -->
+                class="btn btn-default" tabindex="0" ><span class="glyphicon glyphicon-chevron-right"></span></button>
         <button id="delete" ng-click="deleteRent(rent)"
-                ng-show="rent._id" class="btn btn-delete">Delete</button>
-    </div>
-</div>
+                ng-show="rent._id" tabindex="0" class="btn btn-delete">Delete</button>
+        <button class="btn btn-cancel" ng-click="cancel()" tabindex="-1" >Cancel</button>
+ 
+ 
+<!-- 
+ 
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+        <button class="btn btn-primary" ng-click="nextRent(rent)">Next</button>        
+ -->
+            </div>
+</tab-trap>
+
 </div>
 </form>
-        </div></div>
-    </div>
 </div>
+</div>
+</div>
+
+

@@ -1,10 +1,6 @@
-<Label class="col-md-2">
-    <i class="glyphicon glyphicon-triangle-left"></i>
-    <select ng-change="monthChanged()" ng-init="month=months[m]" ng-model="month" ng-options="month.label for month in months" ></select>
-    <i class="glyphicon glyphicon-triangle-right"></i>
+<Label class="col-md-2" id="months">
+    <select class="btn btn-months" ng-change="monthChanged()" ng-init="month=months[m]" ng-model="month" ng-options="month.label for month in months" ></select>
 </label>
- <label  class="col-md-2">
- <i class="glyphicon glyphicon-triangle-left"></i>
-    <select  ng-change="yearChanged()"  ng-init="year=years[y]" ng-model="year" ng-options="year.label for year in years" ></select>
-    <i class="glyphicon glyphicon-triangle-right"></i>
+ <label  class="col-md-1" id="years">
+   <select  class="btn btn-years" ng-change="yearChanged()"  ng-init="year=years[y]" ng-model="year" ng-options="year.label for year in years" ></select>
 </label>

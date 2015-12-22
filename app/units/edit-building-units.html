@@ -6,11 +6,17 @@
   .form-horizontal input.ng-valid.ng-dirty {
     border-color: #78FA89;
   }
-  #
+  
+.table>thead>tr>th{
+    vertical-align: middle;
+}
+
+
 </style>
 <div class="view">
     <div class="container">
         <div class="row">
+
 <!-- 
             <nav class= "navbar navbar-default hidden-xs" role="navigation">
                 <div class="navbar-header" style="padding:5px" >
@@ -61,53 +67,88 @@
                 </div>
              </header>
         </div>
-                <hr />
+                <hr class="color"/>
                 <tabset ng-init="tab.active = true">
                     <tab heading="Rents" select="switchToRents(building.building_id)"></tab>
                     <tab heading="Units" active="tab.active">
-                <div class="row" style="padding:10px">
-                    <strong class="col-md-4 pull-left strong">
-                        <p>{{title}}</p>
-                    </strong>
-                    <span class="pull-right col-md-4">
-                        <a style="padding:inherit" class="btn btn-link" href="#/edit-unit/{{building.building_id}}/0"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add Unit</a>
+                <div class="row tabhead" style="padding:10px">
+                    <span class="title col-md-4 pull-left strong">
+                        {{title}}
+                    </span>
+                    <span class="pull-right">
+                        <a class="btn btn-add btn-sm pull-right" href="#/edit-unit/{{building.building_id}}/0"><i class="glyphicon glyphicon-plus" title="Add Unit"></i>&nbsp;Add Unit</a>
+
                     </span>
                 </div>
-                     <div class="row">
+                    <div class="row" ng-controller="ModalTenantCtrl">
                         <div class="col-md-12" ng-show="units.length > 0">
-                            <table class="table table-striped table-bordered">
+                            <table class="table table-striped stripes table-bordered">
                                 <thead>
-                                    <th>Unit No.&nbsp;</th>
-                                    <th>Current Tenant&nbsp;</th>
-                                    <th>Type&nbsp;</th>
-                                    <th>Status&nbsp;</th>
-                                    <th>Price&nbsp;</th>
-                                    <th>Action&nbsp;</th>
+                                    <th class="col-md-1">Unit&nbsp;</th>
+                                    <th class="col-md-2" >Current Tenant&nbsp;</th>
+                                    <th class="col-md-1">Type&nbsp;</th>
+                                    <th class="col-md-2">Status&nbsp;</th>
+                                    <th class="col-md-1">Move In&nbsp;</th>
+                                    <th class="col-md-1">Price&nbsp;</th> 
+                                    <th class="col-md-1">Balance Due&nbsp;</th> 
+                                                    
+                                    <th class="col-md-4" ng-show="!priceform.$visible">Action&nbsp;</th>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="data in units">
+                                    <tr ng-repeat="data in units track by $index">
                                         <td>{{data.unitnum}}</td>
-                                        <td ng-show="data.tenant"><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{data.unit_id}}/{{data.tenant_id}}" class="btn btn-link" title="Edit Tenant"><i class="glyphicon glyphicon-edit"></i>&nbsp;&nbsp;{{data.tenant}}</a></td>
-                                        <td ng-hide="data.tenant"><a href="/dbpm/#/edit-tenant/{{building.building_id}}/{{data.unit_id}}/0" class="btn btn-link" title="Add Tenant"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Vacant</a></td>
-                                        <td>{{data.type}}</td>
+                                        <td ng-show="data.tenant">
+                                            <a ng-show="!priceform.$visible" ng-click="open(data)" class="btn btn-link  " title="Edit Tenant"><i class="glyphicon glyphicon-edit"></i>&nbsp;&nbsp;{{data.tenant}}</a>
+                                            <span ng-hide="!priceform.$visible"> &nbsp;&nbsp;{{data.tenant}}</span>
+                                        </td>
+                                        <td ng-hide="data.tenant">
+                                            <a ng-show="!priceform.$visible" ng-click="open(data)" class="btn btn-link " title="Add Tenant"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Vacant</a>
+                                            <span ng-hide="!priceform.$visible"> &nbsp;&nbsp;Vacant</span>
+                                        </td>
+                                       <td>{{data.type}}</td>
                                         <td>{{data.status}}</td>
-                                        <td align="right">{{data.price | currency}}</td>
-                                        <td>
-                                            <a href="#/edit-unit/{{building.building_id}}/{{data.unit_id}}" class="btn" title="Edit Unit">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs">&nbsp; Edit Unit</span></a>
-                                            <a href="#/edit-building-units/{{building.building_id}}" class="btn" title="Delete Unit" ng-click="deleteUnit(data)">&nbsp;<i class="glyphicon glyphicon-remove-circle"></i><span class="hidden-xs">&nbsp; Delete Unit</span></a>
-                                            <a href="#/edit-unit-rents/{{building.building_id}}/{{data.unit_id}}"><i class="glyphicon glyphicon-plus" title="Rents"></i>&nbsp;Rents</a>
-
+                                        <td class="nowrap">{{data.move_in | date:'M/d/y'}}</td>  
+                                        <td class="text-right">
+                                            <span editable-text="data.price" e-name="price" e-form="priceform" buttons="no" onbeforesave="updateUnitPrice($data, data)" e-class="input-xs">
+                                                {{ data.price || 'empty' | currency}}
+                                            </span>
+                                        </td>
+                                        <td align="right">{{data.total_bal_due | currency}}</td>  
+<!-- 
+                                        <td><a class="btn btn-link" editable-text="data.price" onbeforesave="updateUnitPrice($data, data)"  buttons="no">{{ data.price || '...' }}</a></td>
+ -->
+                          
+                                        <td ng-show="!priceform.$visible"> 
+                                            <a href="#/edit-unit/{{building.building_id}}/{{data.unit_id}}" class="btn btn-sm btn-edit" title="Edit Unit" tabindex="-1">&nbsp;<i class="glyphicon glyphicon-edit"></i><span class="hidden-xs"></span></a>
+                                            <a  class="btn btn-delete btn-sm" title="Delete Unit" ng-click="deleteUnit(data)" tabindex="-1">&nbsp;<i class="glyphicon glyphicon-remove-circle"></i><span class="hidden-xs"></span></a>
+                                            <a class="btn btn-report btn-sm" href="#/edit-unit-rents/{{building.building_id}}/{{data.unit_id}}" tabindex="-1"><i class="glyphicon glyphicon-list-alt" title="Report" ></i><span class="hidden-xs"></span></a>
                                         </td>
                                     </tr>
                                 </tbody>
                             <tfoot>
-                                <tr align="right">
-                                    <td colspan="4" >Subtotals:</td>
+                                <tr class="subtotals" align="right">
+                                    <td colspan="2" align="left">
+                                        <form class="pull-left" editable-form name="priceform" onaftersave="saveColumn('price')" ng-show="priceform.$visible">
+                                    
+                                          <button type="submit" ng-disabled="priceform.$waiting" class="btn btn-save ">
+                                           Save
+                                          </button>
+                                          <button type="button" ng-disabled="priceform.$waiting" ng-click="priceform.$cancel()" class="btn btn-cancel ">
+                                            Cancel
+                                          </button>
+                                        </form> 
+                                           <button class="btn btn-edit " ng-show="!priceform.$visible" ng-click="priceform.$show()">
+                                                Edit
+                                          </button>
+                                    </td>
+                                    <td colspan="{{priceform.$visible ? 3 : 3;}}" >Subtotals:</td>
                                     <td>{{(units | sumByKey:'price' | currency)}}</td>
+                                    <td>{{(units | sumByKey:'total_bal_due' | currency)}}</td>
+                                    <td ng-show="!priceform.$visible"></td>
                                 </tr>
                             </tfoot>
                             </table>
-                        </div>
+                            </div>
                         <div class="col-md-12" ng-show="units.length == 0">
                             <div class="col-md-12">
                                 <h4>No units found</h4>
@@ -118,4 +159,5 @@
                     <tab heading="Tenants" select="switchToTenants(building.building_id)"></tab>
                 </tabset>
         </div>
+        
 </div>

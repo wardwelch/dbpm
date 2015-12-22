@@ -10,13 +10,15 @@
 <div class="view">
     <div class="container">
         <div class="row">
+<!-- 
         <nav class= "navbar navbar-default" role= "navigation" >
         <div class= "navbar-header" >
-        <a class= "navbar-brand" href= "/dbpm/#/edit-building-units/{{tenant.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Units List (Building: {{tenant.building_id}})</a>
+        <a class= "navbar-brand" href= "/dbpm/#/edit-building-tenants/{{tenant.building_id}}"><i class="glyphicon glyphicon-th-large"></i> Units List (Building: {{tenant.building_id}})</a>
         <a ng-show="tenant._id" class= "navbar-brand" href= "/dbpm/#/edit-tenant/{{tenant.building_id}}/0"><i class="glyphicon glyphicon-plus"></i> Create tenant </a>
         <a ng-show="tenant._id" class= "hidden-xs navbar-brand pull-right"><i class="glyphicon glyphicon-edit"></i> Currently Editing tenant Number: {{tenant._id}}</a>
         </div>
         </nav>
+ -->
         <header>
             <h3>{{title}}</h3>
         </header>
@@ -47,6 +49,7 @@
     <span ng-show="myForm.lastname.$dirty && myForm.lastname.$invalid" class="help-inline">Name Required</span>
     </div>
 </div>
+<!-- 
 <div class= "form-group" ng-class="{error: myForm.ssn.$invalid}">
     <label class= "col-md-2"> SSN </label>
     <div class="col-md-4">
@@ -75,10 +78,11 @@
     <span ng-show="myForm.cardnumber.$dirty && myForm.cardnumber.$invalid" class="help-inline">Card Number</span>
     </div>
 </div>
+ -->
 <div class= "form-group" ng-class="{error: myForm.status.$invalid}">
     <label class= "col-md-2"> Status </label>
     <div class="col-md-4">
-    <input name="status" ng-model="tenant.status" type= "text" class= "form-control" placeholder="Status" />
+    <input name="status" ng-model="tenant.status" type= "text" class= "form-control" placeholder="Status" disabled/>
     <span ng-show="myForm.status.$dirty && myForm.status.$invalid" class="help-inline">Status</span>
     </div>
 </div>
@@ -104,10 +108,14 @@
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.other_paid.$invalid}">
-    <label class= "col-md-2"> Other Paid </label>
-    <div class="col-md-4">
-    <input name="other_paid" ng-model="tenant.other_paid" type= "text" class= "form-control" placeholder="Other Paid" />
-    <span ng-show="myForm.other_paid.$dirty && myForm.other_paid.$invalid" class="help-inline">Other Paid</span>
+    <label class= "col-md-2"> Other Paid/Other* </label>
+    <div class="col-md-1" >
+        <input name="other_paid" ng-model="tenant.other_paid" type= "text" class= "form-control" placeholder="Other Paid" />
+        <span ng-show="myForm.other_paid.$dirty && myForm.other_paid.$invalid" class="help-inline">Other Paid</span>
+    </div>
+    <div class="col-md-3">
+        <input name="other" ng-model="tenant.other" type= "text" class= "form-control" placeholder="Other" />
+        <span ng-show="myForm.other.$dirty && myForm.other.$invalid" class="help-inline">Other</span>
     </div>
 </div>
 <div class= "form-group" ng-class="{error: myForm.balance_due.$invalid}">
@@ -131,6 +139,7 @@
         <span ng-show="myForm.move_out.$dirty && myForm.move_out.$invalid" class="help-inline">Move Out</span>
     </div>
 </div>
+<!-- 
 <div class= "form-group" ng-class="{error: myForm.30_day_notice.$invalid}">
     <label class= "col-md-2"> 30 Day Notice </label>
     <div class="col-md-4">
@@ -138,6 +147,7 @@
     <span ng-show="myForm.30_day_notice.$dirty && myForm.30_day_notice.$invalid" class="help-inline">30 Day Notice</span>
     </div>
 </div>
+ -->
 <!-- 
 
 <script>
@@ -150,7 +160,7 @@
 </script>
 <form name="myForm" ng-controller="DateController as dateCtrl">
    <label for="exampleInput">Pick a date in 2013:</label>
-   <input type="date" id="exampleInput" name="input" ng-model="example.value"
+   <input novalidate type="date" id="exampleInput" name="input" ng-model="example.value"
        placeholder="yyyy-MM-dd" min="2013-01-01" max="2013-12-31" required />
    <div role="alert">
      <span class="error" ng-show="myForm.input.$error.required">
@@ -166,15 +176,16 @@
 </form>
 
  -->
+
 <div class= "form-group">
     <label class= "col-md-2"></label>
     <div class="col-md-4">
-    <a href="/dbpm/#/edit-building-units/{{tenant.building_id}}" class="btn">Cancel</a>
+    <a href="{{cancelText}}" class="btn btn-cancel">Cancel</a>
         <button ng-click="saveTenant(tenant);" 
                 ng-disabled="isClean() || myForm.$invalid"
-                class="btn btn-primary">{{buttonText}}</button>
+                class="btn btn-save">{{buttonText}}</button>
         <button ng-click="deleteTenant(tenant._id)"
-                ng-show="tenant._id" class="btn btn-warning">Delete</button>
+                ng-show="tenant._id" class="btn btn-delete">Delete</button>
     </div>
 </div>
 </div>
